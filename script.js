@@ -100,14 +100,23 @@ T.it.leadSubmit="Invia";T.en.leadSubmit="Send";
 T.it.leadSending="Invio in corso...";T.en.leadSending="Sending...";
 T.it.leadSuccess="Grazie, abbiamo ricevuto la tua richiesta.";T.en.leadSuccess="Thank you, we have received your request.";
 T.it.leadError="Non siamo riusciti a inviare il form. Scrivici a contact@ulakasha.com.";T.en.leadError="We could not send the form. Please write to contact@ulakasha.com.";
-T.it.leadConfig="Per ora apriamo una mail gia compilata. Inserisci Formspree o Web3Forms in script.js per l'invio automatico.";T.en.leadConfig="For now we open a pre-filled email. Add Formspree or Web3Forms in script.js for automatic submission.";
+T.it.leadConfig="Configura Supabase in supabase-config.js per attivare l'invio automatico.";T.en.leadConfig="Configure Supabase in supabase-config.js to activate automatic submission.";
 var lang="it",cart=[],curProd=null,selSz=null,productsLoaded=false,currentFilter="all";
 var eventLoaded=false,eventData=null;
-var LEAD_FORM_ENDPOINT="";
-var LEAD_WEB3FORMS_ACCESS_KEY="";
-var TILDA_NEWSLETTER_URL="https://ulakashacontactform.tilda.ws";
+var SUPABASE_URL=(window.ULAKASHA_SUPABASE_URL||"").replace(/\/$/,"");
+var SUPABASE_ANON_KEY=window.ULAKASHA_SUPABASE_ANON_KEY||"";
+var NEWSLETTER_TABLE=window.ULAKASHA_NEWSLETTER_TABLE||"newsletter_subscribers";
+var PRODUCTS_TABLE=window.ULAKASHA_PRODUCTS_TABLE||"products";
+var MAKE_NEWSLETTER_WEBHOOK_URL=window.ULAKASHA_MAKE_NEWSLETTER_WEBHOOK_URL||"";
 function el(id){return document.getElementById(id);}
 function set(id,val,isHtml){var e=el(id);if(!e)return;if(isHtml)e.innerHTML=val;else e.textContent=val;}
+function supabaseReady(){return !!(SUPABASE_URL&&SUPABASE_ANON_KEY);}
+function supabaseHeaders(extra){
+  var h={"apikey":SUPABASE_ANON_KEY,"Authorization":"Bearer "+SUPABASE_ANON_KEY,"Accept":"application/json"};
+  if(extra){for(var k in extra){if(extra[k]!==undefined&&extra[k]!==null)h[k]=extra[k];}}
+  return h;
+}
+function supabaseRest(table,query){return SUPABASE_URL+"/rest/v1/"+encodeURIComponent(table)+(query||"");}
 window.addEventListener("scroll",function(){var n=el("mainNav");if(n)n.classList.toggle("scrolled",window.scrollY>60);},{passive:true});
 function openMob(){var m=el("mobMenu"),h=el("ham"),o=el("mobOv");if(m)m.classList.add("open");if(h)h.classList.add("open");if(o)o.classList.add("show");document.body.style.overflow="hidden";}
 function closeMob(){var m=el("mobMenu"),h=el("ham"),o=el("mobOv");if(m)m.classList.remove("open");if(h)h.classList.remove("open");if(o)o.classList.remove("show");document.body.style.overflow="";}
@@ -121,7 +130,15 @@ function ensureLeadForm(){
   document.body.appendChild(wrap);
 }
 function openLeadForm(){
-  window.open(TILDA_NEWSLETTER_URL,"_blank","noopener");
+  ensureLeadForm();
+  applyLeadLang();
+  var m=el("leadModal"),page=el("lead-page-url"),language=el("lead-language"),nl=el("lead-newsletter-language"),status=el("lead-status");
+  if(page)page.value=window.location.href;
+  if(language)language.value=lang;
+  if(nl)nl.value=lang==="en"?"en":"it";
+  if(status)status.textContent="";
+  if(m){m.classList.add("open");m.setAttribute("aria-hidden","false");document.body.style.overflow="hidden";}
+  setTimeout(function(){var first=el("lead-name");if(first)first.focus();},80);
 }
 function closeLeadForm(){
   var m=el("leadModal");
@@ -137,28 +154,34 @@ function applyLeadLang(){
   set("lead-newsletter-language-label",t.leadNewsletterLang);set("lead-newsletter-it",t.leadNewsletterIt);set("lead-newsletter-en",t.leadNewsletterEn);
   set("lead-consent-label",t.leadConsent);set("lead-submit",t.leadSubmit);
 }
-function leadMailto(form,t){
-  var name=el("lead-name").value.trim(),email=el("lead-email").value.trim(),phone=el("lead-phone").value.trim(),msg=el("lead-message").value.trim(),newsletterLang=el("lead-newsletter-language").value;
-  var body=["Nome: "+name,"Email: "+email,"WhatsApp: "+(phone||"-"),"Lingua newsletter: "+newsletterLang,"Messaggio: "+(msg||"-"),"Lingua sito: "+lang].join("\n");
-  window.location.href="mailto:contact@ulakasha.com?subject="+encodeURIComponent("Newsletter Ulakasha")+"&body="+encodeURIComponent(body);
-  var status=el("lead-status");if(status)status.textContent=t.leadConfig;
-}
 async function submitLeadForm(e){
   e.preventDefault();
   var form=e.target,t=T[lang]||T.it,status=el("lead-status"),btn=el("lead-submit");
   if(!form.checkValidity()){form.reportValidity();return;}
-  if(!LEAD_FORM_ENDPOINT&&!LEAD_WEB3FORMS_ACCESS_KEY){leadMailto(form,t);return;}
+  if(!supabaseReady()){if(status)status.textContent=t.leadConfig;return;}
   if(status)status.textContent=t.leadSending;
   if(btn)btn.disabled=true;
   try{
-    var data=new FormData(form);
-    if(LEAD_WEB3FORMS_ACCESS_KEY){data.set("access_key",LEAD_WEB3FORMS_ACCESS_KEY);}
-    var endpoint=LEAD_WEB3FORMS_ACCESS_KEY?"https://api.web3forms.com/submit":LEAD_FORM_ENDPOINT;
-    var res=await fetch(endpoint,{method:"POST",body:data,headers:{"Accept":"application/json"}});
-    if(!res.ok)throw new Error("send failed");
+    var payload={
+      name:el("lead-name").value.trim(),
+      email:el("lead-email").value.trim(),
+      phone:el("lead-phone").value.trim()||null,
+      newsletter_language:el("lead-newsletter-language").value,
+      site_language:lang,
+      message:el("lead-message").value.trim()||null,
+      source:"website",
+      page_url:window.location.href,
+      consent:!!el("lead-consent").checked
+    };
+    var res=await fetch(supabaseRest(NEWSLETTER_TABLE),{method:"POST",headers:supabaseHeaders({"Content-Type":"application/json","Prefer":"return=minimal"}),body:JSON.stringify(payload)});
+    if(!res.ok)throw new Error("newsletter insert failed");
+    if(MAKE_NEWSLETTER_WEBHOOK_URL){
+      fetch(MAKE_NEWSLETTER_WEBHOOK_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({event:"newsletter_subscriber_created",subscriber:payload})}).catch(function(err){console.error("Make webhook failed",err);});
+    }
     form.reset();
     if(status)status.textContent=t.leadSuccess;
   }catch(err){
+    console.error(err);
     if(status)status.textContent=t.leadError;
   }finally{
     if(btn)btn.disabled=false;
@@ -292,10 +315,19 @@ function fetchJsonFromEndpoints(endpoints){
   return next();
 }
 
+function fetchSupabaseProducts(){
+  if(!supabaseReady())return Promise.reject(new Error("Supabase not configured"));
+  var query="?select=*&active=eq.true&order=sort_order.asc";
+  return fetch(supabaseRest(PRODUCTS_TABLE,query),{headers:supabaseHeaders()}).then(function(res){
+    if(!res.ok)throw new Error("Supabase products HTTP "+res.status);
+    return res.json();
+  });
+}
+
 function normalizeBackendProduct(prod,locale){
   return {
-    id: prod.id,
-    name: localizedValue(prod.nome,locale)||prod.id,
+    id: prod.id||prod.slug,
+    name: localizedValue(prod.nome,locale)||localizedValue(prod.name,locale)||prod.name_it||prod.name_en||prod.slug||prod.id,
     sub: localizedValue(prod.sottotitolo,locale)||"",
     price: prod.prezzo||0,
     sizes: prod.taglie||[],
@@ -458,16 +490,21 @@ function loadExternalProducts(){
     "./backend/ddprodotti.json",
     "/backend/ddprodotti.json"
   ].filter(Boolean);
+  function applyRawProducts(raw){
+    T.it.products=raw.map(function(p){return normalizeBackendProduct(p,"it");});
+    T.en.products=raw.map(function(p){return normalizeBackendProduct(p,"en");});
+    productsLoaded=true;
+    applyLoadedProducts();
+  }
   if(window.fetch){
-    fetchJsonFromEndpoints(endpoints).then(function(data){
-      var raw=data&&data.prodotti?data.prodotti:(data&&data.products?data.products:[]);
-      T.it.products=raw.map(function(p){return normalizeBackendProduct(p,"it");});
-      T.en.products=raw.map(function(p){return normalizeBackendProduct(p,"en");});
-      productsLoaded=true;
-      applyLoadedProducts();
-    }).catch(function(err){
-      console.error("Ulakasha products load failed:",err);
-      applyLoadedProducts();
+    fetchSupabaseProducts().then(function(raw){applyRawProducts(raw||[]);}).catch(function(){
+      fetchJsonFromEndpoints(endpoints).then(function(data){
+        var raw=data&&data.prodotti?data.prodotti:(data&&data.products?data.products:[]);
+        applyRawProducts(raw);
+      }).catch(function(err){
+        console.error("Ulakasha products load failed:",err);
+        applyLoadedProducts();
+      });
     });
   }else{
     applyLoadedProducts();
