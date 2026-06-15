@@ -29,10 +29,23 @@
       headers:headers(false,{"Content-Type":"application/json"}),
       body:JSON.stringify({email:email,password:password})
     });
-    if(!res.ok)throw new Error("Login non riuscito");
+    if(!res.ok){
+      var error={};
+      try{error=await res.json();}catch(e){}
+      throw new Error(error.msg||error.message||"Login non riuscito");
+    }
     var data=await res.json();
     token=data.access_token;
     localStorage.setItem("ulakasha_admin_token",token);
+  }
+
+  async function validateSession(){
+    if(!token||!configured())return false;
+    var res=await fetch(SUPABASE_URL+"/auth/v1/user",{headers:headers(true)});
+    if(res.ok)return true;
+    token="";
+    localStorage.removeItem("ulakasha_admin_token");
+    return false;
   }
 
   async function listProducts(){
@@ -53,9 +66,18 @@
   }
 
   function showPanel(){
+    document.body.classList.remove("admin-locked");
     el("admin-login-panel").hidden=true;
     el("admin-panel").hidden=false;
+    el("admin-panel").style.display="";
     listProducts().catch(function(err){status("admin-product-status",err.message);});
+  }
+
+  function showLogin(){
+    document.body.classList.add("admin-locked");
+    el("admin-login-panel").hidden=false;
+    el("admin-panel").hidden=true;
+    el("admin-panel").style.display="none";
   }
 
   function clearForm(){
@@ -172,6 +194,7 @@
   }
 
   document.addEventListener("DOMContentLoaded",function(){
+    showLogin();
     if(!configured())status("admin-login-status","Configura Supabase in supabase-config.js prima di usare l'admin.");
     el("admin-login-form").addEventListener("submit",async function(e){
       e.preventDefault();
@@ -189,6 +212,15 @@
       var product=products.find(function(p){return String(p.id)===btn.dataset.id;});
       if(product)fillForm(product);
     });
-    if(token&&configured())showPanel();
+    if(token&&configured()){
+      status("admin-login-status","Controllo sessione...");
+      validateSession().then(function(ok){
+        if(ok)showPanel();
+        else{showLogin();status("admin-login-status","Sessione scaduta. Accedi di nuovo.");}
+      }).catch(function(){
+        showLogin();
+        status("admin-login-status","Sessione scaduta. Accedi di nuovo.");
+      });
+    }
   });
 })();

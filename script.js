@@ -103,11 +103,11 @@ T.it.leadError="Non siamo riusciti a inviare il form. Scrivici a contact@ulakash
 T.it.leadConfig="Configura Supabase in supabase-config.js per attivare l'invio automatico.";T.en.leadConfig="Configure Supabase in supabase-config.js to activate automatic submission.";
 var lang="it",cart=[],curProd=null,selSz=null,productsLoaded=false,currentFilter="all";
 var eventLoaded=false,eventData=null;
-var SUPABASE_URL=(window.ULAKASHA_SUPABASE_URL||"").replace(/\/$/,"");
-var SUPABASE_ANON_KEY=window.ULAKASHA_SUPABASE_ANON_KEY||"";
+var SUPABASE_URL=(window.ULAKASHA_SUPABASE_URL||"https://hjlcboehxcubgewyhcmo.supabase.co").replace(/\/$/,"");
+var SUPABASE_ANON_KEY=window.ULAKASHA_SUPABASE_ANON_KEY||"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhqbGNib2VoeGN1Ymdld3loY21vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNjA0NTMsImV4cCI6MjA5NjgzNjQ1M30.Egf-nrbM3h9-yvn1dHsGUg0RXFK55O3C8gSuFmc-A0g";
 var NEWSLETTER_TABLE=window.ULAKASHA_NEWSLETTER_TABLE||"newsletter_subscribers";
 var PRODUCTS_TABLE=window.ULAKASHA_PRODUCTS_TABLE||"products";
-var MAKE_NEWSLETTER_WEBHOOK_URL=window.ULAKASHA_MAKE_NEWSLETTER_WEBHOOK_URL||"";
+var MAKE_NEWSLETTER_WEBHOOK_URL=window.ULAKASHA_MAKE_NEWSLETTER_WEBHOOK_URL||"https://hook.eu1.make.com/6qfy52lj85dj6r8b2g0r03elk9gk1dqq";
 function el(id){return document.getElementById(id);}
 function set(id,val,isHtml){var e=el(id);if(!e)return;if(isHtml)e.innerHTML=val;else e.textContent=val;}
 function supabaseReady(){return !!(SUPABASE_URL&&SUPABASE_ANON_KEY);}

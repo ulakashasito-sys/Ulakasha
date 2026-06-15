@@ -696,7 +696,9 @@ body{letter-spacing:.01em;}
 }
 
 /* ── SUPABASE ADMIN ─────────────────────────────────────────────────── */
+[hidden]{display:none!important;}
 .admin-page{background:var(--cream);color:var(--navy);}
+.admin-page.admin-locked #admin-panel{display:none!important;}
 .admin-shell{max-width:1180px;margin:0 auto;padding:42px 24px 70px;}
 .admin-head{display:grid;grid-template-columns:220px 1fr;gap:34px;align-items:end;margin-bottom:32px;border-bottom:1px solid rgba(74,111,165,.16);padding-bottom:28px;}
 .admin-logo{font-family:Georgia,serif;font-size:46px;line-height:1;color:var(--blue);text-decoration:none;}
