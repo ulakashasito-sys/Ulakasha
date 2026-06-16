@@ -38,7 +38,7 @@ create table if not exists public.products (
   slug text not null unique,
   active boolean not null default true,
   sort_order integer not null default 100,
-  categoria text not null default 'body',
+  categoria text not null default 'abbigliamento',
   nome jsonb not null default '{"it":"","en":""}'::jsonb,
   sottotitolo jsonb not null default '{"it":"","en":""}'::jsonb,
   materiale jsonb not null default '{"it":"","en":""}'::jsonb,

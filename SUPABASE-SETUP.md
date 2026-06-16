@@ -29,6 +29,21 @@ Il sito salverà ogni iscrizione nella tabella `newsletter_subscribers` e invier
 
 Le immagini vengono caricate nel bucket pubblico `product-images`.
 
+## Categorie prodotti
+
+Quando inserisci i prodotti direttamente in Supabase, usa questi valori nel campo `categoria`:
+
+- `abbigliamento`
+- `accessorio-tessile`
+- `bijoux`
+- `tessile`
+- `tavola`
+- `bottiglia`
+- `tazze`
+- `arte`
+
+Nel campo `foto` puoi inserire più Public URL: lo shop li mostrerà come carosello.
+
 ## Campi inviati a Make
 
 ```json

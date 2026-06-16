@@ -25,7 +25,7 @@
 <meta name="twitter:description" content="Esplora Ulakasha: capi su ordinazione, arte indossabile, ceramiche, cristalli e oggetti rituali disponibili tramite contatto diretto.">
 <meta name="twitter:image" content="https://www.ulakasha.com/assets/madre-cristallo-bottiglie.jpg">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","name":"Shop Ulakasha | Arte indossabile, casa e lifestyle","url":"https://www.ulakasha.com/shop.html","description":"Esplora Ulakasha: capi su ordinazione, arte indossabile, ceramiche, cristalli e oggetti rituali disponibili tramite contatto diretto.","image":"https://www.ulakasha.com/assets/madre-cristallo-bottiglie.jpg","isPartOf":{"@type":"WebSite","name":"Ulakasha","url":"https://www.ulakasha.com"},"publisher":{"@type":"Organization","name":"Ulakasha","sameAs":["https://www.instagram.com/ulakashaofficial/","https://www.tiktok.com/@ulakashaofficial"]}}</script>
-<link rel="stylesheet" href="style.css?v=7">
+<link rel="stylesheet" href="style.css?v=8">
 <script>(function(){var s=localStorage.getItem("ulang");if(s&&s!=="it")document.documentElement.setAttribute("data-lang-init",s);})();</script>
 </head>
 <body>
@@ -136,12 +136,28 @@
   <div class="shop-intro-copy" id="shop-copy">Una selezione editoriale costruita per accompagnare la scoperta del brand: filtra la collezione, apri il capo, scegli la taglia e invia una richiesta premium dal sito.</div>
   <div class="shop-intro-meta" id="shop-meta" style="display:none;">Catalogo dinamico · sincronizzato con backend</div>
 </div>
-<div class="shop-filters">
+<div class="shop-filters shop-filters-tree">
   <button class="f-btn on" id="fa">Tutto</button>
-  <button class="f-btn" id="fs">Seta</button>
-  <button class="f-btn" id="fk">Maglieria</button>
-  <button class="f-btn" id="ff">Foulard</button>
-  <button class="f-btn" id="facc">Casa & Lifestyle</button>
+  <div class="filter-dd">
+    <button class="filter-dd-toggle" type="button" id="fg-body" aria-expanded="false">Abitare il corpo</button>
+    <div class="filter-dd-menu">
+      <button class="f-btn" id="f-body">Tutto corpo</button>
+      <button class="f-btn" id="f-clothing">Abbigliamento</button>
+      <button class="f-btn" id="f-textile-accessory">Accessorio tessile</button>
+      <button class="f-btn" id="f-bijoux">Bijoux</button>
+    </div>
+  </div>
+  <div class="filter-dd">
+    <button class="filter-dd-toggle" type="button" id="fg-home" aria-expanded="false">Abitare la casa</button>
+    <div class="filter-dd-menu">
+      <button class="f-btn" id="f-home">Tutta casa</button>
+      <button class="f-btn" id="f-home-textile">Tessile</button>
+      <button class="f-btn" id="f-table">Tavola</button>
+      <button class="f-btn f-sub" id="f-bottles">Bottiglie</button>
+      <button class="f-btn f-sub" id="f-cups">Tazze</button>
+    </div>
+  </div>
+  <button class="f-btn" id="f-art">Arte</button>
 </div>
 <div class="shop-grid" id="shopGrid"></div>
 
@@ -160,6 +176,6 @@
 </div>
 
 <script src="supabase-config.js?v=2"></script>
-<script src="script.js?v=5"></script>
+<script src="script.js?v=7"></script>
 </body>
 </html>

@@ -85,7 +85,7 @@
     el("product-id").value="";
     el("product-slug").value="";
     el("product-sort").value="100";
-    el("product-category").value="body";
+    el("product-category").value="abbigliamento";
     el("product-active").checked=true;
     ["name-it","name-en","sub-it","sub-en","material-it","material-en","story-it","story-en","price","sizes","badge","stripe","images"].forEach(function(id){
       var node=el("product-"+id);
