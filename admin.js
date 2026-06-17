@@ -161,18 +161,20 @@
     }).join("");
   }
 
-  function renderDynamicFields(category,values){
+  function renderDynamicFields(category,values,labels){
     var config=dynamicFieldsets[category]||dynamicFieldsets.abbigliamento;
     var title=el("dynamic-title"),box=el("dynamic-fields");
     if(title)title.textContent=config.title;
     if(!box)return;
     values=values||{};
+    labels=labels||{};
     box.innerHTML=config.fields.map(function(field){
-      var key=field[0],label=field[1],type=field[2],value=escapeHtml(values[key]||"");
+      var key=field[0],label=escapeHtml(labels[key]||field[1]),type=field[2],value=escapeHtml(values[key]||"");
+      var labelInput='<span class="dynamic-label-row"><span>Nome campo</span><input class="dynamic-label-input" data-label-key="'+key+'" type="text" value="'+label+'"></span>';
       if(type==="textarea"){
-        return '<label>'+label+'<textarea class="dynamic-input" data-detail-key="'+key+'" rows="4">'+value+'</textarea></label>';
+        return '<label><span class="dynamic-current-label">'+label+'</span>'+labelInput+'<textarea class="dynamic-input" data-detail-key="'+key+'" rows="4">'+value+'</textarea></label>';
       }
-      return '<label>'+label+'<input class="dynamic-input" data-detail-key="'+key+'" type="text" value="'+value+'"></label>';
+      return '<label><span class="dynamic-current-label">'+label+'</span>'+labelInput+'<input class="dynamic-input" data-detail-key="'+key+'" type="text" value="'+value+'"></label>';
     }).join("");
   }
 
@@ -184,6 +186,16 @@
       if(key)details[key]=inputs[i].value.trim();
     }
     return details;
+  }
+
+  function collectDynamicLabels(){
+    var labels={};
+    var inputs=document.querySelectorAll(".dynamic-label-input");
+    for(var i=0;i<inputs.length;i++){
+      var key=inputs[i].getAttribute("data-label-key");
+      if(key)labels[key]=inputs[i].value.trim();
+    }
+    return labels;
   }
 
   function applyDetailsToMainFields(details){
@@ -223,7 +235,7 @@
       if(node)node.value=id==="price"?"0":"";
     });
     el("product-image-file").value="";
-    renderDynamicFields(el("product-category").value,{});
+    renderDynamicFields(el("product-category").value,{},{});
     status("admin-product-status","");
   }
 
@@ -248,7 +260,7 @@
     el("product-stripe").value=product.stripe_link||"";
     el("product-images").value=(product.foto||[]).join("\n");
     el("product-image-file").value="";
-    renderDynamicFields(el("product-category").value,product.details||{});
+    renderDynamicFields(el("product-category").value,product.details||{},product.details_labels||{});
   }
 
   async function uploadImage(file,slug){
@@ -278,6 +290,7 @@
       var file=el("product-image-file").files[0];
       var urls=lines(el("product-images").value);
       var details=collectDynamicDetails();
+      var detailsLabels=collectDynamicLabels();
       applyDetailsToMainFields(details);
       var uploadWarning="";
       if(file){
@@ -305,6 +318,7 @@
         badge_class:"",
         foto:urls,
         details:details,
+        details_labels:detailsLabels,
         stripe_link:el("product-stripe").value.trim()
       };
       var url=id?rest(PRODUCTS_TABLE,"?id=eq."+encodeURIComponent(id)):rest(PRODUCTS_TABLE,"?on_conflict=slug");
@@ -355,7 +369,7 @@
       catch(err){status("admin-login-status",err.message);}
     });
     el("admin-product-form").addEventListener("submit",saveProduct);
-    el("product-category").addEventListener("change",function(){renderDynamicFields(this.value,{});});
+    el("product-category").addEventListener("change",function(){renderDynamicFields(this.value,{},{});});
     el("admin-new-product").addEventListener("click",clearForm);
     el("admin-delete-product").addEventListener("click",deleteProduct);
     el("admin-logout").addEventListener("click",function(){localStorage.removeItem("ulakasha_admin_token");location.reload();});
@@ -375,6 +389,6 @@
         status("admin-login-status","Sessione scaduta. Accedi di nuovo.");
       });
     }
-    renderDynamicFields(el("product-category").value,{});
+    renderDynamicFields(el("product-category").value,{},{});
   });
 })();

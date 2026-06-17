@@ -238,7 +238,7 @@ function openProd(id,nav){
   el("pdImg").innerHTML=productCarouselHTML(prod,"pd");
   set("pd-nm",prod.name);set("pd-sub",prod.sub);
   el("pd-pr").textContent="&#8364; "+prod.price.toLocaleString("it-IT");
-  set("pd-story",prod.story);set("matB",prod.material);
+  set("pd-story",prod.story);set("matB",productDetailsHTML(prod),true);
   var t=T[lang];set("artB",t.artText);set("delB",t.delText);
   var szHtml="";
   for(var j=0;j<prod.sizes.length;j++)szHtml+='<div class="sz-opt" onclick="pickSz(this,\''+prod.sizes[j]+'\')">'+prod.sizes[j]+'</div>';
@@ -264,6 +264,16 @@ function buildPrevGrid(prods){var grid=el("prevGrid");if(!grid)return;var vl=lan
 function buildShopGrid(prods){var grid=el("shopGrid");if(!grid)return;var vl=lang==="it"?"Scopri il capo":"View piece";var h="";for(var i=0;i<prods.length;i++)h+=cardHTML(prods[i],vl);grid.innerHTML=h;}
 function escHtml(value){return String(value||"").replace(/[&<>"']/g,function(ch){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch];});}
 function escAttr(value){return escHtml(value);}
+function productDetailsHTML(prod){
+  if(!prod)return "";
+  var html=prod.material?'<p>'+escHtml(prod.material).replace(/\n/g,"<br>")+'</p>':"";
+  var details=prod.details||{},labels=prod.details_labels||{},rows=[];
+  for(var key in details){
+    if(details[key])rows.push('<div class="prod-detail-row"><strong>'+escHtml(labels[key]||key.replace(/_/g," "))+'</strong><span>'+escHtml(details[key]).replace(/\n/g,"<br>")+'</span></div>');
+  }
+  if(rows.length)html+='<div class="prod-detail-list">'+rows.join("")+'</div>';
+  return html||"";
+}
 function productImages(prod){
   if(!prod)return [];
   var imgs=prod.images&&prod.images.length?prod.images.slice():[];
@@ -372,6 +382,8 @@ function normalizeBackendProduct(prod,locale){
     material: localizedValue(prod.materiale,locale)||"",
     story: localizedValue(prod.storia,locale)||"",
     category: prod.categoria||"",
+    details: prod.details||{},
+    details_labels: prod.details_labels||{},
     stripe_link: prod.stripe_link||""
   };
 }
