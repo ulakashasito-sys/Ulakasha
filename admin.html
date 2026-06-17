@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex,nofollow">
   <title>Admin prodotti | Ulakasha</title>
-  <link rel="stylesheet" href="style.css?v=8">
+  <link rel="stylesheet" href="style.css?v=9">
 </head>
 <body class="admin-page admin-locked">
   <main class="admin-shell">
@@ -57,18 +57,31 @@
           <div class="admin-two">
             <label>Categoria
               <select id="product-category">
-                <option value="abbigliamento">Abitare il corpo · Abbigliamento</option>
-                <option value="accessorio-tessile">Abitare il corpo · Accessorio tessile</option>
-                <option value="bijoux">Abitare il corpo · Bijoux</option>
-                <option value="tessile">Abitare la casa · Tessile</option>
-                <option value="tavola">Abitare la casa · Tavola</option>
-                <option value="bottiglia">Abitare la casa · Tavola · Bottiglie</option>
-                <option value="tazze">Abitare la casa · Tavola · Tazze</option>
-                <option value="arte">Abitare l'arte</option>
+                <optgroup label="Abitare il corpo">
+                  <option value="abbigliamento">Abbigliamento</option>
+                  <option value="accessorio-tessile">Accessorio tessile</option>
+                  <option value="bijoux">Bijoux</option>
+                </optgroup>
+                <optgroup label="Abitare la casa">
+                  <option value="tessile">Tessile</option>
+                  <option value="tavola">Tavola</option>
+                  <option value="bottiglia">Tavola · Bottiglie</option>
+                  <option value="tazze">Tavola · Tazze</option>
+                </optgroup>
+                <optgroup label="Abitare l'arte">
+                  <option value="arte">Arte</option>
+                </optgroup>
               </select>
             </label>
             <label class="admin-check"><input id="product-active" type="checkbox" checked> Visibile sul sito</label>
           </div>
+          <section class="admin-dynamic-card">
+            <div class="admin-dynamic-head">
+              <span class="admin-kicker">Campi categoria</span>
+              <h3 id="dynamic-title">Abbigliamento</h3>
+            </div>
+            <div id="dynamic-fields" class="admin-dynamic-fields"></div>
+          </section>
           <div class="admin-two">
             <label>Nome IT
               <input id="product-name-it" type="text" required>
@@ -131,6 +144,6 @@
     </section>
   </main>
   <script src="supabase-config.js?v=2"></script>
-  <script src="admin.js?v=4"></script>
+  <script src="admin.js?v=7"></script>
 </body>
 </html>

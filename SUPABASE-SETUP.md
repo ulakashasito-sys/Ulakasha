@@ -44,6 +44,13 @@ Quando inserisci i prodotti direttamente in Supabase, usa questi valori nel camp
 
 Nel campo `foto` puoi inserire più Public URL: lo shop li mostrerà come carosello.
 
+Se la tabella `products` esiste già, aggiungi il campo per i dettagli del CMS con:
+
+```sql
+alter table public.products
+add column if not exists details jsonb not null default '{}'::jsonb;
+```
+
 ## Campi inviati a Make
 
 ```json

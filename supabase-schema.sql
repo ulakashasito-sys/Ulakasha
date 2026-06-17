@@ -48,6 +48,7 @@ create table if not exists public.products (
   badge text not null default '',
   badge_class text not null default '',
   foto text[] not null default '{}',
+  details jsonb not null default '{}'::jsonb,
   stripe_link text not null default '',
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
