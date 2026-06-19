@@ -9,6 +9,7 @@
     "accessorio-tessile":{
       title:"Abitare il corpo · Accessorio tessile",
       fields:[
+        ["nome_prodotto","Titolo prodotto","text"],
         ["descrizione","Descrizione","textarea"],
         ["parole_akasha","Le parole dell'Akasha","textarea"],
         ["materiale_cura","Materiale e cura","textarea"],
@@ -22,6 +23,7 @@
     "abbigliamento":{
       title:"Abitare il corpo · Abbigliamento",
       fields:[
+        ["nome_prodotto","Nome prodotto","text"],
         ["descrizione","Descrizione","textarea"],
         ["dimensione","Dimensione","text"],
         ["descrizione_tessuto","Descrizione tessuto","textarea"],
@@ -32,6 +34,7 @@
     "bijoux":{
       title:"Abitare il corpo · Bijoux",
       fields:[
+        ["nome_prodotto","Nome prodotto","text"],
         ["descrizione","Descrizione","textarea"],
         ["parole_akasha","Le parole dell'Akasha","textarea"],
         ["materiale_cura","Materiale e cura","textarea"],
@@ -45,6 +48,7 @@
     "tessile":{
       title:"Abitare la casa · Tessile",
       fields:[
+        ["nome_prodotto","Nome prodotto","text"],
         ["descrizione_prodotto","Descrizione prodotto","textarea"],
         ["dimensioni","Dimensioni","text"],
         ["variante","Variante","text"],
@@ -54,6 +58,7 @@
     "tavola":{
       title:"Abitare la casa · Tavola",
       fields:[
+        ["nome_prodotto","Nome prodotto","text"],
         ["descrizione_prodotto","Descrizione prodotto","textarea"],
         ["dimensioni","Dimensioni","text"],
         ["variante","Variante","text"],
@@ -66,6 +71,7 @@
     "bottiglia":{
       title:"Abitare la casa · Tavola · Bottiglie",
       fields:[
+        ["nome_prodotto","Nome prodotto","text"],
         ["descrizione_prodotto","Descrizione prodotto","textarea"],
         ["dimensioni","Dimensioni","text"],
         ["variante","Variante","text"],
@@ -78,6 +84,7 @@
     "tazze":{
       title:"Abitare la casa · Tavola · Tazze",
       fields:[
+        ["nome_prodotto","Nome prodotto","text"],
         ["descrizione_prodotto","Descrizione prodotto","textarea"],
         ["dimensioni","Dimensioni","text"],
         ["variante","Variante","text"],
@@ -90,6 +97,7 @@
     "arte":{
       title:"Abitare l'arte",
       fields:[
+        ["nome_opera","Nome opera","text"],
         ["descrizione","Descrizione opera","textarea"],
         ["parole_akasha","Le parole dell'Akasha","textarea"],
         ["tecnica","Tecnica","textarea"],
@@ -117,6 +125,12 @@
   function lines(value){return (value||"").split(/\n+/).map(function(v){return v.trim();}).filter(Boolean);}
   function csv(value){return (value||"").split(",").map(function(v){return v.trim();}).filter(Boolean);}
   function publicObjectUrl(path){return SUPABASE_URL+"/storage/v1/object/public/"+encodeURIComponent(BUCKET)+"/"+path.split("/").map(encodeURIComponent).join("/");}
+  function storagePathToUrl(path){
+    var clean=(path||"").trim().replace(/^\/+/,"");
+    if(!clean)return "";
+    if(/^https?:\/\//i.test(clean))return clean;
+    return publicObjectUrl(clean);
+  }
   function escapeHtml(value){return String(value||"").replace(/[&<>"']/g,function(ch){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch];});}
 
   async function signIn(email,password){
@@ -198,13 +212,14 @@
     return labels;
   }
 
-  function applyDetailsToMainFields(details){
+  function detailTitle(details,category){
     details=details||{};
-    var desc=details.descrizione||details.descrizione_prodotto||"";
-    var material=[details.materiale_cura,details.descrizione_tessuto,details.composizione].filter(Boolean).join("\n\n");
+    return details.nome_prodotto||details.nome_opera||details.descrizione||details.descrizione_prodotto||category||"prodotto";
+  }
+
+  function syncSizeFromDetails(details){
+    details=details||{};
     var size=details.dimensione_taglia||details.dimensione||details.dimensioni||"";
-    if(desc&&!el("product-story-it").value.trim())el("product-story-it").value=desc;
-    if(material&&!el("product-material-it").value.trim())el("product-material-it").value=material;
     if(size&&!el("product-sizes").value.trim())el("product-sizes").value=size;
   }
 
@@ -230,11 +245,11 @@
     el("product-sort").value="100";
     el("product-category").value="abbigliamento";
     el("product-active").checked=true;
-    ["name-it","name-en","sub-it","sub-en","material-it","material-en","story-it","story-en","price","sizes","badge","stripe","images"].forEach(function(id){
+    ["price","sizes","badge","stripe","images"].forEach(function(id){
       var node=el("product-"+id);
       if(node)node.value=id==="price"?"0":"";
     });
-    el("product-image-file").value="";
+    el("product-storage-paths").value="";
     renderDynamicFields(el("product-category").value,{},{});
     status("admin-product-status","");
   }
@@ -246,39 +261,25 @@
     el("product-sort").value=product.sort_order||100;
     el("product-category").value=product.categoria||"abbigliamento";
     el("product-active").checked=product.active!==false;
-    el("product-name-it").value=(product.nome&&product.nome.it)||product.name_it||"";
-    el("product-name-en").value=(product.nome&&product.nome.en)||product.name_en||"";
-    el("product-sub-it").value=(product.sottotitolo&&product.sottotitolo.it)||"";
-    el("product-sub-en").value=(product.sottotitolo&&product.sottotitolo.en)||"";
-    el("product-material-it").value=(product.materiale&&product.materiale.it)||"";
-    el("product-material-en").value=(product.materiale&&product.materiale.en)||"";
-    el("product-story-it").value=(product.storia&&product.storia.it)||"";
-    el("product-story-en").value=(product.storia&&product.storia.en)||"";
     el("product-price").value=product.prezzo||0;
     el("product-sizes").value=(product.taglie||[]).join(", ");
     el("product-badge").value=product.badge||"";
     el("product-stripe").value=product.stripe_link||"";
     el("product-images").value=(product.foto||[]).join("\n");
-    el("product-image-file").value="";
+    el("product-storage-paths").value="";
     renderDynamicFields(el("product-category").value,product.details||{},product.details_labels||{});
   }
 
-  async function uploadImage(file,slug){
-    if(!file)return "";
-    var safeSlug=slugify(slug)||"prodotto";
-    var ext=(file.name.split(".").pop()||"jpg").toLowerCase();
-    var objectPath=safeSlug+"/"+Date.now()+"."+ext;
-    var res=await fetch(SUPABASE_URL+"/storage/v1/object/"+encodeURIComponent(BUCKET)+"/"+objectPath,{
-      method:"POST",
-      headers:headers(true,{"Content-Type":file.type||"application/octet-stream","x-upsert":"true"}),
-      body:file
-    });
-    if(!res.ok){
-      var detail="";
-      try{detail=await res.text();}catch(e){}
-      throw new Error("Upload immagine non riuscito"+(detail?": "+detail:""));
+  function generateStorageUrls(){
+    var generated=lines(el("product-storage-paths").value).map(storagePathToUrl).filter(Boolean);
+    if(!generated.length){
+      status("admin-product-status","Inserisci almeno un nome file o percorso Storage.");
+      return;
     }
-    return publicObjectUrl(objectPath);
+    var existing=lines(el("product-images").value);
+    var merged=existing.concat(generated).filter(function(url,index,list){return list.indexOf(url)===index;});
+    el("product-images").value=merged.join("\n");
+    status("admin-product-status","URL immagini generati. Ora salva il prodotto.");
   }
 
   async function saveProduct(e){
@@ -286,32 +287,19 @@
     status("admin-product-status","Salvataggio...");
     try{
       if(!configured())throw new Error("Configura Supabase in supabase-config.js");
-      var slug=slugify(el("product-slug").value||el("product-name-it").value);
-      var file=el("product-image-file").files[0];
       var urls=lines(el("product-images").value);
       var details=collectDynamicDetails();
       var detailsLabels=collectDynamicLabels();
-      applyDetailsToMainFields(details);
-      var uploadWarning="";
-      if(file){
-        try{
-          var uploaded=await uploadImage(file,slug);
-          if(uploaded)urls.unshift(uploaded);
-        }catch(uploadErr){
-          if(!urls.length)throw uploadErr;
-          uploadWarning=" Prodotto salvato usando gli URL gia inseriti; upload file non riuscito.";
-        }
-      }
+      syncSizeFromDetails(details);
+      var category=el("product-category").value;
+      var slug=slugify(el("product-slug").value||detailTitle(details,category));
+      if(!slug)slug=category+"-"+Date.now();
       var id=el("product-id").value||undefined;
       var payload={
         slug:slug,
         sort_order:Number(el("product-sort").value||100),
         active:el("product-active").checked,
-        categoria:el("product-category").value,
-        nome:{it:el("product-name-it").value.trim(),en:el("product-name-en").value.trim()},
-        sottotitolo:{it:el("product-sub-it").value.trim(),en:el("product-sub-en").value.trim()},
-        materiale:{it:el("product-material-it").value.trim(),en:el("product-material-en").value.trim()},
-        storia:{it:el("product-story-it").value.trim(),en:el("product-story-en").value.trim()},
+        categoria:category,
         prezzo:Number(el("product-price").value||0),
         taglie:csv(el("product-sizes").value),
         badge:el("product-badge").value.trim(),
@@ -335,7 +323,7 @@
         throw new Error("Salvataggio prodotto non riuscito"+(saveDetail?": "+saveDetail:""));
       }
       var saved=await res.json();
-      status("admin-product-status","Prodotto salvato."+uploadWarning);
+      status("admin-product-status","Prodotto salvato.");
       if(saved&&saved[0])fillForm(saved[0]);
       await listProducts();
     }catch(err){
@@ -370,6 +358,7 @@
     });
     el("admin-product-form").addEventListener("submit",saveProduct);
     el("product-category").addEventListener("change",function(){renderDynamicFields(this.value,{},{});});
+    el("admin-generate-urls").addEventListener("click",generateStorageUrls);
     el("admin-new-product").addEventListener("click",clearForm);
     el("admin-delete-product").addEventListener("click",deleteProduct);
     el("admin-logout").addEventListener("click",function(){localStorage.removeItem("ulakasha_admin_token");location.reload();});

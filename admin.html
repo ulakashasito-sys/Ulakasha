@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex,nofollow">
   <title>Admin prodotti | Ulakasha</title>
-  <link rel="stylesheet" href="style.css?v=9">
+  <link rel="stylesheet" href="style.css?v=12">
 </head>
 <body class="admin-page admin-locked">
   <main class="admin-shell">
@@ -48,7 +48,7 @@
           <input type="hidden" id="product-id">
           <div class="admin-two">
             <label>Slug
-              <input id="product-slug" type="text" required placeholder="abito-seta-volto">
+              <input id="product-slug" type="text" placeholder="abito-seta-volto">
             </label>
             <label>Ordine
               <input id="product-sort" type="number" value="100">
@@ -82,38 +82,6 @@
             </div>
             <div id="dynamic-fields" class="admin-dynamic-fields"></div>
           </section>
-          <div class="admin-two">
-            <label>Nome IT
-              <input id="product-name-it" type="text" required>
-            </label>
-            <label>Nome EN
-              <input id="product-name-en" type="text">
-            </label>
-          </div>
-          <div class="admin-two">
-            <label>Sottotitolo IT
-              <input id="product-sub-it" type="text">
-            </label>
-            <label>Sottotitolo EN
-              <input id="product-sub-en" type="text">
-            </label>
-          </div>
-          <div class="admin-two">
-            <label>Materiale IT
-              <textarea id="product-material-it" rows="3"></textarea>
-            </label>
-            <label>Materiale EN
-              <textarea id="product-material-en" rows="3"></textarea>
-            </label>
-          </div>
-          <div class="admin-two">
-            <label>Descrizione IT
-              <textarea id="product-story-it" rows="5"></textarea>
-            </label>
-            <label>Descrizione EN
-              <textarea id="product-story-en" rows="5"></textarea>
-            </label>
-          </div>
           <div class="admin-three">
             <label>Prezzo
               <input id="product-price" type="number" step="0.01" value="0">
@@ -128,9 +96,14 @@
           <label>Link checkout / Shopify / Stripe
             <input id="product-stripe" type="url">
           </label>
-          <label>Carica immagine
-            <input id="product-image-file" type="file" accept="image/*">
-          </label>
+          <section class="admin-image-helper">
+            <span class="admin-kicker">Immagini da Supabase Storage</span>
+            <p>Se hai gia caricato le foto nel bucket <strong>product-images</strong>, inserisci qui i nomi file o i percorsi e genera gli URL pubblici.</p>
+            <label>Nomi file o percorsi Storage
+              <textarea id="product-storage-paths" rows="3" placeholder="accessorio tessile/Ulakasha_Acc_001.jpg&#10;accessorio tessile/Ulakasha_Acc_002.jpg"></textarea>
+            </label>
+            <button type="button" class="admin-ghost" id="admin-generate-urls">Genera URL immagini</button>
+          </section>
           <label>URL immagini
             <textarea id="product-images" rows="3" placeholder="Un URL per riga"></textarea>
           </label>
@@ -144,6 +117,6 @@
     </section>
   </main>
   <script src="supabase-config.js?v=2"></script>
-  <script src="admin.js?v=7"></script>
+  <script src="admin.js?v=12"></script>
 </body>
 </html>
