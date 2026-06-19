@@ -296,6 +296,11 @@ function openProdFromCard(event,id){if(event){event.preventDefault();event.stopP
 function buildPrevGrid(prods){var grid=el("prevGrid");if(!grid)return;var vl=lang==="it"?"Scopri il capo":"View piece";var h="";for(var i=0;i<prods.length;i++)h+=cardHTML(prods[i],vl);grid.innerHTML=h;}
 function isCreazioniPage(){return !!document.querySelector("[data-catalog-page='creazioni']")||location.pathname.indexOf("collezione.html")!==-1;}
 function isShopPage(){return location.pathname.indexOf("shop.html")!==-1;}
+function syncArtPreview(){
+  var preview=el("artPreview");
+  if(!preview)return;
+  preview.classList.toggle("on",isCreazioniPage()&&currentFilter==="art");
+}
 function buildShopGrid(prods){
   var grid=el("shopGrid");if(!grid)return;
   var vl=isCreazioniPage()?(lang==="it"?"Scopri la creazione":"View creation"):(lang==="it"?"Scopri il capo":"View piece");
@@ -514,7 +519,8 @@ function applyEventData(data){
   var place=(data.luogo||"").trim();
   var space=(data.spazio||"").trim();
   var ingresso=(data.ingresso||"").trim();
-  if(title)set("ev-sup",title+" · Concept Store · Milan Design Week 2026");
+  if(document.querySelector(".concept-store-page"))set("ev-sup","CONCEPT STORE AURA · MILANO");
+  else if(title)set("ev-sup",title+" · Concept Store · Milan Design Week 2026");
   if(dates)set("ev-date",dates);
   if(place){
     var placeHtml=place;
@@ -594,6 +600,7 @@ function applyLoadedProducts(){
   var filtered=getFilteredProducts(t.products);
   buildPrevGrid(t.products.slice(0,3));
   buildShopGrid(filtered);
+  syncArtPreview();
   renderCart();
   syncReservationOptions(t.products);
   set("shop-meta",filtered.length+" · "+t.shopMeta);
@@ -842,6 +849,7 @@ for(var fb=0;fb<fBtns.length;fb++){fBtns[fb].addEventListener("click",function()
   }
   else currentFilter=this.id==="fs"?"body":this.id==="fk"?"home":this.id==="ff"?"art":"all";
   closeFilterDropdowns();
+  syncArtPreview();
   if(productsLoaded)applyLoadedProducts();
 });}
 function closeFilterDropdowns(){
