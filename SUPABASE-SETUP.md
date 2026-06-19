@@ -49,6 +49,9 @@ Se la tabella `products` esiste già, aggiungi il campo per i dettagli del CMS c
 ```sql
 alter table public.products
 add column if not exists details jsonb not null default '{}'::jsonb;
+
+alter table public.products
+add column if not exists details_labels jsonb not null default '{}'::jsonb;
 ```
 
 ## Campi inviati a Make

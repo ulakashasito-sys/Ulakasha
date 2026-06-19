@@ -25,7 +25,7 @@
 <meta name="twitter:description" content="Creazioni Ulakasha: abiti, opere d'arte e oggetti per la casa. Ogni creazione porta in sé parole che arrivano da Akasha.">
 <meta name="twitter:image" content="https://www.ulakasha.com/assets/opera-order-reversed.jpg">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","name":"Creazioni Ulakasha | Abiti, opere d'arte e oggetti per la casa","url":"https://www.ulakasha.com/collezione.html","description":"Creazioni Ulakasha: abiti, opere d'arte e oggetti per la casa. Ogni creazione porta in sé parole che arrivano da Akasha.","image":"https://www.ulakasha.com/assets/opera-order-reversed.jpg","isPartOf":{"@type":"WebSite","name":"Ulakasha","url":"https://www.ulakasha.com"},"publisher":{"@type":"Organization","name":"Ulakasha","sameAs":["https://www.instagram.com/ulakashaofficial/","https://www.tiktok.com/@ulakashaofficial"]}}</script>
-<link rel="stylesheet" href="style.css?v=12">
+<link rel="stylesheet" href="style.css?v=15">
 <script>(function(){var s=localStorage.getItem("ulang");if(s&&s!=="it")document.documentElement.setAttribute("data-lang-init",s);})();</script>
 </head>
 <body>
@@ -124,7 +124,7 @@
   </div>
 </nav>
 
-<div class="page on" id="p-shop">
+<div class="page on creations-page" id="p-creazioni" data-catalog-page="creazioni">
 <div class="shop-h"><h1 id="sh-ttl">Creazioni</h1><p id="sh-sub">Abiti, opere d'arte, oggetti per la casa.</p>
   <div class="shop-notify-bar">
     <span class="shop-notify-txt" id="shop-notify-txt">Le creazioni arrivano presto — lascia i tuoi dati per essere contattata</span>
@@ -135,13 +135,13 @@
   <div class="shop-intro-copy" id="shop-copy">Ogni creazione porta in sé parole che arrivano da Akasha, uno spazio infinito d'amore - e con esse, il potenziale di avvicinare l'essere umano al ricordo di sé. Un atto sacro, nella vita di tutti i giorni.</div>
   <div class="shop-intro-meta" id="shop-meta" style="display:none;">Catalogo dinamico · sincronizzato con backend</div>
 </div>
-<div class="shop-filters">
+<div class="shop-filters creations-filters">
   <button class="f-btn on" id="fa">Tutto</button>
   <button class="f-btn" id="fs">Abitare il corpo</button>
   <button class="f-btn" id="fk">Abitare la casa</button>
   <button class="f-btn" id="ff">Abitare l'arte</button>
 </div>
-<div class="shop-grid" id="shopGrid"></div>
+<div class="shop-grid creations-grid" id="shopGrid" aria-live="polite"></div>
 
 
 <footer>
@@ -158,6 +158,6 @@
 </div>
 
 <script src="supabase-config.js?v=2"></script>
-<script src="script.js?v=10"></script>
+<script src="script.js?v=13"></script>
 </body>
 </html>

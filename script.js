@@ -214,54 +214,95 @@ function renderCart(){
 }
 function rmItem(i){cart.splice(i,1);renderCart();}
 var atcBtn=el("atcBtn");
-if(atcBtn)atcBtn.addEventListener("click",function(){
+function addCurrentProductToCart(){
   if(!curProd)return;
   var t=T[lang];
-  if(curProd.sizes.length>1&&!selSz){showNotif(t.selectSizeMsg);return;}
-  var sz=selSz||curProd.sizes[0];
+  var sizes=curProd.sizes||[];
+  if(sizes.length>1&&!selSz){showNotif(t.selectSizeMsg);return;}
+  var sz=selSz||sizes[0]||"";
   var ex=null;for(var i=0;i<cart.length;i++){if(cart[i].id===curProd.id&&cart[i].sz===sz){ex=cart[i];break;}}
   if(ex)ex.qty++;else cart.push({id:curProd.id,sz:sz,qty:1});
   renderCart();
   showNotif(t.addedLabel+": "+curProd.name);
   setTimeout(openCart,420);
-});
+}
+if(atcBtn)atcBtn.addEventListener("click",addCurrentProductToCart);
 function showNotif(msg){var n=el("notif");if(!n)return;n.textContent=msg;n.classList.add("show");setTimeout(function(){n.classList.remove("show");},2800);}
 function go(page){
   var map={home:"index.html",shop:"shop.html",event:"collaborazioni.html",about:"chi-siamo.html",ct:"contatti.html"};
   if(map[page]){window.location.href=map[page];}
 }
+function jsString(value){return String(value||"").replace(/\\/g,"\\\\").replace(/'/g,"\\'");}
+function ensureProductDetail(){
+  if(el("productModal"))return;
+  var wrap=document.createElement("div");
+  wrap.className="product-modal";
+  wrap.id="productModal";
+  wrap.innerHTML='<div class="product-modal-bg" onclick="closeProductDetail()"></div>'
+    +'<section class="product-modal-box" role="dialog" aria-modal="true" aria-labelledby="pd-nm">'
+    +'<button class="product-modal-x" type="button" onclick="closeProductDetail()" aria-label="Chiudi">×</button>'
+    +'<div class="pd-wrap product-modal-wrap">'
+    +'<div class="pd-gal"><div class="pd-img" id="pdImg"></div></div>'
+    +'<div class="pd-info">'
+    +'<button class="pd-back" id="pd-back" type="button" onclick="closeProductDetail()">← Shop</button>'
+    +'<h1 class="pd-name" id="pd-nm"></h1><span class="pd-sub" id="pd-sub"></span><div class="pd-price" id="pd-pr"></div>'
+    +'<p class="pd-story" id="pd-story"></p>'
+    +'<div class="sz-lbl" id="sz-lbl">Taglia</div><div class="sz-row" id="szRow"></div>'
+    +'<button class="atc" id="atcBtn" type="button"></button><button class="wish" id="wishBtn" type="button"></button>'
+    +'<div class="acc">'
+    +'<div class="acc-i"><div class="acc-h" onclick="togAcc(this)"><span class="acc-t" id="ac1t"></span><span class="acc-ico">+</span></div><div class="acc-b" id="matB"></div></div>'
+    +'<div class="acc-i"><div class="acc-h" onclick="togAcc(this)"><span class="acc-t" id="ac2t"></span><span class="acc-ico">+</span></div><div class="acc-b" id="artB"></div></div>'
+    +'<div class="acc-i"><div class="acc-h" onclick="togAcc(this)"><span class="acc-t" id="ac3t"></span><span class="acc-ico">+</span></div><div class="acc-b" id="delB"></div></div>'
+    +'</div></div></div></section>';
+  document.body.appendChild(wrap);
+  var btn=el("atcBtn");if(btn)btn.addEventListener("click",addCurrentProductToCart);
+}
+function showProductDetail(){var m=el("productModal");if(m){m.classList.add("open");document.body.classList.add("modal-open");}}
+function closeProductDetail(){var m=el("productModal");if(m)m.classList.remove("open");document.body.classList.remove("modal-open");}
 function openProd(id,nav){
+  ensureProductDetail();
   var prod=null;
   for(var i=0;i<T[lang].products.length;i++){if(T[lang].products[i].id===id){prod=T[lang].products[i];break;}}
   if(!prod)return;
   curProd=prod;selSz=null;
   el("pdImg").innerHTML=productCarouselHTML(prod,"pd");
   set("pd-nm",prod.name);set("pd-sub",prod.sub);
-  el("pd-pr").textContent="&#8364; "+prod.price.toLocaleString("it-IT");
+  el("pd-pr").textContent="€ "+Number(prod.price||0).toLocaleString("it-IT");
   set("pd-story",prod.story);set("matB",productDetailsHTML(prod),true);
   var t=T[lang];set("artB",t.artText);set("delB",t.delText);
-  var szHtml="";
-  for(var j=0;j<prod.sizes.length;j++)szHtml+='<div class="sz-opt" onclick="pickSz(this,\''+prod.sizes[j]+'\')">'+prod.sizes[j]+'</div>';
+  var szHtml="",sizes=prod.sizes||[];
+  set("pd-back",t.pdBack);set("sz-lbl",t.szLbl);set("atcBtn",t.addBtn);set("wishBtn",t.wishBtn);set("ac1t",t.ac1t);set("ac2t",t.ac2t);set("ac3t",t.ac3t);
+  for(var j=0;j<sizes.length;j++)szHtml+='<div class="sz-opt" onclick="pickSz(this,\''+jsString(sizes[j])+'\')">'+sizes[j]+'</div>';
   el("szRow").innerHTML=szHtml;
-  if(nav!==false)go("prod");
+  if(nav!==false)showProductDetail();
 }
 function pickSz(btn,sz){var opts=document.querySelectorAll(".sz-opt");for(var i=0;i<opts.length;i++)opts[i].classList.remove("sel");btn.classList.add("sel");selSz=sz;}
 function togAcc(head){var body=head.nextElementSibling,ico=head.querySelector(".acc-ico"),isOpen=body.classList.contains("open");body.classList.toggle("open",!isOpen);head.classList.toggle("open",!isOpen);ico.textContent=isOpen?"+":"−";}
 function cardHTML(p,viewLabel){
   var badge=p.badge?'<span class="badge '+p.bc+'">'+p.badge+'</span>':"";
-  return '<div class="pcard" onclick="openProd(\''+p.id+'\')">'
+  var pid=jsString(p.id),sub=p.sub||"";
+  return '<div class="pcard" onclick="openProd(\''+pid+'\')">'
     +'<div class="pcard-img">'
     +productCarouselHTML(p,"card")
     +badge
-    +'<div class="pcard-ov"><button class="pcard-ov-btn">'+viewLabel+'</button></div>'
+    +'<div class="pcard-ov"><button type="button" class="pcard-ov-btn" onclick="openProdFromCard(event,\''+pid+'\')">'+viewLabel+'</button></div>'
     +'</div>'
     +'<div class="pcard-name">'+p.name+'</div>'
-    +'<div class="pcard-mat">'+p.sub.split("·").slice(1).join("·").trim()+'</div>'
-    +'<div class="pcard-price">&#8364; '+p.price.toLocaleString("it-IT")+'</div>'
+    +'<div class="pcard-mat">'+sub.split("·").slice(1).join("·").trim()+'</div>'
+    +'<div class="pcard-price">&#8364; '+Number(p.price||0).toLocaleString("it-IT")+'</div>'
     +'</div>';
 }
+function openProdFromCard(event,id){if(event){event.preventDefault();event.stopPropagation();}openProd(id);}
 function buildPrevGrid(prods){var grid=el("prevGrid");if(!grid)return;var vl=lang==="it"?"Scopri il capo":"View piece";var h="";for(var i=0;i<prods.length;i++)h+=cardHTML(prods[i],vl);grid.innerHTML=h;}
-function buildShopGrid(prods){var grid=el("shopGrid");if(!grid)return;var vl=lang==="it"?"Scopri il capo":"View piece";var h="";for(var i=0;i<prods.length;i++)h+=cardHTML(prods[i],vl);grid.innerHTML=h;}
+function isCreazioniPage(){return !!document.querySelector("[data-catalog-page='creazioni']")||location.pathname.indexOf("collezione.html")!==-1;}
+function isShopPage(){return location.pathname.indexOf("shop.html")!==-1;}
+function buildShopGrid(prods){
+  var grid=el("shopGrid");if(!grid)return;
+  var vl=isCreazioniPage()?(lang==="it"?"Scopri la creazione":"View creation"):(lang==="it"?"Scopri il capo":"View piece");
+  var h="";
+  for(var i=0;i<prods.length;i++)h+=cardHTML(prods[i],vl);
+  grid.innerHTML=h;
+}
 function escHtml(value){return String(value||"").replace(/[&<>"']/g,function(ch){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch];});}
 function escAttr(value){return escHtml(value);}
 function productDetailsHTML(prod){
@@ -342,6 +383,25 @@ function localizedValue(val,locale){
   }
   return "";
 }
+function imageList(value){
+  if(Array.isArray(value))return value.map(function(v){return String(v||"").trim();}).filter(Boolean);
+  if(typeof value==="string"){
+    return value.split(/\n|,/).map(function(v){return v.trim();}).filter(Boolean);
+  }
+  return [];
+}
+function detailValue(details){
+  details=details||{};
+  for(var i=1;i<arguments.length;i++){
+    var key=arguments[i];
+    if(details[key])return details[key];
+  }
+  return "";
+}
+function detailMaterial(details){
+  details=details||{};
+  return [details.materiale_cura,details.descrizione_tessuto,details.composizione,details.colore].filter(Boolean).join("\n\n");
+}
 
 function fetchJsonFromEndpoints(endpoints){
   if(!window.fetch)return Promise.reject(new Error("fetch unavailable"));
@@ -369,20 +429,25 @@ function fetchSupabaseProducts(){
 }
 
 function normalizeBackendProduct(prod,locale){
+  var photos=imageList(prod.foto);
+  var details=prod.details||{};
+  var fallbackName=detailValue(details,"nome_prodotto","nome_opera")||prod.slug||prod.id;
+  var fallbackSub=detailValue(details,"descrizione","descrizione_prodotto","variante","dimensione_taglia","dimensione","dimensioni");
+  var fallbackStory=detailValue(details,"descrizione","descrizione_prodotto","parole_akasha","frasi_akasha");
   return {
     id: prod.id||prod.slug,
-    name: localizedValue(prod.nome,locale)||localizedValue(prod.name,locale)||prod.name_it||prod.name_en||prod.slug||prod.id,
-    sub: localizedValue(prod.sottotitolo,locale)||"",
+    name: localizedValue(prod.nome,locale)||localizedValue(prod.name,locale)||prod.name_it||prod.name_en||fallbackName,
+    sub: localizedValue(prod.sottotitolo,locale)||fallbackSub||"",
     price: prod.prezzo||0,
     sizes: prod.taglie||[],
     badge: prod.badge||"",
     bc: prod.badge_class||"",
-    img: prod.foto&&prod.foto.length?prod.foto[0]:"",
-    images: prod.foto&&prod.foto.length?prod.foto:[],
-    material: localizedValue(prod.materiale,locale)||"",
-    story: localizedValue(prod.storia,locale)||"",
+    img: photos.length?photos[0]:"",
+    images: photos,
+    material: localizedValue(prod.materiale,locale)||detailMaterial(details),
+    story: localizedValue(prod.storia,locale)||fallbackStory||"",
     category: prod.categoria||"",
-    details: prod.details||{},
+    details: details,
     details_labels: prod.details_labels||{},
     stripe_link: prod.stripe_link||""
   };
@@ -412,7 +477,7 @@ function getFilteredProducts(products){
   if(currentFilter==="all")return products.slice();
   return products.filter(function(prod){
     var haystack=[prod.category,prod.sub,prod.name].join(" ");
-    var cat=location.pathname.indexOf("shop.html")!==-1?normalizeShopCategory(haystack):normalizeCategory(haystack);
+    var cat=isShopPage()?normalizeShopCategory(haystack):normalizeCategory(haystack);
     if(currentFilter==="body")return cat==="body-clothing"||cat==="body-textile-accessory"||cat==="body-bijoux"||normalizeCategory(haystack)==="body";
     if(currentFilter==="home")return cat==="home-textile"||cat==="home-table"||cat==="home-bottles"||cat==="home-cups"||normalizeCategory(haystack)==="home";
     return cat===currentFilter;
@@ -430,7 +495,8 @@ function updateDynamicSeo(products){
   var script=document.createElement("script");
   script.type="application/ld+json";
   script.id="dynamic-product-schema";
-  script.textContent=JSON.stringify({"@context":"https://schema.org","@type":"CollectionPage","name":"Ulakasha Collection","url":"https://www.ulakasha.com/collezione","description":"Collezione dinamica Ulakasha sincronizzata con catalogo backend.","mainEntity":{"@type":"ItemList","itemListElement":list}});
+  var isCreazioni=isCreazioniPage();
+  script.textContent=JSON.stringify({"@context":"https://schema.org","@type":"CollectionPage","name":isCreazioni?"Creazioni Ulakasha":"Shop Ulakasha","url":isCreazioni?"https://www.ulakasha.com/collezione.html":"https://www.ulakasha.com/shop.html","description":isCreazioni?"Creazioni Ulakasha alimentate dal catalogo admin: abiti, opere d'arte, oggetti per la casa.":"Catalogo shop Ulakasha sincronizzato con backend.","mainEntity":{"@type":"ItemList","itemListElement":list}});
   document.head.appendChild(script);
 }
 
@@ -713,7 +779,7 @@ function applyLang(){
   set("sh-ttl",t.shTtl);set("sh-sub",t.shSub);
   set("shop-copy",t.shopCopy);set("shop-meta",t.shopMeta);set("sf-shop",t.sfShop);set("sf-visit",t.sfVisit);
   set("fa",t.fAll);set("fs",t.fSilk);set("fk",t.fKnit);set("ff",t.fSc);set("facc",t.fAcc);
-  if(location.pathname.indexOf("shop.html")!==-1){
+  if(isShopPage()){
     set("sh-ttl",lang==="it"?"La Collezione":"The Collection");
     set("sh-sub",lang==="it"?"Prima Capsule Womenswear · Su Ordinazione · Eccellenza Italiana":"First Womenswear Capsule · Made to Order · Italian Excellence");
     set("shop-copy",lang==="it"?"Una selezione editoriale per scoprire l universo Ulakasha: arte indossabile, capi su ordinazione, ceramiche, cristalli e oggetti Casa & Lifestyle. La parte prodotti verrà completata con foto, descrizioni e prezzi.":"An editorial selection to discover the Ulakasha universe: wearable art, made-to-order garments, ceramics, crystals and Home & Living objects. Product photos, descriptions and prices will be completed later.");
@@ -764,7 +830,7 @@ var fBtns=document.querySelectorAll(".f-btn");
 for(var fb=0;fb<fBtns.length;fb++){fBtns[fb].addEventListener("click",function(){
   for(var i=0;i<fBtns.length;i++)fBtns[i].classList.remove("on");
   this.classList.add("on");
-  if(location.pathname.indexOf("shop.html")!==-1){
+  if(isShopPage()){
     var shopMap={"f-body":"body","f-clothing":"body-clothing","f-textile-accessory":"body-textile-accessory","f-bijoux":"body-bijoux","f-home":"home","f-home-textile":"home-textile","f-table":"home-table","f-bottles":"home-bottles","f-cups":"home-cups","f-art":"art"};
     currentFilter=shopMap[this.id]||"all";
   }

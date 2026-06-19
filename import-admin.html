@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Import prodotti | Ulakasha</title>
+  <link rel="stylesheet" href="style.css?v=15">
+</head>
+<body class="admin-page admin-locked">
+  <main class="admin-shell">
+    <section class="admin-head">
+      <a href="index.html" class="admin-logo" aria-label="Torna al sito Ulakasha">ūlakasha</a>
+      <div>
+        <span class="admin-kicker">Import Admin</span>
+        <h1>Import prodotti</h1>
+        <p>Incolla una tabella da Numbers, Excel o Google Sheet e crea in blocco le creazioni con carosello immagini.</p>
+      </div>
+    </section>
+
+    <section class="admin-card" id="import-login-panel">
+      <h2>Accesso</h2>
+      <form id="import-login-form" class="admin-form">
+        <label>Email
+          <input id="import-email" type="email" autocomplete="email" required>
+        </label>
+        <label>Password
+          <input id="import-password" type="password" autocomplete="current-password" required>
+        </label>
+        <button type="submit">Entra</button>
+        <p class="admin-status" id="import-login-status"></p>
+      </form>
+    </section>
+
+    <section class="admin-card import-panel" id="import-panel" hidden style="display:none">
+      <div class="admin-card-top">
+        <h2>Tabella prodotti</h2>
+        <a class="admin-inline-link" href="admin.html">Torna all'admin prodotti</a>
+      </div>
+
+      <div class="import-help">
+        <p><strong>Colonne minime consigliate:</strong> categoria, nome_prodotto, immagini.</p>
+        <p>In <strong>immagini</strong> inserisci piu foto separate da nuova riga, virgola o punto e virgola. Se scrivi un percorso Storage, il sistema genera l'URL pubblico.</p>
+      </div>
+
+      <div class="import-actions-top">
+        <button type="button" class="admin-ghost import-ghost" id="import-sample">Inserisci modello</button>
+        <button type="button" class="admin-ghost import-ghost" id="import-clear">Svuota</button>
+      </div>
+
+      <label class="import-paste-label">Incolla tabella
+        <textarea id="import-raw" class="import-raw" rows="13" spellcheck="false" placeholder="categoria&#9;slug&#9;nome_prodotto&#9;descrizione&#9;immagini&#10;accessorio-tessile&#9;foulard-garofano-blu&#9;Foulard a rombo stampa Garofano&#9;Descrizione prodotto&#9;abitare-il-corpo/accessorio-tessile/foulard-garofano-blu/01.jpg; abitare-il-corpo/accessorio-tessile/foulard-garofano-blu/02.jpg"></textarea>
+      </label>
+
+      <div class="admin-actions">
+        <button type="button" id="import-preview">Anteprima</button>
+        <button type="button" id="import-run">Importa prodotti</button>
+      </div>
+      <p class="admin-status" id="import-status"></p>
+
+      <div class="import-preview" id="import-preview-box" hidden></div>
+    </section>
+  </main>
+
+  <script src="supabase-config.js?v=2"></script>
+  <script src="import-admin.js?v=1"></script>
+</body>
+</html>
