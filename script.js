@@ -472,10 +472,16 @@ function normalizeShopCategory(category){
   if(value.indexOf("arte")!==-1||value.indexOf("art")!==-1||value.indexOf("opera")!==-1||value.indexOf("poster")!==-1||value.indexOf("stampa")!==-1||value.indexOf("print")!==-1)return "art";
   return "all";
 }
+function isShopAllowedProduct(prod){
+  var haystack=[prod.category,prod.sub,prod.name].join(" ");
+  var cat=normalizeShopCategory(haystack);
+  return cat==="body-textile-accessory"||cat==="home-textile";
+}
 
 function getFilteredProducts(products){
-  if(currentFilter==="all")return products.slice();
-  return products.filter(function(prod){
+  var list=isShopPage()?products.filter(isShopAllowedProduct):products.slice();
+  if(currentFilter==="all")return list;
+  return list.filter(function(prod){
     var haystack=[prod.category,prod.sub,prod.name].join(" ");
     var cat=isShopPage()?normalizeShopCategory(haystack):normalizeCategory(haystack);
     if(currentFilter==="body")return cat==="body-clothing"||cat==="body-textile-accessory"||cat==="body-bijoux"||normalizeCategory(haystack)==="body";
