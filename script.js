@@ -247,6 +247,7 @@ function ensureProductDetail(){
     +'<button class="pd-back" id="pd-back" type="button" onclick="closeProductDetail()">← Shop</button>'
     +'<h1 class="pd-name" id="pd-nm"></h1><span class="pd-sub" id="pd-sub"></span><div class="pd-price" id="pd-pr"></div>'
     +'<p class="pd-story" id="pd-story"></p>'
+    +'<div class="color-variant-block" id="colorVariantBlock"><div class="sz-lbl" id="color-lbl">Colore</div><div class="color-row" id="colorRow"></div></div>'
     +'<div class="sz-lbl" id="sz-lbl">Taglia</div><div class="sz-row" id="szRow"></div>'
     +'<button class="atc" id="atcBtn" type="button"></button><button class="wish" id="wishBtn" type="button"></button>'
     +'<div class="acc">'
@@ -269,6 +270,7 @@ function openProd(id,nav){
   set("pd-nm",prod.name);set("pd-sub",prod.sub);
   el("pd-pr").textContent="€ "+Number(prod.price||0).toLocaleString("it-IT");
   set("pd-story",prod.story);set("matB",productDetailsHTML(prod),true);
+  renderColorVariants(prod);
   var t=T[lang];set("artB",t.artText);set("delB",t.delText);
   var szHtml="",sizes=prod.sizes||[];
   set("pd-back",t.pdBack);set("sz-lbl",t.szLbl);set("atcBtn",t.addBtn);set("wishBtn",t.wishBtn);set("ac1t",t.ac1t);set("ac2t",t.ac2t);set("ac3t",t.ac3t);
@@ -277,6 +279,55 @@ function openProd(id,nav){
   if(nav!==false)showProductDetail();
 }
 function pickSz(btn,sz){var opts=document.querySelectorAll(".sz-opt");for(var i=0;i<opts.length;i++)opts[i].classList.remove("sel");btn.classList.add("sel");selSz=sz;}
+function parseColorVariants(prod){
+  var details=prod&&prod.details?prod.details:{};
+  var raw=details.varianti_colore||details.varianti||details.color_variants||"";
+  if(!raw)return [];
+  return String(raw).split(/\n+/).map(function(line){
+    line=line.trim();
+    if(!line)return null;
+    var parts=line.split(/\s*\|\s*/);
+    if(parts.length<2)parts=line.split(/\s*:\s*/);
+    var name=(parts[0]||"").trim();
+    var imgs=(parts.slice(1).join("|")||"").split(/\s*;\s*|\s*,\s*/).map(function(v){return v.trim();}).filter(Boolean);
+    if(!name||!imgs.length)return null;
+    return {name:name,images:imgs};
+  }).filter(Boolean);
+}
+function renderColorVariants(prod){
+  var block=el("colorVariantBlock"),row=el("colorRow");
+  if(!block||!row)return;
+  var variants=parseColorVariants(prod);
+  if(!variants.length){
+    block.style.display="none";
+    row.innerHTML="";
+    return;
+  }
+  block.style.display="";
+  var baseLabel=(prod.details&&prod.details.colore)||prod.badge||"Originale";
+  var html='<button type="button" class="color-opt sel" onclick="pickColorVariant(this,\''+jsString(prod.id)+'\',-1)">'+escHtml(baseLabel)+'</button>';
+  for(var i=0;i<variants.length;i++){
+    html+='<button type="button" class="color-opt" onclick="pickColorVariant(this,\''+jsString(prod.id)+'\','+i+')">'+escHtml(variants[i].name)+'</button>';
+  }
+  row.innerHTML=html;
+}
+function pickColorVariant(btn,productId,index){
+  var prod=null;
+  for(var i=0;i<T[lang].products.length;i++){if(T[lang].products[i].id===productId){prod=T[lang].products[i];break;}}
+  if(!prod)return;
+  var opts=document.querySelectorAll(".color-opt");for(var j=0;j<opts.length;j++)opts[j].classList.remove("sel");
+  if(btn)btn.classList.add("sel");
+  var variants=parseColorVariants(prod);
+  var displayProd=prod;
+  if(index>=0&&variants[index]){
+    displayProd={};
+    for(var key in prod)displayProd[key]=prod[key];
+    displayProd.images=variants[index].images;
+    displayProd.img=variants[index].images[0]||prod.img;
+  }
+  el("pdImg").innerHTML=productCarouselHTML(displayProd,"pd");
+}
+window.pickColorVariant=pickColorVariant;
 function togAcc(head){var body=head.nextElementSibling,ico=head.querySelector(".acc-ico"),isOpen=body.classList.contains("open");body.classList.toggle("open",!isOpen);head.classList.toggle("open",!isOpen);ico.textContent=isOpen?"+":"−";}
 function cardHTML(p,viewLabel){
   var badge=p.badge?'<span class="badge '+p.bc+'">'+p.badge+'</span>':"";
@@ -315,6 +366,7 @@ function productDetailsHTML(prod){
   var html=prod.material?'<p>'+escHtml(prod.material).replace(/\n/g,"<br>")+'</p>':"";
   var details=prod.details||{},labels=prod.details_labels||{},rows=[];
   for(var key in details){
+    if(key==="varianti_colore"||key==="varianti"||key==="color_variants")continue;
     if(details[key])rows.push('<div class="prod-detail-row"><strong>'+escHtml(labels[key]||key.replace(/_/g," "))+'</strong><span>'+escHtml(details[key]).replace(/\n/g,"<br>")+'</span></div>');
   }
   if(rows.length)html+='<div class="prod-detail-list">'+rows.join("")+'</div>';

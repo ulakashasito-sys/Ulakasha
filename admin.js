@@ -17,6 +17,7 @@
         ["descrizione_tessuto","Descrizione tessuto","textarea"],
         ["composizione","Composizione","textarea"],
         ["colore","Colore","text"],
+        ["varianti_colore","Varianti colore","textarea"],
         ["spedizioni_resi","Spedizioni e resi","textarea"]
       ]
     },
@@ -28,7 +29,8 @@
         ["dimensione","Dimensione","text"],
         ["descrizione_tessuto","Descrizione tessuto","textarea"],
         ["composizione","Composizione","textarea"],
-        ["variante","Variante","text"]
+        ["variante","Variante","text"],
+        ["varianti_colore","Varianti colore","textarea"]
       ]
     },
     "bijoux":{
@@ -42,6 +44,7 @@
         ["composizione","Composizione","textarea"],
         ["colore","Colore","text"],
         ["variante","Variante","text"],
+        ["varianti_colore","Varianti colore","textarea"],
         ["spedizioni_resi","Spedizioni e resi","textarea"]
       ]
     },
@@ -52,6 +55,7 @@
         ["descrizione_prodotto","Descrizione prodotto","textarea"],
         ["dimensioni","Dimensioni","text"],
         ["variante","Variante","text"],
+        ["varianti_colore","Varianti colore","textarea"],
         ["frasi_akasha","Frasi Akasha","textarea"]
       ]
     },
@@ -65,7 +69,8 @@
         ["frasi_akasha","Frasi Akasha","textarea"],
         ["materiale_cura","Materiale e cura","textarea"],
         ["composizione","Composizione","textarea"],
-        ["colore","Colore","text"]
+        ["colore","Colore","text"],
+        ["varianti_colore","Varianti colore","textarea"]
       ]
     },
     "bottiglia":{
@@ -78,7 +83,8 @@
         ["frasi_akasha","Frasi Akasha","textarea"],
         ["materiale_cura","Materiale e cura","textarea"],
         ["composizione","Composizione","textarea"],
-        ["colore","Colore","text"]
+        ["colore","Colore","text"],
+        ["varianti_colore","Varianti colore","textarea"]
       ]
     },
     "tazze":{
@@ -91,7 +97,8 @@
         ["frasi_akasha","Frasi Akasha","textarea"],
         ["materiale_cura","Materiale e cura","textarea"],
         ["composizione","Composizione","textarea"],
-        ["colore","Colore","text"]
+        ["colore","Colore","text"],
+        ["varianti_colore","Varianti colore","textarea"]
       ]
     },
     "arte":{

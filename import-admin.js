@@ -27,6 +27,9 @@
     "dimensione taglia":"dimensione_taglia",
     "dimensione - taglia":"dimensione_taglia",
     "descrizione tessuto":"descrizione_tessuto",
+    "varianti colore":"varianti_colore",
+    "varianti colori":"varianti_colore",
+    "color variants":"varianti_colore",
     "spedizioni e resi":"spedizioni_resi",
     "link checkout":"link_checkout",
     "url immagini":"url_immagini"
