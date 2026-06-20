@@ -4,6 +4,7 @@
   var PRODUCTS_TABLE=window.ULAKASHA_PRODUCTS_TABLE||"products";
   var BUCKET=window.ULAKASHA_PRODUCT_IMAGES_BUCKET||"product-images";
   var token=localStorage.getItem("ulakasha_admin_token")||"";
+  var refreshToken=localStorage.getItem("ulakasha_admin_refresh_token")||"";
   var lastPreview=[];
 
   var knownColumns={
@@ -79,7 +80,27 @@
       }
     }
     row.push(cell);rows.push(row);
-    return rows.filter(function(r){return r.some(function(c){return String(c||"").trim();});});
+    rows=rows.filter(function(r){return r.some(function(c){return String(c||"").trim();});});
+    return mergeContinuationRows(rows);
+  }
+  function looksLikeImageList(value){
+    return /(^|[\s;,\n])(https?:\/\/|[\w-]+\/).+\.(jpe?g|png|webp|gif)(\?|$|[\s;,])/i.test(String(value||"")+" ");
+  }
+  function mergeContinuationRows(rows){
+    if(rows.length<2)return rows;
+    var width=rows[0].length;
+    var merged=[rows[0]];
+    rows.slice(1).forEach(function(row){
+      var filled=row.map(function(c){return String(c||"").trim();}).filter(Boolean);
+      if(merged.length>1&&row.length<width&&filled.length&&looksLikeImageList(filled.join(" "))){
+        var prev=merged[merged.length-1];
+        prev[width-1]=[prev[width-1],filled.join("; ")].filter(Boolean).join("; ");
+      }else{
+        while(row.length<width)row.push("");
+        merged.push(row);
+      }
+    });
+    return merged;
   }
   function rowValue(row){
     for(var i=1;i<arguments.length;i++){
@@ -183,14 +204,42 @@
     }
     var data=await res.json();
     token=data.access_token;
+    refreshToken=data.refresh_token||"";
     localStorage.setItem("ulakasha_admin_token",token);
+    if(refreshToken)localStorage.setItem("ulakasha_admin_refresh_token",refreshToken);
+  }
+  async function refreshSession(){
+    if(!refreshToken)throw new Error("Sessione scaduta. Fai di nuovo login e riprova.");
+    var res=await fetch(SUPABASE_URL+"/auth/v1/token?grant_type=refresh_token",{
+      method:"POST",
+      headers:headers(false,{"Content-Type":"application/json"}),
+      body:JSON.stringify({refresh_token:refreshToken})
+    });
+    if(!res.ok){
+      token="";
+      refreshToken="";
+      localStorage.removeItem("ulakasha_admin_token");
+      localStorage.removeItem("ulakasha_admin_refresh_token");
+      throw new Error("Sessione scaduta. Fai di nuovo login e riprova.");
+    }
+    var data=await res.json();
+    token=data.access_token;
+    refreshToken=data.refresh_token||refreshToken;
+    localStorage.setItem("ulakasha_admin_token",token);
+    if(refreshToken)localStorage.setItem("ulakasha_admin_refresh_token",refreshToken);
   }
   async function validateSession(){
     if(!token||!configured())return false;
     var res=await fetch(SUPABASE_URL+"/auth/v1/user",{headers:headers(true)});
     if(res.ok)return true;
+    try{
+      await refreshSession();
+      return true;
+    }catch(e){}
     token="";
+    refreshToken="";
     localStorage.removeItem("ulakasha_admin_token");
+    localStorage.removeItem("ulakasha_admin_refresh_token");
     return false;
   }
   function showPanel(){
@@ -206,14 +255,23 @@
     el("import-panel").style.display="none";
   }
   async function upsertProduct(product){
-    var res=await fetch(rest(PRODUCTS_TABLE,"?on_conflict=slug"),{
-      method:"POST",
-      headers:headers(true,{"Content-Type":"application/json","Prefer":"resolution=merge-duplicates,return=minimal"}),
-      body:JSON.stringify(product)
-    });
+    async function send(){
+      return fetch(rest(PRODUCTS_TABLE,"?on_conflict=slug"),{
+        method:"POST",
+        headers:headers(true,{"Content-Type":"application/json","Prefer":"resolution=merge-duplicates,return=minimal"}),
+        body:JSON.stringify(product)
+      });
+    }
+    var res=await send();
     if(!res.ok){
       var detail="";
       try{detail=await res.text();}catch(e){}
+      if(res.status===401||/jwt expired/i.test(detail)){
+        await refreshSession();
+        res=await send();
+        if(res.ok)return;
+        try{detail=await res.text();}catch(e){}
+      }
       throw new Error(product.slug+": "+detail);
     }
   }

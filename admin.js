@@ -124,12 +124,48 @@
   }
   function lines(value){return (value||"").split(/\n+/).map(function(v){return v.trim();}).filter(Boolean);}
   function csv(value){return (value||"").split(",").map(function(v){return v.trim();}).filter(Boolean);}
+  function storageFolderForCategory(category){
+    var map={
+      "accessorio-tessile":"accessorio tessile",
+      "abbigliamento":"abbigliamento",
+      "bijoux":"bijoux",
+      "tessile":"tessile",
+      "tavola":"tavola",
+      "bottiglia":"bottiglia",
+      "tazze":"tazze",
+      "arte":"arte"
+    };
+    return map[category]||"";
+  }
+  function normalizeStoragePath(path,category){
+    var clean=(path||"").trim().replace(/^\/+/,"");
+    if(!clean||/^https?:\/\//i.test(clean))return clean;
+    if(clean.indexOf("/")===-1){
+      var folder=storageFolderForCategory(category);
+      if(folder)clean=folder+"/"+clean;
+    }
+    return clean;
+  }
   function publicObjectUrl(path){return SUPABASE_URL+"/storage/v1/object/public/"+encodeURIComponent(BUCKET)+"/"+path.split("/").map(encodeURIComponent).join("/");}
-  function storagePathToUrl(path){
+  function storagePathToUrl(path,category){
     var clean=(path||"").trim().replace(/^\/+/,"");
     if(!clean)return "";
     if(/^https?:\/\//i.test(clean))return clean;
+    clean=normalizeStoragePath(clean,category);
     return publicObjectUrl(clean);
+  }
+  function normalizeImageUrl(value,category){
+    var clean=(value||"").trim();
+    if(!clean)return "";
+    if(!/^https?:\/\//i.test(clean))return storagePathToUrl(clean,category);
+    var marker="/storage/v1/object/public/"+encodeURIComponent(BUCKET)+"/";
+    var index=clean.indexOf(marker);
+    if(index===-1)return clean;
+    var path=clean.slice(index+marker.length);
+    if(path.indexOf("/")!==-1)return clean;
+    var folder=storageFolderForCategory(category);
+    if(!folder)return clean;
+    return clean.slice(0,index+marker.length)+folder.split("/").map(encodeURIComponent).join("/")+"/"+path;
   }
   function escapeHtml(value){return String(value||"").replace(/[&<>"']/g,function(ch){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch];});}
 
@@ -271,7 +307,8 @@
   }
 
   function generateStorageUrls(){
-    var generated=lines(el("product-storage-paths").value).map(storagePathToUrl).filter(Boolean);
+    var category=el("product-category").value;
+    var generated=lines(el("product-storage-paths").value).map(function(path){return storagePathToUrl(path,category);}).filter(Boolean);
     if(!generated.length){
       status("admin-product-status","Inserisci almeno un nome file o percorso Storage.");
       return;
@@ -287,11 +324,11 @@
     status("admin-product-status","Salvataggio...");
     try{
       if(!configured())throw new Error("Configura Supabase in supabase-config.js");
-      var urls=lines(el("product-images").value);
       var details=collectDynamicDetails();
       var detailsLabels=collectDynamicLabels();
       syncSizeFromDetails(details);
       var category=el("product-category").value;
+      var urls=lines(el("product-images").value).map(function(url){return normalizeImageUrl(url,category);}).filter(Boolean);
       var slug=slugify(el("product-slug").value||detailTitle(details,category));
       if(!slug)slug=category+"-"+Date.now();
       var id=el("product-id").value||undefined;

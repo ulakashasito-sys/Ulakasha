@@ -329,11 +329,45 @@ function productImages(prod){
     return IMGS[img]||img;
   }).filter(Boolean);
 }
+function productStorageFolder(category){
+  var map={
+    "accessorio-tessile":"accessorio tessile",
+    "abbigliamento":"abbigliamento",
+    "bijoux":"bijoux",
+    "tessile":"tessile",
+    "tavola":"tavola",
+    "bottiglia":"bottiglia",
+    "tazze":"tazze",
+    "arte":"arte"
+  };
+  return map[category]||"";
+}
+function imageFallbackSrc(src,prod){
+  src=String(src||"");
+  var marker="/storage/v1/object/public/product-images/";
+  var index=src.indexOf(marker);
+  if(index===-1)return "";
+  var path=src.slice(index+marker.length);
+  if(path.indexOf("/")!==-1)return "";
+  var folder=productStorageFolder(prod&&prod.category);
+  if(!folder)return "";
+  return src.slice(0,index+marker.length)+folder.split("/").map(encodeURIComponent).join("/")+"/"+path;
+}
+function useProductImageFallback(img){
+  var fallback=img&&img.getAttribute("data-fallback-src");
+  if(!fallback||img.getAttribute("data-fallback-used")==="1")return;
+  img.setAttribute("data-fallback-used","1");
+  img.src=fallback;
+}
+window.useProductImageFallback=useProductImageFallback;
 function productCarouselHTML(prod,mode){
   var imgs=productImages(prod),name=escAttr(prod&&prod.name?prod.name:"Ulakasha");
   if(!imgs.length)return '<div class="pcard-img-inner pcard-img-empty"></div>';
   var id=(mode||"card")+"-"+String(prod.id||Math.random()).replace(/[^a-zA-Z0-9_-]/g,"-");
-  var slides=imgs.map(function(src,i){return '<img class="'+(i===0?"on":"")+'" src="'+escAttr(src)+'" alt="'+name+'" loading="lazy">';}).join("");
+  var slides=imgs.map(function(src,i){
+    var fallback=imageFallbackSrc(src,prod);
+    return '<img class="'+(i===0?"on":"")+'" src="'+escAttr(src)+'" '+(fallback?'data-fallback-src="'+escAttr(fallback)+'" onerror="useProductImageFallback(this)" ':"")+'alt="'+name+'" loading="lazy">';
+  }).join("");
   var dots=imgs.length>1?'<div class="prod-dots">'+imgs.map(function(_,i){return '<button type="button" class="'+(i===0?"on":"")+'" onclick="setProductSlide(event,\''+id+'\','+i+')" aria-label="Foto '+(i+1)+'"></button>';}).join("")+'</div>':"";
   var arrows=imgs.length>1?'<button type="button" class="prod-arr prod-prev" onclick="moveProductSlide(event,\''+id+'\',-1)" aria-label="Foto precedente">‹</button><button type="button" class="prod-arr prod-next" onclick="moveProductSlide(event,\''+id+'\',1)" aria-label="Foto successiva">›</button>':"";
   return '<div class="pcard-img-inner prod-carousel '+(mode==="pd"?"prod-carousel-detail":"")+'" id="'+id+'" data-slide="0">'+slides+arrows+dots+'</div>';
@@ -391,7 +425,7 @@ function localizedValue(val,locale){
 function imageList(value){
   if(Array.isArray(value))return value.map(function(v){return String(v||"").trim();}).filter(Boolean);
   if(typeof value==="string"){
-    return value.split(/\n|,/).map(function(v){return v.trim();}).filter(Boolean);
+    return value.split(/\n|;|,/).map(function(v){return v.trim();}).filter(Boolean);
   }
   return [];
 }
