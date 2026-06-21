@@ -250,11 +250,7 @@ function ensureProductDetail(){
     +'<div class="color-variant-block" id="colorVariantBlock"><div class="sz-lbl" id="color-lbl">Colore</div><div class="color-row" id="colorRow"></div></div>'
     +'<div class="sz-lbl" id="sz-lbl">Taglia</div><div class="sz-row" id="szRow"></div>'
     +'<button class="atc" id="atcBtn" type="button"></button><button class="wish" id="wishBtn" type="button"></button>'
-    +'<div class="acc">'
-    +'<div class="acc-i"><div class="acc-h" onclick="togAcc(this)"><span class="acc-t" id="ac1t"></span><span class="acc-ico">+</span></div><div class="acc-b" id="matB"></div></div>'
-    +'<div class="acc-i"><div class="acc-h" onclick="togAcc(this)"><span class="acc-t" id="ac2t"></span><span class="acc-ico">+</span></div><div class="acc-b" id="artB"></div></div>'
-    +'<div class="acc-i"><div class="acc-h" onclick="togAcc(this)"><span class="acc-t" id="ac3t"></span><span class="acc-ico">+</span></div><div class="acc-b" id="delB"></div></div>'
-    +'</div></div></div></section>';
+    +'<div class="acc" id="productAcc"></div></div></div></section>';
   document.body.appendChild(wrap);
   var btn=el("atcBtn");if(btn)btn.addEventListener("click",addCurrentProductToCart);
 }
@@ -269,21 +265,27 @@ function openProd(id,nav){
   el("pdImg").innerHTML=productCarouselHTML(prod,"pd");
   set("pd-nm",prod.name);set("pd-sub",prod.sub);
   el("pd-pr").textContent="€ "+Number(prod.price||0).toLocaleString("it-IT");
-  set("pd-story",prod.story);set("matB",productDetailsHTML(prod),true);
+  set("pd-story",prod.story);
   renderColorVariants(prod);
   var t=T[lang];set("artB",t.artText);set("delB",t.delText);
   var szHtml="",sizes=prod.sizes||[];
-  set("pd-back",t.pdBack);set("sz-lbl",t.szLbl);set("atcBtn",t.addBtn);set("wishBtn",t.wishBtn);set("ac1t",t.ac1t);set("ac2t",t.ac2t);set("ac3t",t.ac3t);
+  set("pd-back",t.pdBack);set("sz-lbl",t.szLbl);set("atcBtn",t.addBtn);set("wishBtn",t.wishBtn);
   for(var j=0;j<sizes.length;j++)szHtml+='<div class="sz-opt" onclick="pickSz(this,\''+jsString(sizes[j])+'\')">'+sizes[j]+'</div>';
   el("szRow").innerHTML=szHtml;
+  var acc=el("productAcc");if(acc)acc.innerHTML=productAccordionsHTML(prod);
   if(nav!==false)showProductDetail();
 }
 function pickSz(btn,sz){var opts=document.querySelectorAll(".sz-opt");for(var i=0;i<opts.length;i++)opts[i].classList.remove("sel");btn.classList.add("sel");selSz=sz;}
+function splitColorNames(value){
+  var text=String(value||"").trim();
+  if(!text)return [];
+  var parts=text.indexOf(";")!==-1?text.split(";"):text.split(/\s*,\s*/);
+  return parts.map(function(v){return v.trim();}).filter(Boolean);
+}
 function parseColorVariants(prod){
   var details=prod&&prod.details?prod.details:{};
   var raw=details.varianti_colore||details.varianti||details.color_variants||"";
-  if(!raw)return [];
-  return String(raw).split(/\n+/).map(function(line){
+  var explicit=String(raw||"").split(/\n+/).map(function(line){
     line=line.trim();
     if(!line)return null;
     var parts=line.split(/\s*\|\s*/);
@@ -292,6 +294,15 @@ function parseColorVariants(prod){
     var imgs=(parts.slice(1).join("|")||"").split(/\s*;\s*|\s*,\s*/).map(function(v){return v.trim();}).filter(Boolean);
     if(!name||!imgs.length)return null;
     return {name:name,images:imgs};
+  }).filter(Boolean);
+  if(explicit.length)return explicit;
+  var names=splitColorNames(details.colore);
+  var imgs=productImages(prod);
+  if(names.length<2||imgs.length<2)return [];
+  var per=Math.ceil(imgs.length/names.length);
+  return names.map(function(name,index){
+    var slice=imgs.slice(index*per,(index+1)*per);
+    return slice.length?{name:name,images:slice}:null;
   }).filter(Boolean);
 }
 function renderColorVariants(prod){
@@ -304,12 +315,18 @@ function renderColorVariants(prod){
     return;
   }
   block.style.display="";
-  var baseLabel=(prod.details&&prod.details.colore)||prod.badge||"Originale";
-  var html='<button type="button" class="color-opt sel" onclick="pickColorVariant(this,\''+jsString(prod.id)+'\',-1)">'+escHtml(baseLabel)+'</button>';
+  var html="";
   for(var i=0;i<variants.length;i++){
-    html+='<button type="button" class="color-opt" onclick="pickColorVariant(this,\''+jsString(prod.id)+'\','+i+')">'+escHtml(variants[i].name)+'</button>';
+    html+='<button type="button" class="color-opt '+(i===0?"sel":"")+'" onclick="pickColorVariant(this,\''+jsString(prod.id)+'\','+i+')">'+escHtml(variants[i].name)+'</button>';
   }
   row.innerHTML=html;
+  if(variants[0]){
+    var displayProd={};
+    for(var key in prod)displayProd[key]=prod[key];
+    displayProd.images=variants[0].images;
+    displayProd.img=variants[0].images[0]||prod.img;
+    el("pdImg").innerHTML=productCarouselHTML(displayProd,"pd");
+  }
 }
 function pickColorVariant(btn,productId,index){
   var prod=null;
@@ -371,6 +388,42 @@ function productDetailsHTML(prod){
   }
   if(rows.length)html+='<div class="prod-detail-list">'+rows.join("")+'</div>';
   return html||"";
+}
+function productAccordionsHTML(prod){
+  var details=prod&&prod.details?prod.details:{};
+  var labels=prod&&prod.details_labels?prod.details_labels:{};
+  var order=[
+    ["colore","COLORE"],
+    ["descrizione","DESCRIZIONE"],
+    ["descrizione_prodotto","DESCRIZIONE"],
+    ["composizione","COMPOSIZIONE"],
+    ["nome_prodotto","TITOLO PRODOTTO"],
+    ["nome_opera","TITOLO OPERA"],
+    ["parole_akasha","LE PAROLE DELL'AKASHA"],
+    ["frasi_akasha","LE PAROLE DELL'AKASHA"],
+    ["materiale_cura","MATERIALE E CURA"],
+    ["spedizioni_resi","SPEDIZIONI E RESI"],
+    ["dimensione_taglia","DIMENSIONE - TAGLIA"],
+    ["dimensione","DIMENSIONE - TAGLIA"],
+    ["dimensioni","DIMENSIONE - TAGLIA"],
+    ["descrizione_tessuto","DESCRIZIONE TESSUTO"],
+    ["variante","VARIANTE"],
+    ["tecnica","TECNICA"]
+  ];
+  var used={},items=[];
+  function add(key,label){
+    if(used[key]||!details[key])return;
+    if(key==="varianti_colore"||key==="varianti"||key==="color_variants")return;
+    used[key]=true;
+    items.push([labels[key]||label||key.replace(/_/g," "),details[key]]);
+  }
+  for(var i=0;i<order.length;i++)add(order[i][0],order[i][1]);
+  for(var key in details)add(key,labels[key]);
+  if(!items.length&&prod&&prod.material)items.push([T[lang].ac1t,prod.material]);
+  if(!items.length)return "";
+  return items.map(function(item){
+    return '<div class="acc-i"><div class="acc-h" onclick="togAcc(this)"><span class="acc-t">'+escHtml(item[0])+'</span><span class="acc-ico">+</span></div><div class="acc-b">'+escHtml(item[1]).replace(/\n/g,"<br>")+'</div></div>';
+  }).join("");
 }
 function productImages(prod){
   if(!prod)return [];
