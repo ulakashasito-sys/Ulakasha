@@ -709,10 +709,14 @@ function fetchJsonFromEndpoints(endpoints){
 
 function fetchSupabaseProducts(){
   if(!supabaseReady())return Promise.reject(new Error("Supabase not configured"));
-  var query="?select=*&active=eq.true&order=sort_order.asc";
+  var query="?select=*&order=sort_order.asc";
   return fetch(supabaseRest(PRODUCTS_TABLE,query),{headers:supabaseHeaders()}).then(function(res){
     if(!res.ok)throw new Error("Supabase products HTTP "+res.status);
-    return res.json();
+    return res.json().then(function(rows){
+      return (rows||[]).filter(function(row){
+        return row&&row.active!==false&&row.active!=="false"&&row.active!==0&&row.active!=="0";
+      });
+    });
   });
 }
 
@@ -744,14 +748,25 @@ function normalizeBackendProduct(prod,locale){
 
 function normalizeCategory(category){
   var value=(category||"").toString().toLowerCase();
+  var slug=value.replace(/\s+/g,"-");
   if(value.indexOf("arte")!==-1||value.indexOf("art")!==-1||value.indexOf("opera")!==-1||value.indexOf("poster")!==-1||value.indexOf("stampa")!==-1||value.indexOf("print")!==-1)return "art";
   if(value.indexOf("accessorio-tessile")!==-1||value.indexOf("accessorio tessile")!==-1||value.indexOf("foul")!==-1||value.indexOf("scarf")!==-1||value.indexOf("stola")!==-1)return "body";
+  if(slug==="tessile"||slug==="tavola"||slug==="bottiglia"||slug==="tazze")return "home";
   if(value.indexOf("casa")!==-1||value.indexOf("home")!==-1||value.indexOf("living")!==-1||value.indexOf("lifestyle")!==-1||value.indexOf("tessile")!==-1||value.indexOf("tavola")!==-1||value.indexOf("bottiglia")!==-1||value.indexOf("bottle")!==-1||value.indexOf("tazza")!==-1||value.indexOf("cup")!==-1||value.indexOf("ceramic")!==-1||value.indexOf("bicchier")!==-1||value.indexOf("glass")!==-1||value.indexOf("cristall")!==-1||value.indexOf("crystal")!==-1||value.indexOf("cusc")!==-1||value.indexOf("pillow")!==-1||value.indexOf("vaso")!==-1||value.indexOf("piatto")!==-1||value.indexOf("plate")!==-1)return "home";
   if(value.indexOf("abito")!==-1||value.indexOf("abbigl")!==-1||value.indexOf("corpo")!==-1||value.indexOf("bijoux")!==-1||value.indexOf("dress")!==-1||value.indexOf("wear")!==-1||value.indexOf("set")!==-1||value.indexOf("seta")!==-1||value.indexOf("silk")!==-1||value.indexOf("magl")!==-1||value.indexOf("knit")!==-1||value.indexOf("cashmere")!==-1||value.indexOf("cardigan")!==-1||value.indexOf("tunica")!==-1||value.indexOf("tunic")!==-1||value.indexOf("kimono")!==-1)return "body";
   return "all";
 }
 function normalizeShopCategory(category){
   var value=(category||"").toString().toLowerCase();
+  var slug=value.replace(/\s+/g,"-");
+  if(slug==="tessile")return "home-textile";
+  if(slug==="bottiglia")return "home-bottles";
+  if(slug==="tazze")return "home-cups";
+  if(slug==="tavola")return "home-table";
+  if(slug==="arte")return "art";
+  if(slug==="abbigliamento")return "body-clothing";
+  if(slug==="bijoux")return "body-bijoux";
+  if(slug==="accessorio-tessile")return "body-textile-accessory";
   if(value.indexOf("accessorio-tessile")!==-1||value.indexOf("accessorio tessile")!==-1||value.indexOf("foul")!==-1||value.indexOf("scarf")!==-1||value.indexOf("stola")!==-1||value.indexOf("tessile corpo")!==-1)return "body-textile-accessory";
   if(value.indexOf("bijoux")!==-1||value.indexOf("gioiel")!==-1||value.indexOf("jewel")!==-1||value.indexOf("spilla")!==-1||value.indexOf("brooch")!==-1)return "body-bijoux";
   if(value.indexOf("abbigliamento")!==-1||value.indexOf("abito")!==-1||value.indexOf("dress")!==-1||value.indexOf("wear")!==-1||value.indexOf("seta")!==-1||value.indexOf("silk")!==-1||value.indexOf("magl")!==-1||value.indexOf("knit")!==-1||value.indexOf("cashmere")!==-1||value.indexOf("cardigan")!==-1||value.indexOf("tunica")!==-1||value.indexOf("tunic")!==-1||value.indexOf("kimono")!==-1)return "body-clothing";
@@ -772,7 +787,7 @@ function productCategoryText(prod){
   var details=prod.details||{};
   var detailCategory=detailValue(details,"categoria","categoria_shop","macro_categoria","sottocategoria","categoria_prodotto","sezione","famiglia");
   var imagePaths=productImages(prod).join(" ");
-  return [prod.category,detailCategory,prod.sub,prod.name,imagePaths].join(" ");
+  return [prod.category,prod.id,detailCategory,prod.sub,prod.name,imagePaths].join(" ");
 }
 
 function getFilteredProducts(products){
