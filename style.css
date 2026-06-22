@@ -320,7 +320,7 @@ body.modal-open{overflow:hidden;}
 /* ABOUT */
 #p-about{padding-top:88px;}
 .ab-hero{background:#fff;padding:78px 48px 48px;text-align:center;border-bottom:1px solid rgba(74,111,165,.1);}
-.ab-hero h1{font-family:'Poppins',sans-serif;font-weight:500;font-size:clamp(34px,5vw,56px);color:var(--blue-d);margin-bottom:11px;letter-spacing:0;}
+.ab-hero h1{font-family:'Poppins',sans-serif;font-weight:600;font-size:clamp(34px,5vw,56px);color:var(--blue-d);margin-bottom:11px;letter-spacing:0;}
 .ab-hero p{font-family:'Poppins',sans-serif;font-weight:300;font-size:var(--editorial-copy-size);line-height:var(--editorial-copy-line);color:#535558;font-style:italic;}
 .ab-body{max-width:1100px;margin:0 auto;padding:80px 48px;}
 .founders{display:grid;grid-template-columns:1fr 1fr;gap:72px;}

@@ -767,13 +767,22 @@ function productSearchText(prod){
   var details=prod.details||{};
   return [prod.category,prod.sub,prod.name,prod.material,prod.story,JSON.stringify(details)].join(" ");
 }
+function productCategoryText(prod){
+  prod=prod||{};
+  var details=prod.details||{};
+  var detailCategory=detailValue(details,"categoria","categoria_shop","macro_categoria","sottocategoria","categoria_prodotto","sezione","famiglia");
+  var imagePaths=productImages(prod).join(" ");
+  return [prod.category,detailCategory,prod.sub,prod.name,imagePaths].join(" ");
+}
 
 function getFilteredProducts(products){
   var list=products.slice();
   if(currentFilter==="all")return list;
   return list.filter(function(prod){
-    var haystack=productSearchText(prod);
+    var haystack=productCategoryText(prod);
+    var fallback=productSearchText(prod);
     var cat=isShopPage()?normalizeShopCategory(haystack):normalizeCategory(haystack);
+    if(cat==="all")cat=isShopPage()?normalizeShopCategory(fallback):normalizeCategory(fallback);
     if(currentFilter==="body")return cat==="body-clothing"||cat==="body-textile-accessory"||cat==="body-bijoux"||normalizeCategory(haystack)==="body";
     if(currentFilter==="home")return cat==="home-textile"||cat==="home-table"||cat==="home-bottles"||cat==="home-cups"||normalizeCategory(haystack)==="home";
     return cat===currentFilter;
