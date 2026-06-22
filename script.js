@@ -722,18 +722,17 @@ function normalizeShopCategory(category){
   if(value.indexOf("arte")!==-1||value.indexOf("art")!==-1||value.indexOf("opera")!==-1||value.indexOf("poster")!==-1||value.indexOf("stampa")!==-1||value.indexOf("print")!==-1)return "art";
   return "all";
 }
-function isShopAllowedProduct(prod){
+function productSearchText(prod){
+  prod=prod||{};
   var details=prod.details||{};
-  var haystack=[prod.category,prod.sub,prod.name,details.categoria,details.categoria_shop,details.macro_categoria,details.sottocategoria,details.variante,details.nome_prodotto,details.descrizione].join(" ");
-  var cat=normalizeShopCategory(haystack);
-  return cat==="body-textile-accessory"||cat==="home-textile";
+  return [prod.category,prod.sub,prod.name,prod.material,prod.story,JSON.stringify(details)].join(" ");
 }
 
 function getFilteredProducts(products){
-  var list=isShopPage()?products.filter(isShopAllowedProduct):products.slice();
+  var list=products.slice();
   if(currentFilter==="all")return list;
   return list.filter(function(prod){
-    var haystack=[prod.category,prod.sub,prod.name].join(" ");
+    var haystack=productSearchText(prod);
     var cat=isShopPage()?normalizeShopCategory(haystack):normalizeCategory(haystack);
     if(currentFilter==="body")return cat==="body-clothing"||cat==="body-textile-accessory"||cat==="body-bijoux"||normalizeCategory(haystack)==="body";
     if(currentFilter==="home")return cat==="home-textile"||cat==="home-table"||cat==="home-bottles"||cat==="home-cups"||normalizeCategory(haystack)==="home";
