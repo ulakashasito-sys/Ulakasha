@@ -168,6 +168,13 @@
     return storagePathToUrl(clean,category);
   }
   function escapeHtml(value){return String(value||"").replace(/[&<>"']/g,function(ch){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch];});}
+  function fieldValue(source,key,locale){
+    source=source||{};
+    var value=source[key];
+    if(value&&typeof value==="object")return value[locale]||"";
+    if(locale==="en")return source[key+"_en"]||"";
+    return value||"";
+  }
 
   async function signIn(email,password){
     var res=await fetch(SUPABASE_URL+"/auth/v1/token?grant_type=password",{
@@ -219,12 +226,22 @@
     values=values||{};
     labels=labels||{};
     box.innerHTML=config.fields.map(function(field){
-      var key=field[0],label=escapeHtml(labels[key]||field[1]),type=field[2],value=escapeHtml(values[key]||"");
-      var labelInput='<span class="dynamic-label-row"><span>Nome campo</span><input class="dynamic-label-input" data-label-key="'+key+'" type="text" value="'+label+'"></span>';
+      var key=field[0],baseLabel=escapeHtml(field[1]),type=field[2];
+      var labelIt=escapeHtml(fieldValue(labels,key,"it")||field[1]);
+      var labelEn=escapeHtml(fieldValue(labels,key,"en"));
+      var valueIt=escapeHtml(fieldValue(values,key,"it"));
+      var valueEn=escapeHtml(fieldValue(values,key,"en"));
+      var labelItInput='<span class="dynamic-label-row"><span>Nome campo IT</span><input class="dynamic-label-input" data-label-key="'+key+'" type="text" value="'+labelIt+'"></span>';
+      var labelEnInput='<span class="dynamic-label-row"><span>Field name EN</span><input class="dynamic-label-input-en" data-label-key="'+key+'" type="text" value="'+labelEn+'" placeholder="English label"></span>';
+      var inputIt,inputEn;
       if(type==="textarea"){
-        return '<label><span class="dynamic-current-label">'+label+'</span>'+labelInput+'<textarea class="dynamic-input" data-detail-key="'+key+'" rows="4">'+value+'</textarea></label>';
+        inputIt='<textarea class="dynamic-input" data-detail-key="'+key+'" rows="4">'+valueIt+'</textarea>';
+        inputEn='<textarea class="dynamic-input-en" data-detail-key="'+key+'" rows="4" placeholder="English translation">'+valueEn+'</textarea>';
+      }else{
+        inputIt='<input class="dynamic-input" data-detail-key="'+key+'" type="text" value="'+valueIt+'">';
+        inputEn='<input class="dynamic-input-en" data-detail-key="'+key+'" type="text" value="'+valueEn+'" placeholder="English translation">';
       }
-      return '<label><span class="dynamic-current-label">'+label+'</span>'+labelInput+'<input class="dynamic-input" data-detail-key="'+key+'" type="text" value="'+value+'"></label>';
+      return '<fieldset class="dynamic-translation-field"><legend>'+baseLabel+'</legend><label><span class="dynamic-lang-label">Italiano</span>'+labelItInput+inputIt+'</label><label><span class="dynamic-lang-label">English</span>'+labelEnInput+inputEn+'</label></fieldset>';
     }).join("");
   }
 
@@ -235,6 +252,12 @@
       var key=inputs[i].getAttribute("data-detail-key");
       if(key)details[key]=inputs[i].value.trim();
     }
+    var enInputs=document.querySelectorAll(".dynamic-input-en");
+    for(var j=0;j<enInputs.length;j++){
+      var enKey=enInputs[j].getAttribute("data-detail-key");
+      var enValue=enInputs[j].value.trim();
+      if(enKey&&enValue)details[enKey+"_en"]=enValue;
+    }
     return details;
   }
 
@@ -244,6 +267,12 @@
     for(var i=0;i<inputs.length;i++){
       var key=inputs[i].getAttribute("data-label-key");
       if(key)labels[key]=inputs[i].value.trim();
+    }
+    var enInputs=document.querySelectorAll(".dynamic-label-input-en");
+    for(var j=0;j<enInputs.length;j++){
+      var enKey=enInputs[j].getAttribute("data-label-key");
+      var enValue=enInputs[j].value.trim();
+      if(enKey&&enValue)labels[enKey+"_en"]=enValue;
     }
     return labels;
   }
