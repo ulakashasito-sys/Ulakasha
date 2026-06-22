@@ -446,6 +446,7 @@ footer{background:var(--navy);padding:72px 64px 36px;}
   .scroll-cue{display:none;}
 }
 @media(max-width:600px){
+  .mq-t{animation-duration:22s;}
   .hero-proof{gap:8px;margin-top:22px;}
   .hero-proof span{width:100%;max-width:260px;text-align:center;}
   .nav{padding:12px 16px;}

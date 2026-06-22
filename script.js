@@ -454,6 +454,7 @@ function togAcc(head){var body=head.nextElementSibling,ico=head.querySelector(".
 function cardHTML(p,viewLabel){
   var badge=p.badge?'<span class="badge '+p.bc+'">'+p.badge+'</span>':"";
   var pid=jsString(p.id),sub=p.sub||"";
+  var hideMeta=isCreazioniPage();
   return '<div class="pcard" onclick="openProd(\''+pid+'\')">'
     +'<div class="pcard-img">'
     +productCarouselHTML(p,"card")
@@ -461,8 +462,8 @@ function cardHTML(p,viewLabel){
     +'<div class="pcard-ov"><button type="button" class="pcard-ov-btn" onclick="openProdFromCard(event,\''+pid+'\')">'+viewLabel+'</button></div>'
     +'</div>'
     +'<div class="pcard-name">'+p.name+'</div>'
-    +'<div class="pcard-mat">'+sub.split("·").slice(1).join("·").trim()+'</div>'
-    +'<div class="pcard-price">&#8364; '+Number(p.price||0).toLocaleString("it-IT")+'</div>'
+    +(hideMeta?"":'<div class="pcard-mat">'+sub.split("·").slice(1).join("·").trim()+'</div>')
+    +(hideMeta?"":'<div class="pcard-price">&#8364; '+Number(p.price||0).toLocaleString("it-IT")+'</div>')
     +'</div>';
 }
 function openProdFromCard(event,id){if(event){event.preventDefault();event.stopPropagation();}openProd(id);}
@@ -553,10 +554,13 @@ function imageFallbackSrc(src,prod){
   var index=src.indexOf(marker);
   if(index===-1)return "";
   var path=src.slice(index+marker.length);
-  if(path.indexOf("/")!==-1)return "";
   var folder=productStorageFolder(prod&&prod.category);
   if(!folder)return "";
-  return src.slice(0,index+marker.length)+folder.split("/").map(encodeURIComponent).join("/")+"/"+path;
+  var fileName=path.split("/").pop();
+  if(!fileName)return "";
+  var targetFolder=folder.split("/").map(encodeURIComponent).join("/");
+  var target=src.slice(0,index+marker.length)+targetFolder+"/"+fileName;
+  return target===src?"":target;
 }
 function useProductImageFallback(img){
   var fallback=img&&img.getAttribute("data-fallback-src");
@@ -701,8 +705,9 @@ function normalizeBackendProduct(prod,locale){
 function normalizeCategory(category){
   var value=(category||"").toString().toLowerCase();
   if(value.indexOf("arte")!==-1||value.indexOf("art")!==-1||value.indexOf("opera")!==-1||value.indexOf("poster")!==-1||value.indexOf("stampa")!==-1||value.indexOf("print")!==-1)return "art";
-  if(value.indexOf("casa")!==-1||value.indexOf("home")!==-1||value.indexOf("living")!==-1||value.indexOf("lifestyle")!==-1||value.indexOf("tessile-casa")!==-1||value.indexOf("tavola")!==-1||value.indexOf("bottiglia")!==-1||value.indexOf("bottle")!==-1||value.indexOf("tazza")!==-1||value.indexOf("cup")!==-1||value.indexOf("ceramic")!==-1||value.indexOf("bicchier")!==-1||value.indexOf("glass")!==-1||value.indexOf("cristall")!==-1||value.indexOf("crystal")!==-1||value.indexOf("cusc")!==-1||value.indexOf("pillow")!==-1||value.indexOf("vaso")!==-1||value.indexOf("piatto")!==-1||value.indexOf("plate")!==-1)return "home";
-  if(value.indexOf("abito")!==-1||value.indexOf("abbigl")!==-1||value.indexOf("corpo")!==-1||value.indexOf("accessorio-tessile")!==-1||value.indexOf("bijoux")!==-1||value.indexOf("dress")!==-1||value.indexOf("wear")!==-1||value.indexOf("set")!==-1||value.indexOf("seta")!==-1||value.indexOf("silk")!==-1||value.indexOf("magl")!==-1||value.indexOf("knit")!==-1||value.indexOf("foul")!==-1||value.indexOf("scarf")!==-1||value.indexOf("cashmere")!==-1||value.indexOf("cardigan")!==-1||value.indexOf("tunica")!==-1||value.indexOf("tunic")!==-1||value.indexOf("kimono")!==-1)return "body";
+  if(value.indexOf("accessorio-tessile")!==-1||value.indexOf("accessorio tessile")!==-1||value.indexOf("foul")!==-1||value.indexOf("scarf")!==-1||value.indexOf("stola")!==-1)return "body";
+  if(value.indexOf("casa")!==-1||value.indexOf("home")!==-1||value.indexOf("living")!==-1||value.indexOf("lifestyle")!==-1||value.indexOf("tessile")!==-1||value.indexOf("tavola")!==-1||value.indexOf("bottiglia")!==-1||value.indexOf("bottle")!==-1||value.indexOf("tazza")!==-1||value.indexOf("cup")!==-1||value.indexOf("ceramic")!==-1||value.indexOf("bicchier")!==-1||value.indexOf("glass")!==-1||value.indexOf("cristall")!==-1||value.indexOf("crystal")!==-1||value.indexOf("cusc")!==-1||value.indexOf("pillow")!==-1||value.indexOf("vaso")!==-1||value.indexOf("piatto")!==-1||value.indexOf("plate")!==-1)return "home";
+  if(value.indexOf("abito")!==-1||value.indexOf("abbigl")!==-1||value.indexOf("corpo")!==-1||value.indexOf("bijoux")!==-1||value.indexOf("dress")!==-1||value.indexOf("wear")!==-1||value.indexOf("set")!==-1||value.indexOf("seta")!==-1||value.indexOf("silk")!==-1||value.indexOf("magl")!==-1||value.indexOf("knit")!==-1||value.indexOf("cashmere")!==-1||value.indexOf("cardigan")!==-1||value.indexOf("tunica")!==-1||value.indexOf("tunic")!==-1||value.indexOf("kimono")!==-1)return "body";
   return "all";
 }
 function normalizeShopCategory(category){

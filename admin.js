@@ -169,10 +169,11 @@
     var index=clean.indexOf(marker);
     if(index===-1)return clean;
     var path=clean.slice(index+marker.length);
-    if(path.indexOf("/")!==-1)return clean;
     var folder=storageFolderForCategory(category);
     if(!folder)return clean;
-    return clean.slice(0,index+marker.length)+folder.split("/").map(encodeURIComponent).join("/")+"/"+path;
+    var fileName=path.split("/").pop();
+    if(!fileName)return clean;
+    return clean.slice(0,index+marker.length)+folder.split("/").map(encodeURIComponent).join("/")+"/"+fileName;
   }
   function escapeHtml(value){return String(value||"").replace(/[&<>"']/g,function(ch){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch];});}
 
