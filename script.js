@@ -220,11 +220,11 @@ function renderCart(){
     var item=cart[i];
     var prod=cartProduct(item);
     if(!prod)continue;
-    var imgSrc=productImgSrc(prod)||item.img||"",imgFallback=imageFallbackSrc(imgSrc,prod),name=item.name||prod.name||"",sub=(item.sub||prod.sub||"").split("·")[0].trim(),price=Number(item.price||prod.price||0);
+    var imgSrc=productImgSrc(prod)||item.img||"",name=item.name||prod.name||"",sub=(item.sub||prod.sub||"").split("·")[0].trim(),price=Number(item.price||prod.price||0);
     var meta=[];
     if(item.color)meta.push((lang==="it"?"Colore":"Color")+": "+item.color);
     if(item.sz)meta.push(t.sizeLabel+": "+item.sz);
-    html+='<div class="c-item"><div class="c-img"><img src="'+escHtml(imgSrc)+'" '+(imgFallback?'data-fallback-src="'+escHtml(imgFallback)+'" onerror="useProductImageFallback(this)" ':"")+'alt="'+escHtml(name)+'"></div><div><div class="c-nm">'+escHtml(name)+'</div><div class="c-dt">'+escHtml(sub)+'</div><div class="c-dt">'+escHtml(meta.join(" · "))+'</div><div class="qty-step"><button type="button" onclick="updateCartQty('+i+',-1)">−</button><span>'+item.qty+'</span><button type="button" onclick="updateCartQty('+i+',1)">+</button></div><button class="c-rm" onclick="rmItem('+i+')">'+t.removeLabel+'</button></div><div class="c-pr">'+money(price*item.qty)+'</div></div>';
+    html+='<div class="c-item"><div class="c-img"><img src="'+escHtml(imgSrc)+'" '+imageFallbackAttrs(imgSrc,prod)+'alt="'+escHtml(name)+'"></div><div><div class="c-nm">'+escHtml(name)+'</div><div class="c-dt">'+escHtml(sub)+'</div><div class="c-dt">'+escHtml(meta.join(" · "))+'</div><div class="qty-step"><button type="button" onclick="updateCartQty('+i+',-1)">−</button><span>'+item.qty+'</span><button type="button" onclick="updateCartQty('+i+',1)">+</button></div><button class="c-rm" onclick="rmItem('+i+')">'+t.removeLabel+'</button></div><div class="c-pr">'+money(price*item.qty)+'</div></div>';
   }
   body.innerHTML=html;
   var total=0;
@@ -300,7 +300,7 @@ function renderWishlist(){
   for(var i=0;i<wishlist.length;i++){
     var item=wishlist[i],prod=cartProduct(item),name=item.name||prod.name||"",img=item.img||productImgSrc(prod),price=Number(item.price||prod.price||0);
     var meta=[];if(item.color)meta.push("Colore: "+item.color);if(item.sz)meta.push("Taglia: "+item.sz);
-    html+='<div class="c-item"><div class="c-img"><img src="'+escHtml(img)+'" alt="'+escHtml(name)+'"></div><div><div class="c-nm">'+escHtml(name)+'</div><div class="c-dt">'+escHtml(meta.join(" · "))+'</div><button class="c-rm" onclick="removeWishlist('+i+')">Rimuovi</button></div><div class="c-pr">'+money(price)+'</div></div>';
+    html+='<div class="c-item"><div class="c-img"><img src="'+escHtml(img)+'" '+imageFallbackAttrs(img,prod)+'alt="'+escHtml(name)+'"></div><div><div class="c-nm">'+escHtml(name)+'</div><div class="c-dt">'+escHtml(meta.join(" · "))+'</div><button class="c-rm" onclick="removeWishlist('+i+')">Rimuovi</button></div><div class="c-pr">'+money(price)+'</div></div>';
   }
   body.innerHTML=html;
 }
@@ -357,7 +357,16 @@ function openProd(id,nav){
   curProd=prod;selSz=null;selColor="";selVariantImages=[];
   el("pdImg").innerHTML=productCarouselHTML(prod,"pd");
   set("pd-nm",prod.name);set("pd-sub",prod.sub);
-  el("pd-pr").textContent="€ "+Number(prod.price||0).toLocaleString("it-IT");
+  var priceEl=el("pd-pr");
+  if(priceEl){
+    if(productPriceVisible(prod)){
+      priceEl.textContent="€ "+Number(prod.price||0).toLocaleString("it-IT");
+      priceEl.style.display="";
+    }else{
+      priceEl.textContent="";
+      priceEl.style.display="none";
+    }
+  }
   set("pd-story",prod.story);
   var storyEl=el("pd-story");if(storyEl)storyEl.style.display=prod.story?"":"none";
   renderColorVariants(prod);
@@ -451,10 +460,18 @@ function pickColorVariant(btn,productId,index){
 }
 window.pickColorVariant=pickColorVariant;
 function togAcc(head){var body=head.nextElementSibling,ico=head.querySelector(".acc-ico"),isOpen=body.classList.contains("open");body.classList.toggle("open",!isOpen);head.classList.toggle("open",!isOpen);ico.textContent=isOpen?"+":"−";}
+function productPriceVisible(prod){
+  var details=prod&&prod.details?prod.details:{};
+  var hidden=prod&&prod.hide_price;
+  var flag=details.nascondi_prezzo;
+  if(flag===true||flag==="true"||flag==="1"||flag==="si"||flag==="sì")hidden=true;
+  return !hidden;
+}
 function cardHTML(p,viewLabel){
   var badge=p.badge?'<span class="badge '+p.bc+'">'+p.badge+'</span>':"";
   var pid=jsString(p.id),sub=p.sub||"";
   var hideMeta=isCreazioniPage();
+  var showPrice=!hideMeta&&productPriceVisible(p);
   return '<div class="pcard" onclick="openProd(\''+pid+'\')">'
     +'<div class="pcard-img">'
     +productCarouselHTML(p,"card")
@@ -463,7 +480,7 @@ function cardHTML(p,viewLabel){
     +'</div>'
     +'<div class="pcard-name">'+p.name+'</div>'
     +(hideMeta?"":'<div class="pcard-mat">'+sub.split("·").slice(1).join("·").trim()+'</div>')
-    +(hideMeta?"":'<div class="pcard-price">&#8364; '+Number(p.price||0).toLocaleString("it-IT")+'</div>')
+    +(showPrice?'<div class="pcard-price">&#8364; '+Number(p.price||0).toLocaleString("it-IT")+'</div>':"")
     +'</div>';
 }
 function openProdFromCard(event,id){if(event){event.preventDefault();event.stopPropagation();}openProd(id);}
@@ -510,7 +527,7 @@ function productAccordionsHTML(prod){
   var used={},usedLabels={},items=[];
   function add(key,label){
     if(used[key]||!details[key])return;
-    if(key==="varianti_colore"||key==="varianti"||key==="color_variants")return;
+    if(key==="varianti_colore"||key==="varianti"||key==="color_variants"||key==="nascondi_prezzo")return;
     if(key==="colore"||key==="nome_prodotto"||key==="nome_opera"||key==="dimensione_taglia"||key==="dimensione"||key==="dimensioni"||key==="variante")return;
     used[key]=true;
     var finalLabel=labels[key]||label||key.replace(/_/g," ");
@@ -535,38 +552,61 @@ function productImages(prod){
     return IMGS[img]||img;
   }).filter(Boolean);
 }
-function productStorageFolder(category){
+function productStorageFolders(category){
   var value=String(category||"").toLowerCase().trim();
   var slug=value.replace(/\s+/g,"-");
-  if(slug==="accessorio-tessile"||value.indexOf("accessorio tessile")!==-1||value.indexOf("foul")!==-1||value.indexOf("stola")!==-1)return "accessorio tessile";
-  if(value.indexOf("abitare la casa")!==-1||value.indexOf("casa")!==-1||value.indexOf("home")!==-1||slug==="tessile"||value.indexOf("cusc")!==-1)return "abitare la casa";
-  if(value.indexOf("tavola")!==-1)return "tavola";
-  if(value.indexOf("bottiglia")!==-1||value.indexOf("bottle")!==-1)return "bottiglia";
-  if(value.indexOf("tazza")!==-1||value.indexOf("tazze")!==-1||value.indexOf("cup")!==-1)return "tazze";
-  if(value.indexOf("abbigliamento")!==-1)return "abbigliamento";
-  if(value.indexOf("bijoux")!==-1)return "bijoux";
-  if(value.indexOf("arte")!==-1||value.indexOf("art")!==-1||value.indexOf("opera")!==-1)return "arte";
-  return "";
+  if(slug==="accessorio-tessile"||value.indexOf("accessorio tessile")!==-1||value.indexOf("foul")!==-1||value.indexOf("stola")!==-1)return ["accessorio tessile"];
+  if(value.indexOf("bottiglia")!==-1||value.indexOf("bottle")!==-1||value.indexOf("cristall")!==-1||value.indexOf("crystal")!==-1)return ["bottiglia","bottiglie","abitare la casa","tavola"];
+  if(value.indexOf("tazza")!==-1||value.indexOf("tazze")!==-1||value.indexOf("cup")!==-1||value.indexOf("ceramic")!==-1)return ["tazze","tazza","abitare la casa","tavola"];
+  if(value.indexOf("tavola")!==-1)return ["tavola","abitare la casa","tazze","bottiglia"];
+  if(value.indexOf("abitare la casa")!==-1||value.indexOf("casa")!==-1||value.indexOf("home")!==-1||slug==="tessile"||value.indexOf("cusc")!==-1||value.indexOf("pillow")!==-1)return ["abitare la casa","tessile"];
+  if(value.indexOf("abbigliamento")!==-1)return ["abbigliamento"];
+  if(value.indexOf("bijoux")!==-1)return ["bijoux"];
+  if(value.indexOf("arte")!==-1||value.indexOf("art")!==-1||value.indexOf("opera")!==-1)return ["arte"];
+  return [];
 }
-function imageFallbackSrc(src,prod){
+function productStorageFolder(category){
+  var folders=productStorageFolders(category);
+  return folders[0]||"";
+}
+function imageFallbackSrcs(src,prod){
   src=String(src||"");
   var marker="/storage/v1/object/public/product-images/";
   var index=src.indexOf(marker);
-  if(index===-1)return "";
+  if(index===-1)return [];
   var path=src.slice(index+marker.length);
-  var folder=productStorageFolder(prod&&prod.category);
-  if(!folder)return "";
+  var categoryText=productSearchText(prod);
+  var folders=productStorageFolders(categoryText);
+  if(!folders.length)folders=productStorageFolders(prod&&prod.category);
+  if(!folders.length)return [];
   var fileName=path.split("/").pop();
-  if(!fileName)return "";
-  var targetFolder=folder.split("/").map(encodeURIComponent).join("/");
-  var target=src.slice(0,index+marker.length)+targetFolder+"/"+fileName;
-  return target===src?"":target;
+  if(!fileName)return [];
+  var base=src.slice(0,index+marker.length),seen={},list=[];
+  for(var i=0;i<folders.length;i++){
+    var targetFolder=folders[i].split("/").map(encodeURIComponent).join("/");
+    var target=base+targetFolder+"/"+fileName;
+    if(target!==src&&!seen[target]){seen[target]=true;list.push(target);}
+  }
+  return list;
+}
+function imageFallbackSrc(src,prod){
+  var list=imageFallbackSrcs(src,prod);
+  return list[0]||"";
+}
+function imageFallbackAttrs(src,prod){
+  var list=imageFallbackSrcs(src,prod);
+  if(!list.length)return "";
+  return 'data-fallback-srcs="'+escAttr(JSON.stringify(list))+'" onerror="useProductImageFallback(this)" ';
 }
 function useProductImageFallback(img){
-  var fallback=img&&img.getAttribute("data-fallback-src");
-  if(!fallback||img.getAttribute("data-fallback-used")==="1")return;
-  img.setAttribute("data-fallback-used","1");
-  img.src=fallback;
+  if(!img)return;
+  var list=[],raw=img.getAttribute("data-fallback-srcs"),single=img.getAttribute("data-fallback-src");
+  if(raw){try{list=JSON.parse(raw)||[];}catch(e){list=[];}}
+  if(single)list.push(single);
+  var index=Number(img.getAttribute("data-fallback-index")||"0");
+  if(index>=list.length)return;
+  img.setAttribute("data-fallback-index",String(index+1));
+  img.src=list[index];
 }
 window.useProductImageFallback=useProductImageFallback;
 function productCarouselHTML(prod,mode){
@@ -574,8 +614,7 @@ function productCarouselHTML(prod,mode){
   if(!imgs.length)return '<div class="pcard-img-inner pcard-img-empty"></div>';
   var id=(mode||"card")+"-"+String(prod.id||Math.random()).replace(/[^a-zA-Z0-9_-]/g,"-");
   var slides=imgs.map(function(src,i){
-    var fallback=imageFallbackSrc(src,prod);
-    return '<img class="'+(i===0?"on":"")+'" src="'+escAttr(src)+'" '+(fallback?'data-fallback-src="'+escAttr(fallback)+'" onerror="useProductImageFallback(this)" ':"")+'alt="'+name+'" loading="lazy">';
+    return '<img class="'+(i===0?"on":"")+'" src="'+escAttr(src)+'" '+imageFallbackAttrs(src,prod)+'alt="'+name+'" loading="lazy">';
   }).join("");
   var dots=imgs.length>1?'<div class="prod-dots">'+imgs.map(function(_,i){return '<button type="button" class="'+(i===0?"on":"")+'" onclick="setProductSlide(event,\''+id+'\','+i+')" aria-label="Foto '+(i+1)+'"></button>';}).join("")+'</div>':"";
   var arrows=imgs.length>1?'<button type="button" class="prod-arr prod-prev" onclick="moveProductSlide(event,\''+id+'\',-1)" aria-label="Foto precedente">‹</button><button type="button" class="prod-arr prod-next" onclick="moveProductSlide(event,\''+id+'\',1)" aria-label="Foto successiva">›</button>':"";
@@ -696,6 +735,7 @@ function normalizeBackendProduct(prod,locale){
     material: localizedValue(prod.materiale,locale)||detailMaterial(details),
     story: localizedValue(prod.storia,locale)||fallbackStory||"",
     category: prod.categoria||prod.category||prod.shop_category||detailValue(details,"categoria","categoria_shop","macro_categoria","sottocategoria")||"",
+    hide_price: prod.hide_price===true||prod.nascondi_prezzo===true||details.nascondi_prezzo===true||details.nascondi_prezzo==="true"||details.nascondi_prezzo==="1",
     details: details,
     details_labels: prod.details_labels||{},
     stripe_link: prod.stripe_link||""
@@ -712,7 +752,7 @@ function normalizeCategory(category){
 }
 function normalizeShopCategory(category){
   var value=(category||"").toString().toLowerCase();
-  if(value.indexOf("accessorio-tessile")!==-1||value.indexOf("foul")!==-1||value.indexOf("scarf")!==-1||value.indexOf("stola")!==-1||value.indexOf("tessile corpo")!==-1)return "body-textile-accessory";
+  if(value.indexOf("accessorio-tessile")!==-1||value.indexOf("accessorio tessile")!==-1||value.indexOf("foul")!==-1||value.indexOf("scarf")!==-1||value.indexOf("stola")!==-1||value.indexOf("tessile corpo")!==-1)return "body-textile-accessory";
   if(value.indexOf("bijoux")!==-1||value.indexOf("gioiel")!==-1||value.indexOf("jewel")!==-1||value.indexOf("spilla")!==-1||value.indexOf("brooch")!==-1)return "body-bijoux";
   if(value.indexOf("abbigliamento")!==-1||value.indexOf("abito")!==-1||value.indexOf("dress")!==-1||value.indexOf("wear")!==-1||value.indexOf("seta")!==-1||value.indexOf("silk")!==-1||value.indexOf("magl")!==-1||value.indexOf("knit")!==-1||value.indexOf("cashmere")!==-1||value.indexOf("cardigan")!==-1||value.indexOf("tunica")!==-1||value.indexOf("tunic")!==-1||value.indexOf("kimono")!==-1)return "body-clothing";
   if(value.indexOf("bottiglia")!==-1||value.indexOf("bottle")!==-1||value.indexOf("cristall")!==-1||value.indexOf("crystal")!==-1)return "home-bottles";

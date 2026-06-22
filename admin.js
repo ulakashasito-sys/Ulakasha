@@ -164,16 +164,8 @@
   function normalizeImageUrl(value,category){
     var clean=(value||"").trim();
     if(!clean)return "";
-    if(!/^https?:\/\//i.test(clean))return storagePathToUrl(clean,category);
-    var marker="/storage/v1/object/public/"+encodeURIComponent(BUCKET)+"/";
-    var index=clean.indexOf(marker);
-    if(index===-1)return clean;
-    var path=clean.slice(index+marker.length);
-    var folder=storageFolderForCategory(category);
-    if(!folder)return clean;
-    var fileName=path.split("/").pop();
-    if(!fileName)return clean;
-    return clean.slice(0,index+marker.length)+folder.split("/").map(encodeURIComponent).join("/")+"/"+fileName;
+    if(/^https?:\/\//i.test(clean))return clean;
+    return storagePathToUrl(clean,category);
   }
   function escapeHtml(value){return String(value||"").replace(/[&<>"']/g,function(ch){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch];});}
 
@@ -301,6 +293,7 @@
     el("product-sort").value="100";
     el("product-category").value="abbigliamento";
     el("product-active").checked=true;
+    el("product-hide-price").checked=false;
     ["price","sizes","badge","stripe","images"].forEach(function(id){
       var node=el("product-"+id);
       if(node)node.value=id==="price"?"0":"";
@@ -317,6 +310,8 @@
     el("product-sort").value=product.sort_order||100;
     el("product-category").value=product.categoria||"abbigliamento";
     el("product-active").checked=product.active!==false;
+    var details=product.details||{};
+    el("product-hide-price").checked=product.hide_price===true||details.nascondi_prezzo===true||details.nascondi_prezzo==="true"||details.nascondi_prezzo==="1";
     el("product-price").value=product.prezzo||0;
     el("product-sizes").value=(product.taglie||[]).join(", ");
     el("product-badge").value=product.badge||"";
@@ -353,6 +348,8 @@
       if(!configured())throw new Error("Configura Supabase in supabase-config.js");
       var details=collectDynamicDetails();
       var detailsLabels=collectDynamicLabels();
+      if(el("product-hide-price").checked)details.nascondi_prezzo="true";
+      else delete details.nascondi_prezzo;
       syncSizeFromDetails(details);
       var category=el("product-category").value;
       var urls=lines(el("product-images").value).map(function(url){return normalizeImageUrl(url,category);}).filter(Boolean);

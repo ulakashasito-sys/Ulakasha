@@ -193,6 +193,7 @@ ul{list-style:none;}
 
 /* SHOP */
 #p-shop{padding-top:88px;}
+.creations-page{padding-top:88px;}
 .shop-h{background:var(--ivory);padding:52px 48px 30px;text-align:center;border-bottom:1px solid rgba(74,111,165,.09);}
 .shop-h h1{font-family:'Poppins',sans-serif;font-weight:600;font-size:44px;color:var(--blue-d);margin-bottom:10px;}
 .shop-h p{font-size:var(--editorial-copy-size);line-height:var(--editorial-copy-line);color:#535558;font-style:italic;}
@@ -562,6 +563,10 @@ body{letter-spacing:.01em;}
   .cosmos-img{min-height:220px;}
   .mean{padding:64px 16px;}
   .mean-w h3{font-size:40px;}
+  .creations-page{padding-top:96px;padding-bottom:150px;}
+  .creations-page .shop-h{padding-top:28px;}
+  .creations-page .shop-filters{position:relative;top:auto;z-index:20;}
+  .creations-page .shop-grid{padding-bottom:160px;}
   .shop-h{padding:36px 16px 20px;}
   .shop-h h1{font-size:30px;}
   .shop-intro{padding:14px 16px 0;gap:10px;}
