@@ -212,6 +212,7 @@ function renderCart(){
   var cartN=el("cartN"),body=el("cartBody"),ft=el("cartFt");
   if(!cartN||!body||!ft)return;
   cartN.textContent=cnt;
+  updateMobileCartShortcut(cnt);
   if(cart.length===0){body.innerHTML='<p style="font-family:\'Courier Prime\',monospace;font-size:10px;letter-spacing:.13em;color:var(--muted);text-transform:uppercase;padding:20px 0;">'+t.emptyBag+'</p>';ft.style.display="none";return;}
   ft.style.display="block";
   var html="";
@@ -219,16 +220,33 @@ function renderCart(){
     var item=cart[i];
     var prod=cartProduct(item);
     if(!prod)continue;
-    var imgSrc=item.img||productImgSrc(prod),name=item.name||prod.name||"",sub=(item.sub||prod.sub||"").split("·")[0].trim(),price=Number(item.price||prod.price||0);
+    var imgSrc=productImgSrc(prod)||item.img||"",imgFallback=imageFallbackSrc(imgSrc,prod),name=item.name||prod.name||"",sub=(item.sub||prod.sub||"").split("·")[0].trim(),price=Number(item.price||prod.price||0);
     var meta=[];
     if(item.color)meta.push((lang==="it"?"Colore":"Color")+": "+item.color);
     if(item.sz)meta.push(t.sizeLabel+": "+item.sz);
-    html+='<div class="c-item"><div class="c-img"><img src="'+escHtml(imgSrc)+'" alt="'+escHtml(name)+'"></div><div><div class="c-nm">'+escHtml(name)+'</div><div class="c-dt">'+escHtml(sub)+'</div><div class="c-dt">'+escHtml(meta.join(" · "))+'</div><div class="qty-step"><button type="button" onclick="updateCartQty('+i+',-1)">−</button><span>'+item.qty+'</span><button type="button" onclick="updateCartQty('+i+',1)">+</button></div><button class="c-rm" onclick="rmItem('+i+')">'+t.removeLabel+'</button></div><div class="c-pr">'+money(price*item.qty)+'</div></div>';
+    html+='<div class="c-item"><div class="c-img"><img src="'+escHtml(imgSrc)+'" '+(imgFallback?'data-fallback-src="'+escHtml(imgFallback)+'" onerror="useProductImageFallback(this)" ':"")+'alt="'+escHtml(name)+'"></div><div><div class="c-nm">'+escHtml(name)+'</div><div class="c-dt">'+escHtml(sub)+'</div><div class="c-dt">'+escHtml(meta.join(" · "))+'</div><div class="qty-step"><button type="button" onclick="updateCartQty('+i+',-1)">−</button><span>'+item.qty+'</span><button type="button" onclick="updateCartQty('+i+',1)">+</button></div><button class="c-rm" onclick="rmItem('+i+')">'+t.removeLabel+'</button></div><div class="c-pr">'+money(price*item.qty)+'</div></div>';
   }
   body.innerHTML=html;
   var total=0;
   for(var i=0;i<cart.length;i++){var p2=cartProduct(cart[i]);if(p2)total+=Number(cart[i].price||p2.price||0)*cart[i].qty;}
   el("cartTotal").textContent=money(total);
+}
+function ensureMobileCartShortcut(){
+  if(el("mobileCartShortcut"))return;
+  var btn=document.createElement("button");
+  btn.id="mobileCartShortcut";
+  btn.className="mobile-cart-shortcut";
+  btn.type="button";
+  btn.setAttribute("aria-label","Apri carrello");
+  btn.innerHTML='<span>Bag</span><strong id="mobileCartN">0</strong>';
+  btn.addEventListener("click",openCart);
+  document.body.appendChild(btn);
+}
+function updateMobileCartShortcut(cnt){
+  ensureMobileCartShortcut();
+  var badge=el("mobileCartN"),btn=el("mobileCartShortcut");
+  if(badge)badge.textContent=cnt;
+  if(btn)btn.classList.toggle("show",cnt>0);
 }
 function updateCartQty(i,delta){if(!cart[i])return;cart[i].qty=Math.max(1,Number(cart[i].qty||1)+delta);saveCart();renderCart();}
 function rmItem(i){cart.splice(i,1);saveCart();renderCart();}
@@ -517,17 +535,17 @@ function productImages(prod){
   }).filter(Boolean);
 }
 function productStorageFolder(category){
-  var map={
-    "accessorio-tessile":"accessorio tessile",
-    "abbigliamento":"abbigliamento",
-    "bijoux":"bijoux",
-    "tessile":"tessile",
-    "tavola":"tavola",
-    "bottiglia":"bottiglia",
-    "tazze":"tazze",
-    "arte":"arte"
-  };
-  return map[category]||"";
+  var value=String(category||"").toLowerCase().trim();
+  var slug=value.replace(/\s+/g,"-");
+  if(slug==="accessorio-tessile"||value.indexOf("accessorio tessile")!==-1||value.indexOf("foul")!==-1||value.indexOf("stola")!==-1)return "accessorio tessile";
+  if(value.indexOf("abitare la casa")!==-1||value.indexOf("casa")!==-1||value.indexOf("home")!==-1||slug==="tessile"||value.indexOf("cusc")!==-1)return "abitare la casa";
+  if(value.indexOf("tavola")!==-1)return "tavola";
+  if(value.indexOf("bottiglia")!==-1||value.indexOf("bottle")!==-1)return "bottiglia";
+  if(value.indexOf("tazza")!==-1||value.indexOf("tazze")!==-1||value.indexOf("cup")!==-1)return "tazze";
+  if(value.indexOf("abbigliamento")!==-1)return "abbigliamento";
+  if(value.indexOf("bijoux")!==-1)return "bijoux";
+  if(value.indexOf("arte")!==-1||value.indexOf("art")!==-1||value.indexOf("opera")!==-1)return "arte";
+  return "";
 }
 function imageFallbackSrc(src,prod){
   src=String(src||"");
@@ -656,7 +674,7 @@ function fetchSupabaseProducts(){
 }
 
 function normalizeBackendProduct(prod,locale){
-  var photos=imageList(prod.foto);
+  var photos=imageList(prod.foto||prod.immagini||prod.images||prod.image_urls||prod.url_immagini);
   var details=prod.details||{};
   var fallbackName=detailValue(details,"nome_prodotto","nome_opera")||prod.slug||prod.id;
   var fallbackSub=detailValue(details,"descrizione","descrizione_prodotto","variante","dimensione_taglia","dimensione","dimensioni");
@@ -673,7 +691,7 @@ function normalizeBackendProduct(prod,locale){
     images: photos,
     material: localizedValue(prod.materiale,locale)||detailMaterial(details),
     story: localizedValue(prod.storia,locale)||fallbackStory||"",
-    category: prod.categoria||"",
+    category: prod.categoria||prod.category||prod.shop_category||detailValue(details,"categoria","categoria_shop","macro_categoria","sottocategoria")||"",
     details: details,
     details_labels: prod.details_labels||{},
     stripe_link: prod.stripe_link||""
@@ -700,7 +718,8 @@ function normalizeShopCategory(category){
   return "all";
 }
 function isShopAllowedProduct(prod){
-  var haystack=[prod.category,prod.sub,prod.name].join(" ");
+  var details=prod.details||{};
+  var haystack=[prod.category,prod.sub,prod.name,details.categoria,details.categoria_shop,details.macro_categoria,details.sottocategoria,details.variante,details.nome_prodotto,details.descrizione].join(" ");
   var cat=normalizeShopCategory(haystack);
   return cat==="body-textile-accessory"||cat==="home-textile";
 }
@@ -1112,6 +1131,7 @@ function initReveal(){
 }
 applyLang();
 ensureWishlistUI();
+renderCart();
 loadExternalProducts();
 loadEventData();
 initReveal();
