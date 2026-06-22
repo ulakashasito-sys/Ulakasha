@@ -136,7 +136,7 @@
       "accessorio-tessile":"accessorio tessile",
       "abbigliamento":"abbigliamento",
       "bijoux":"bijoux",
-      "tessile":"tessile",
+      "tessile":"abitare la casa",
       "tavola":"tavola",
       "bottiglia":"bottiglia",
       "tazze":"tazze",
@@ -260,6 +260,18 @@
     return details.nome_prodotto||details.nome_opera||details.descrizione||details.descrizione_prodotto||category||"prodotto";
   }
 
+  function buildSlugSource(details,category){
+    details=details||{};
+    var title=detailTitle(details,category);
+    var parts=[title];
+    if(!title||title===category||title==="prodotto"){
+      parts=[category,details.dimensione_taglia||details.dimensione||details.dimensioni,details.variante||details.colore||Date.now()];
+    }else{
+      parts.push(details.variante||details.colore||"");
+    }
+    return parts.filter(Boolean).join(" ");
+  }
+
   function syncSizeFromDetails(details){
     details=details||{};
     var size=details.dimensione_taglia||details.dimensione||details.dimensioni||"";
@@ -326,6 +338,13 @@
     status("admin-product-status","URL immagini generati. Ora salva il prodotto.");
   }
 
+  async function findProductBySlug(slug){
+    var res=await fetch(rest(PRODUCTS_TABLE,"?select=*&slug=eq."+encodeURIComponent(slug)+"&limit=1"),{headers:headers(true)});
+    if(!res.ok)return null;
+    var data=await res.json();
+    return data&&data[0]?data[0]:null;
+  }
+
   async function saveProduct(e){
     e.preventDefault();
     status("admin-product-status","Salvataggio...");
@@ -336,9 +355,13 @@
       syncSizeFromDetails(details);
       var category=el("product-category").value;
       var urls=lines(el("product-images").value).map(function(url){return normalizeImageUrl(url,category);}).filter(Boolean);
-      var slug=slugify(el("product-slug").value||detailTitle(details,category));
+      var slug=slugify(el("product-slug").value||buildSlugSource(details,category));
       if(!slug)slug=category+"-"+Date.now();
       var id=el("product-id").value||undefined;
+      if(!id){
+        var existingProduct=await findProductBySlug(slug);
+        if(existingProduct&&existingProduct.id)id=existingProduct.id;
+      }
       var payload={
         slug:slug,
         sort_order:Number(el("product-sort").value||100),
