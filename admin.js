@@ -168,6 +168,52 @@
     return storagePathToUrl(clean,category);
   }
   function escapeHtml(value){return String(value||"").replace(/[&<>"']/g,function(ch){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch];});}
+  function autoTranslateText(value){
+    var text=String(value||"").trim();
+    if(!text)return "";
+    var exact={
+      "Nome prodotto":"Product name","Titolo prodotto":"Product title","Nome opera":"Artwork name","Descrizione":"Description","Descrizione prodotto":"Product description","Descrizione opera":"Artwork description","Descrizione tessuto":"Fabric description",
+      "Le parole dell'Akasha":"Akasha words","Frasi Akasha":"Akasha phrases","Materiale e cura":"Materials and care","Composizione":"Composition","Colore":"Color","Variante":"Variant","Varianti colore":"Color variants",
+      "Dimensione":"Size","Dimensioni":"Dimensions","Dimensione - taglia":"Size","Taglia":"Size","Tecnica":"Technique","Spedizioni e resi":"Shipping and returns",
+      "Cuscino Artigianale 50x50":"Artisanal Cushion 50x50","Abitare la casa":"Inhabit the home","Abitare il corpo":"Inhabit the body","Abitare l'arte":"Inhabit art",
+      "Accessorio tessile":"Textile accessory","Abbigliamento":"Clothing","Tessile":"Textile","Tavola":"Tableware","Bottiglie":"Bottles","Tazze":"Cups","Arte":"Art"
+    };
+    if(exact[text])return exact[text];
+    var phrases=[
+      [/Tessuto a mano su telai del 1800, in collaborazione con Tessitura La Colombina\./gi,"Handwoven on 19th-century looms, in collaboration with Tessitura La Colombina."],
+      [/Tessuto a mano su telai del 1800/gi,"Handwoven on 19th-century looms"],
+      [/Fili preziosi e naturali/gi,"Precious natural yarns"],[/cashmere, cotone, seta, lino/gi,"cashmere, cotton, silk, linen"],
+      [/si intrecciano in armature particolari/gi,"are woven into special weaves"],[/possibili solo grazie a questi telai antichi e alla maestria di chi li custodisce/gi,"made possible only by these antique looms and by the mastery of those who preserve them"],
+      [/Ogni cuscino è rifinito con un ricamo a filo leggermente in contrasto/gi,"Each cushion is finished with a subtly contrasting thread embroidery"],
+      [/Ogni capo Ulakasha è lavorato singolarmente su ordinazione con eccellenze artigianali/gi,"Each Ulakasha piece is individually made to order with artisanal excellence"],
+      [/Ogni capo è realizzato individualmente con eccellenze artigianali/gi,"Each piece is individually crafted with artisanal excellence"],
+      [/Ogni capo è realizzato individualmente con eccellenze artigianali/gi,"Each piece is individually crafted with artisanal excellence"],
+      [/Le immagini e le parole sul tessuto parlano direttamente all'anima di chi lo indossa/gi,"The images and words on the fabric speak directly to the soul of the wearer"],
+      [/Le immagini e le parole che abitano i tessuti parlano direttamente all'anima di chi lo indossa/gi,"The images and words inhabiting the fabrics speak directly to the soul of the wearer"],
+      [/Ogni tessuto è stampato con opere originali/gi,"Each fabric is printed with original artworks"],
+      [/Ogni immagine nasce dall'universo artistico/gi,"Each image is born from the artistic universe"],
+      [/Arte e parola sacra diventano abito, arredamento e oggetti/gi,"Art and sacred word become clothing, furnishings and objects"],
+      [/a sostegno del cammino evolutivo dell'uomo/gi,"in support of humanity's evolutionary path"],
+      [/Su ordinazione/gi,"Made to order"],[/Spedizione mondiale/gi,"Worldwide shipping"],[/Spedizione in Italia/gi,"Shipping in Italy"],[/Spedizione internazionale/gi,"International shipping"],[/Produzione/gi,"Production"],[/Consegna/gi,"Delivery"],[/settimane/gi,"weeks"],[/solo su richiesta/gi,"by request only"],[/non rimborsabile/gi,"non-refundable"],[/contattaci/gi,"contact us"],[/per informazioni/gi,"for information"]
+    ];
+    for(var i=0;i<phrases.length;i++)text=text.replace(phrases[i][0],phrases[i][1]);
+    var words=[
+      [/\bCuscino Artigianale\b/gi,"Artisanal Cushion"],[/\bcuscino artigianale\b/gi,"artisanal cushion"],[/\bCuscino\b/gi,"Cushion"],[/\bcuscino\b/gi,"cushion"],[/\bFoulard\b/gi,"Scarf"],[/\bfoulard\b/gi,"scarf"],
+      [/\bAbito\b/gi,"Dress"],[/\babito\b/gi,"dress"],[/\bKaftano\b/gi,"Kaftan"],[/\bPantalone\b/gi,"Trousers"],[/\bpantalone\b/gi,"trousers"],[/\bMadre\b/gi,"Mother"],[/\bmadre\b/gi,"mother"],
+      [/\bLibellula\b/gi,"Dragonfly"],[/\blibellula\b/gi,"dragonfly"],[/\bazzurra\b/gi,"light blue"],[/\bgiallino\b/gi,"pale yellow"],[/\bgiallo\b/gi,"yellow"],[/\bverde\b/gi,"green"],[/\brosa\b/gi,"pink"],[/\bcacao\b/gi,"cocoa"],
+      [/\bceramica\b/gi,"ceramic"],[/\bfrangia\b/gi,"fringe"],[/\bfrange\b/gi,"fringes"],[/\bTessuto\b/gi,"Fabric"],[/\btessuto\b/gi,"fabric"],[/\bTessile\b/gi,"Textile"],[/\btessile\b/gi,"textile"],
+      [/\bDescrizione\b/gi,"Description"],[/\bdescrizione\b/gi,"description"],[/\bProdotto\b/gi,"Product"],[/\bprodotto\b/gi,"product"],[/\bOpera\b/gi,"Artwork"],[/\bopera\b/gi,"artwork"],[/\bMateriale\b/gi,"Material"],[/\bmateriale\b/gi,"material"],
+      [/\bCura\b/gi,"Care"],[/\bcura\b/gi,"care"],[/\bComposizione\b/gi,"Composition"],[/\bcomposizione\b/gi,"composition"],[/\bColore\b/gi,"Color"],[/\bcolore\b/gi,"color"],[/\bVariante\b/gi,"Variant"],[/\bvariante\b/gi,"variant"],
+      [/\bDimensioni\b/gi,"Dimensions"],[/\bdimensioni\b/gi,"dimensions"],[/\bDimensione\b/gi,"Size"],[/\bdimensione\b/gi,"size"],[/\bTaglia\b/gi,"Size"],[/\btaglia\b/gi,"size"],[/\bSpedizioni\b/gi,"Shipping"],[/\bspedizioni\b/gi,"shipping"],
+      [/\bResi\b/gi,"Returns"],[/\bresi\b/gi,"returns"],[/\bseta\b/gi,"silk"],[/\bcotone\b/gi,"cotton"],[/\blana\b/gi,"wool"],[/\blino\b/gi,"linen"],[/\bviscosa\b/gi,"viscose"],[/\bfilo\b/gi,"thread"],[/\bfili\b/gi,"threads"],[/\bFili\b/gi,"Threads"],[/\bnaturali\b/gi,"natural"],[/\bpreziosi\b/gi,"precious"],
+      [/\bfatto a mano\b/gi,"handmade"],[/\brealizzato a mano\b/gi,"handmade"],[/\brealizzata a mano\b/gi,"handmade"],[/\bartigianale\b/gi,"artisanal"],[/\bartigianali\b/gi,"artisanal"],[/\ba mano\b/gi,"by hand"],[/\bcasa\b/gi,"home"],[/\bcorpo\b/gi,"body"],[/\barte\b/gi,"art"],[/\btavola\b/gi,"tableware"],[/\btazze\b/gi,"cups"],[/\bbottiglie\b/gi,"bottles"],
+      [/\bparole\b/gi,"words"],[/\bParole\b/gi,"Words"],[/\bfrasi\b/gi,"phrases"],[/\bFrasi\b/gi,"Phrases"],[/\banima\b/gi,"soul"],[/\bcoscienza\b/gi,"consciousness"],[/\bamore\b/gi,"love"],[/\bmemoria\b/gi,"memory"],[/\buniversale\b/gi,"universal"],
+      [/\btelai\b/gi,"looms"],[/\btelaio\b/gi,"loom"],[/\bantichi\b/gi,"antique"],[/\bantico\b/gi,"antique"],[/\bmaestria\b/gi,"mastery"],[/\bricamo\b/gi,"embroidery"],[/\bricamato\b/gi,"embroidered"],[/\bricamata\b/gi,"embroidered"],[/\bcontrasto\b/gi,"contrast"],
+      [/\btecnica\b/gi,"technique"],[/\bTecnica\b/gi,"Technique"],[/\bceramiche\b/gi,"ceramics"],[/\bcristalli\b/gi,"crystals"],[/\boggetti\b/gi,"objects"],[/\bcapi\b/gi,"garments"],[/\babiti\b/gi,"clothing"],[/\bindossabile\b/gi,"wearable"],[/\bitaliane\b/gi,""],[/\bitaliana\b/gi,"Italian"]
+    ];
+    for(var j=0;j<words.length;j++)text=text.replace(words[j][0],words[j][1]);
+    return text.replace(/[ \t]{2,}/g," ").replace(/ +([.,;:])/g,"$1").trim();
+  }
   function fieldValue(source,key,locale){
     source=source||{};
     var value=source[key];
@@ -228,7 +274,7 @@
     box.innerHTML=config.fields.map(function(field){
       var key=field[0],baseLabel=escapeHtml(field[1]),type=field[2];
       var labelIt=escapeHtml(fieldValue(labels,key,"it")||field[1]);
-      var labelEn=escapeHtml(fieldValue(labels,key,"en"));
+      var labelEn=escapeHtml(fieldValue(labels,key,"en")||autoTranslateText(fieldValue(labels,key,"it")||field[1]));
       var valueIt=escapeHtml(fieldValue(values,key,"it"));
       var valueEn=escapeHtml(fieldValue(values,key,"en"));
       var labelItInput='<span class="dynamic-label-row"><span>Nome campo IT</span><input class="dynamic-label-input" data-label-key="'+key+'" type="text" value="'+labelIt+'"></span>';
@@ -236,10 +282,10 @@
       var inputIt,inputEn;
       if(type==="textarea"){
         inputIt='<textarea class="dynamic-input" data-detail-key="'+key+'" rows="4">'+valueIt+'</textarea>';
-        inputEn='<textarea class="dynamic-input-en" data-detail-key="'+key+'" rows="4" placeholder="English translation">'+valueEn+'</textarea>';
+        inputEn='<textarea class="dynamic-input-en" data-detail-key="'+key+'" rows="4" placeholder="English translation generated on save">'+valueEn+'</textarea>';
       }else{
         inputIt='<input class="dynamic-input" data-detail-key="'+key+'" type="text" value="'+valueIt+'">';
-        inputEn='<input class="dynamic-input-en" data-detail-key="'+key+'" type="text" value="'+valueEn+'" placeholder="English translation">';
+        inputEn='<input class="dynamic-input-en" data-detail-key="'+key+'" type="text" value="'+valueEn+'" placeholder="English translation generated on save">';
       }
       return '<fieldset class="dynamic-translation-field"><legend>'+baseLabel+'</legend><label><span class="dynamic-lang-label">Italiano</span>'+labelItInput+inputIt+'</label><label><span class="dynamic-lang-label">English</span>'+labelEnInput+inputEn+'</label></fieldset>';
     }).join("");
@@ -256,7 +302,11 @@
     for(var j=0;j<enInputs.length;j++){
       var enKey=enInputs[j].getAttribute("data-detail-key");
       var enValue=enInputs[j].value.trim();
-      if(enKey&&enValue)details[enKey+"_en"]=enValue;
+      if(enKey){
+        var itValue=details[enKey]||"";
+        if(enValue)details[enKey+"_en"]=enValue;
+        else if(itValue)details[enKey+"_en"]=autoTranslateText(itValue);
+      }
     }
     return details;
   }
@@ -272,9 +322,32 @@
     for(var j=0;j<enInputs.length;j++){
       var enKey=enInputs[j].getAttribute("data-label-key");
       var enValue=enInputs[j].value.trim();
-      if(enKey&&enValue)labels[enKey+"_en"]=enValue;
+      if(enKey){
+        var itValue=labels[enKey]||"";
+        if(enValue)labels[enKey+"_en"]=enValue;
+        else if(itValue)labels[enKey+"_en"]=autoTranslateText(itValue);
+      }
     }
     return labels;
+  }
+
+  function populateEnglishTranslations(){
+    var count=0;
+    document.querySelectorAll(".dynamic-translation-field").forEach(function(field){
+      var itInput=field.querySelector(".dynamic-input");
+      var enInput=field.querySelector(".dynamic-input-en");
+      var itLabel=field.querySelector(".dynamic-label-input");
+      var enLabel=field.querySelector(".dynamic-label-input-en");
+      if(itInput&&enInput&&itInput.value.trim()&&!enInput.value.trim()){
+        enInput.value=autoTranslateText(itInput.value);
+        count++;
+      }
+      if(itLabel&&enLabel&&itLabel.value.trim()&&!enLabel.value.trim()){
+        enLabel.value=autoTranslateText(itLabel.value);
+        count++;
+      }
+    });
+    status("admin-product-status",count?("Traduzioni EN generate: "+count+". Controllale e salva il prodotto."):"Le traduzioni EN sono già compilate.");
   }
 
   function detailTitle(details,category){
@@ -457,6 +530,7 @@
     el("admin-product-form").addEventListener("submit",saveProduct);
     el("product-category").addEventListener("change",function(){renderDynamicFields(this.value,{},{});});
     el("admin-generate-urls").addEventListener("click",generateStorageUrls);
+    el("admin-translate-en").addEventListener("click",populateEnglishTranslations);
     el("admin-new-product").addEventListener("click",clearForm);
     el("admin-delete-product").addEventListener("click",deleteProduct);
     el("admin-logout").addEventListener("click",function(){localStorage.removeItem("ulakasha_admin_token");location.reload();});
