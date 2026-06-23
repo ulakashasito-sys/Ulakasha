@@ -322,6 +322,7 @@
     el("product-sort").value="100";
     el("product-category").value="abbigliamento";
     el("product-active").checked=true;
+    el("product-for-sale").checked=true;
     el("product-hide-price").checked=false;
     ["price","sizes","badge","stripe","images"].forEach(function(id){
       var node=el("product-"+id);
@@ -340,6 +341,7 @@
     el("product-category").value=product.categoria||"abbigliamento";
     el("product-active").checked=product.active!==false;
     var details=product.details||{};
+    el("product-for-sale").checked=!(product.for_sale===false||details.non_in_vendita===true||details.non_in_vendita==="true"||details.non_in_vendita==="1");
     el("product-hide-price").checked=product.hide_price===true||details.nascondi_prezzo===true||details.nascondi_prezzo==="true"||details.nascondi_prezzo==="1";
     el("product-price").value=product.prezzo||0;
     el("product-sizes").value=(product.taglie||[]).join(", ");
@@ -379,6 +381,8 @@
       var detailsLabels=collectDynamicLabels();
       if(el("product-hide-price").checked)details.nascondi_prezzo="true";
       else delete details.nascondi_prezzo;
+      if(!el("product-for-sale").checked)details.non_in_vendita="true";
+      else delete details.non_in_vendita;
       syncSizeFromDetails(details);
       var category=el("product-category").value;
       var urls=lines(el("product-images").value).map(function(url){return normalizeImageUrl(url,category);}).filter(Boolean);
