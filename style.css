@@ -243,7 +243,8 @@ body.modal-open{overflow:hidden;}
 .pd-left-copy{position:relative;z-index:1;max-width:620px;}
 .product-modal.layout-text-below .pd-wrap{grid-template-columns:minmax(420px,46%) minmax(520px,54%);}
 .product-modal.layout-text-below .pd-gal{justify-content:flex-start;gap:20px;}
-.product-modal.layout-text-below .pd-left-copy{max-width:760px;}
+.product-modal.layout-text-below .pd-left-copy{max-width:760px;order:2;}
+.product-modal.layout-text-below .pd-img{order:1;}
 .product-modal.layout-text-below .pd-story{font-size:18px;line-height:1.65;margin-top:18px;}
 .product-modal.layout-text-below .pd-info{padding-top:46px;}
 .pd-img{width:100%;max-width:560px;aspect-ratio:3/4;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;align-self:center;}

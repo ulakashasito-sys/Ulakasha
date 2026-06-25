@@ -139,9 +139,9 @@
       "abbigliamento":"abbigliamento",
       "bijoux":"bijoux",
       "tessile":"abitare la casa",
-      "tavola":"tavola",
-      "bottiglia":"bottiglia",
-      "tazze":"tazze",
+      "tavola":"abitare la casa",
+      "bottiglia":"abitare la casa",
+      "tazze":"abitare la casa",
       "arte":"arte"
     };
     return map[category]||"";
@@ -206,10 +206,39 @@
       "Le parole dell'Akasha":"Akasha words","Frasi Akasha":"Akasha phrases","Materiale e cura":"Materials and care","Composizione":"Composition","Colore":"Color","Variante":"Variant","Varianti colore":"Color variants",
       "Dimensione":"Size","Dimensioni":"Dimensions","Dimensione - taglia":"Size","Taglia":"Size","Tecnica":"Technique","Spedizioni e resi":"Shipping and returns",
       "Cuscino Artigianale 50x50":"Artisanal Cushion 50x50","Abitare la casa":"Inhabit the home","Abitare il corpo":"Inhabit the body","Abitare l'arte":"Inhabit art",
-      "Accessorio tessile":"Textile accessory","Abbigliamento":"Clothing","Tessile":"Textile","Tavola":"Tableware","Bottiglie":"Bottles","Tazze":"Cups","Arte":"Art"
+      "Accessorio tessile":"Textile accessory","Abbigliamento":"Clothing","Tessile":"Textile","Tavola":"Tableware","Bottiglie":"Bottles","Tazze":"Cups","Arte":"Art",
+      "Foulard balena":"Whale scarf","Scarf balena":"Whale scarf","Foulard Donna Oro":"Donna Oro scarf","Scarf Donna Oro":"Donna Oro scarf","Bandeau Madre Cacao":"Madre Cacao bandeau"
     };
     if(exact[text])return exact[text];
     var phrases=[
+      [/Il foulard "Donna d'oro"/gi,"The \"Donna d'oro\" scarf"],
+      [/Il dipinto riportato su stampa\s+è stato eseguito originalmente su tela con\s+acrilico e pastelli\./gi,"The painting reproduced as a print was originally created on canvas with acrylic and pastels."],
+      [/I suoi colori compatti e decisi svelano la forma iconica di\s+un volto di donna, che al suo fianco porta la scritta/gi,"Its compact, decisive colours reveal the iconic shape of a woman's face, with an inscription beside it"],
+      [/L'immagine riportata su silk\s+è il dettaglio di un dipinto su carta a tecniche mista\./gi,"The image printed on silk is a detail from a mixed-media painting on paper."],
+      [/L'immagine riportata su seta\s+è il dettaglio di un dipinto su carta a tecniche mista\./gi,"The image printed on silk is a detail from a mixed-media painting on paper."],
+      [/L'immagine riportata su silk\s+è il dettaglio di un dipinto su carta a tecnica mista\./gi,"The image printed on silk is a detail from a mixed-media painting on paper."],
+      [/I colori si dissolvono in una trasparenza quasi onirica e\s+i tratti pastello accarezzano la forma, come a\s+svegliarla da un sonno\./gi,"The colours dissolve into an almost dreamlike transparency, while pastel strokes caress the form as if awakening it from sleep."],
+      [/La stampa Madre Cacao riprende i fiori e il frutto della pianta del Cacao\./gi,"The Madre Cacao print recalls the flowers and fruit of the cacao plant."],
+      [/Le pennellate acquarellate del fondo la rendono molto fresca\./gi,"The watercolour brushstrokes in the background make it feel very fresh."],
+      [/Le ali permettono di osservare l’eterno\./gi,"The wings allow one to observe the eternal."],
+      [/Le ali permettono di osservare l'eterno\./gi,"The wings allow one to observe the eternal."],
+      [/La balena vibra, le sue parole sono onde che spostano materia, che creano maree\./gi,"The whale vibrates; her words are waves that move matter and create tides."],
+      [/Lei è colei che nel mare dell'etere risale e con occhio vigile collega le memorie alle stelle creando costellazioni nello spazio infinito con il tempo eterno\./gi,"She is the one who rises through the sea of ether and, with a watchful eye, connects memories to the stars, creating constellations in infinite space with eternal time."],
+      [/Lei è la balena che si muove nel mare infinito dell’akasha\./gi,"She is the whale moving through the infinite sea of Akasha."],
+      [/Lei è la balena che si muove nel mare infinito dell'akasha\./gi,"She is the whale moving through the infinite sea of Akasha."],
+      [/Il fiore del cacao si schiude quando si collega al Sole formando una costellazione\./gi,"The cacao flower opens when it connects to the Sun, forming a constellation."],
+      [/Osservo il mondo mio attraverso la stella del fiore dell'amore/gi,"I observe my world through the star of the flower of love"],
+      [/Materiale principale: Seta/gi,"Main material: Silk"],
+      [/Evitare il lavaggio in acqua/gi,"Avoid washing in water"],
+      [/Non utilizzare candeggina o prodotti aggressivi/gi,"Do not use bleach or harsh products"],
+      [/Evitare l'asciugatura naturale e il tumbler/gi,"Avoid natural drying and tumble drying"],
+      [/Stirare a temperatura bassa/gi,"Iron at low temperature"],
+      [/Lavaggio a secco con percloroetilene/gi,"Dry clean with perchloroethylene"],
+      [/Spedizioni e resi gratuiti/gi,"Free shipping and returns"],
+      [/La spedizione è gratuita e avviene in 2-3 giorni lavorativi dalla conferma dell'ordine\./gi,"Shipping is free and takes 2-3 business days from order confirmation."],
+      [/Una volta spedito, potrai seguire il tuo pacco in ogni momento tramite il numero di tracciamento che riceverai via email\./gi,"Once shipped, you can track your parcel at any time using the tracking number you will receive by email."],
+      [/Hai 14 giorni dalla ricezione per richiedere un reso gratuito\./gi,"You have 14 days from receipt to request a free return."],
+      [/Il ritiro viene organizzato e gestito direttamente dai nostri corrieri\./gi,"Collection is organised and handled directly by our couriers."],
       [/Tessuto a mano su telai del 1800, in collaborazione con Tessitura La Colombina\./gi,"Handwoven on 19th-century looms, in collaboration with Tessitura La Colombina."],
       [/Tessuto a mano su telai del 1800/gi,"Handwoven on 19th-century looms"],
       [/Fili preziosi e naturali/gi,"Precious natural yarns"],[/cashmere, cotone, seta, lino/gi,"cashmere, cotton, silk, linen"],
@@ -229,7 +258,7 @@
     for(var i=0;i<phrases.length;i++)text=text.replace(phrases[i][0],phrases[i][1]);
     var words=[
       [/\bCuscino Artigianale\b/gi,"Artisanal Cushion"],[/\bcuscino artigianale\b/gi,"artisanal cushion"],[/\bCuscino\b/gi,"Cushion"],[/\bcuscino\b/gi,"cushion"],[/\bFoulard\b/gi,"Scarf"],[/\bfoulard\b/gi,"scarf"],
-      [/\bAbito\b/gi,"Dress"],[/\babito\b/gi,"dress"],[/\bKaftano\b/gi,"Kaftan"],[/\bPantalone\b/gi,"Trousers"],[/\bpantalone\b/gi,"trousers"],[/\bMadre\b/gi,"Mother"],[/\bmadre\b/gi,"mother"],
+      [/\bAbito\b/gi,"Dress"],[/\babito\b/gi,"dress"],[/\bKaftano\b/gi,"Kaftan"],[/\bPantalone\b/gi,"Trousers"],[/\bpantalone\b/gi,"trousers"],[/\bBandeau\b/gi,"Bandeau"],[/\bbandeau\b/gi,"bandeau"],[/\bMadre\b/gi,"Mother"],[/\bmadre\b/gi,"mother"],[/\bBalena\b/gi,"Whale"],[/\bbalena\b/gi,"whale"],
       [/\bLibellula\b/gi,"Dragonfly"],[/\blibellula\b/gi,"dragonfly"],[/\bazzurra\b/gi,"light blue"],[/\bgiallino\b/gi,"pale yellow"],[/\bgiallo\b/gi,"yellow"],[/\bverde\b/gi,"green"],[/\brosa\b/gi,"pink"],[/\bcacao\b/gi,"cocoa"],
       [/\bceramica\b/gi,"ceramic"],[/\bfrangia\b/gi,"fringe"],[/\bfrange\b/gi,"fringes"],[/\bTessuto\b/gi,"Fabric"],[/\btessuto\b/gi,"fabric"],[/\bTessile\b/gi,"Textile"],[/\btessile\b/gi,"textile"],
       [/\bDescrizione\b/gi,"Description"],[/\bdescrizione\b/gi,"description"],[/\bProdotto\b/gi,"Product"],[/\bprodotto\b/gi,"product"],[/\bOpera\b/gi,"Artwork"],[/\bopera\b/gi,"artwork"],[/\bMateriale\b/gi,"Material"],[/\bmateriale\b/gi,"material"],
