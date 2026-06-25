@@ -61,8 +61,8 @@ T.it.succP="Ti contatteremo entro 24 ore per confermare.<br>A presto, Milano.";T
 // ── ASIDE BOX TRANSLATIONS ────────────────────────────────────────────
 T.it.resAsideLbl1="Concept Store";T.en.resAsideLbl1="Concept Store";
 T.it.evDate="Mar - Sab 13 - 18<br>Dom &amp; Lun chiuso";T.en.evDate="Tue - Sat 1-6 pm<br>Sun &amp; Mon closed";
-T.it.evLeadIntro="La collezione non è ancora disponibile online.<br>Una selezione è già disponibile nel concept store.<br>Accedi in anteprima: lascia i tuoi contatti per ricevere aggiornamenti esclusivi e riservare i capi.";
-T.en.evLeadIntro="The collection is not yet available online.<br>A selection is already available in the concept store.<br>Get early access: leave your contact details to receive exclusive updates and reserve pieces.";
+T.it.evLeadIntro="";
+T.en.evLeadIntro="";
 T.it.evLeadCta="Newsletter";T.en.evLeadCta="Newsletter";
 T.it.resAsideP1="Via Festa del Perdono 10, Milano<br>21–26 Aprile · ore 10–22<br>Ingresso libero";T.en.resAsideP1="Via Festa del Perdono 10, Milan<br>21–26 April · 10am–10pm<br>Free entry";
 T.it.resAsideLbl2="Consegna";T.en.resAsideLbl2="Delivery";
@@ -261,6 +261,7 @@ function pulseMobileCartShortcut(){
 function updateCartQty(i,delta){if(!cart[i])return;cart[i].qty=Math.max(1,Number(cart[i].qty||1)+delta);saveCart();renderCart();}
 function rmItem(i){cart.splice(i,1);saveCart();renderCart();}
 var atcBtn=el("atcBtn");
+function isMobileViewport(){return window.matchMedia&&window.matchMedia("(max-width: 767px)").matches;}
 function addCurrentProductToCart(){
   if(!curProd)return;
   if(!productForSale(curProd))return;
@@ -276,7 +277,11 @@ function addCurrentProductToCart(){
   renderCart();
   pulseMobileCartShortcut();
   showNotif(t.addedLabel+": "+curProd.name,"success");
-  setTimeout(openCart,900);
+  if(isMobileViewport()){
+    setTimeout(function(){closeProductDetail();openCart();},80);
+  }else{
+    setTimeout(openCart,520);
+  }
 }
 if(atcBtn)atcBtn.addEventListener("click",addCurrentProductToCart);
 function ensureWishlistUI(){var n=el("wishNav"),d=el("wishlistDrawer");if(n)n.remove();if(d)d.remove();}
