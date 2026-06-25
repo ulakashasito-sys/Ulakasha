@@ -146,6 +146,34 @@
     };
     return map[category]||"";
   }
+  function normalizeAdminCategory(value){
+    var raw=String(value||"").trim();
+    var clean=slugify(raw.replace(/[·•]/g," "));
+    var map={
+      "accessorio-tessile":"accessorio-tessile",
+      "accessorio-tessile-accessorio-tessile":"accessorio-tessile",
+      "abitare-il-corpo-accessorio-tessile":"accessorio-tessile",
+      "abbigliamento":"abbigliamento",
+      "abitare-il-corpo-abbigliamento":"abbigliamento",
+      "bijoux":"bijoux",
+      "abitare-il-corpo-bijoux":"bijoux",
+      "tessile":"tessile",
+      "abitare-la-casa":"tessile",
+      "abitare-la-casa-tessile":"tessile",
+      "tavola":"tavola",
+      "abitare-la-casa-tavola":"tavola",
+      "bottiglia":"bottiglia",
+      "bottiglie":"bottiglia",
+      "abitare-la-casa-tavola-bottiglie":"bottiglia",
+      "tazze":"tazze",
+      "tazza":"tazze",
+      "abitare-la-casa-tavola-tazze":"tazze",
+      "arte":"arte",
+      "abitare-larte":"arte",
+      "abitare-l-arte":"arte"
+    };
+    return map[clean]||clean||"abbigliamento";
+  }
   function normalizeStoragePath(path,category){
     var clean=(path||"").trim().replace(/^\/+/,"");
     if(!clean||/^https?:\/\//i.test(clean))return clean;
@@ -221,6 +249,7 @@
     var value=source[key];
     if(value&&typeof value==="object")return value[locale]||"";
     if(locale==="en")return source[key+"_en"]||"";
+    if(locale==="it")return value||source[key+"_it"]||"";
     return value||"";
   }
 
@@ -272,7 +301,7 @@
     };
     var grouped={};
     products.forEach(function(p){
-      var cat=(p.categoria||"senza-categoria").toString();
+      var cat=normalizeAdminCategory(p.categoria||"senza-categoria");
       if(!grouped[cat])grouped[cat]=[];
       grouped[cat].push(p);
     });
@@ -463,7 +492,7 @@
     slugWasEdited=true;
     lastAutoSlug=product.slug||"";
     el("product-sort").value=product.sort_order||100;
-    el("product-category").value=product.categoria||"abbigliamento";
+    el("product-category").value=normalizeAdminCategory(product.categoria||"abbigliamento");
     el("product-active").checked=product.active!==false;
     var details=product.details||{};
     el("product-for-sale").checked=!(product.for_sale===false||details.non_in_vendita===true||details.non_in_vendita==="true"||details.non_in_vendita==="1");
