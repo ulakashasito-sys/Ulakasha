@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex,nofollow">
   <title>Admin prodotti | Ulakasha</title>
-  <link rel="stylesheet" href="style.css?v=28">
+  <link rel="stylesheet" href="style.css?v=29">
 </head>
 <body class="admin-page admin-locked">
   <main class="admin-shell">
@@ -77,6 +77,13 @@
             <label class="admin-check"><input id="product-for-sale" type="checkbox" checked> In vendita nello shop</label>
             <label class="admin-check"><input id="product-hide-price" type="checkbox"> Nascondi prezzo sul sito</label>
           </div>
+          <label>Layout scheda prodotto
+            <select id="product-layout">
+              <option value="">Automatico</option>
+              <option value="standard">Foto grande, testo a destra</option>
+              <option value="text-below">Descrizioni lunghe sotto la foto</option>
+            </select>
+          </label>
           <section class="admin-dynamic-card">
             <div class="admin-dynamic-head">
               <span class="admin-kicker">Campi categoria</span>
@@ -120,6 +127,6 @@
     </section>
   </main>
   <script src="supabase-config.js?v=2"></script>
-  <script src="admin.js?v=22"></script>
+  <script src="admin.js?v=24"></script>
 </body>
 </html>

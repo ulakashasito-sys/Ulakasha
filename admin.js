@@ -5,6 +5,8 @@
   var BUCKET=window.ULAKASHA_PRODUCT_IMAGES_BUCKET||"product-images";
   var token=localStorage.getItem("ulakasha_admin_token")||"";
   var products=[];
+  var slugWasEdited=false;
+  var lastAutoSlug="";
   var dynamicFieldsets={
     "accessorio-tessile":{
       title:"Abitare il corpo · Accessorio tessile",
@@ -258,10 +260,40 @@
     var box=el("admin-product-list");
     if(!box)return;
     if(!products.length){box.innerHTML='<p class="admin-empty">Nessun prodotto ancora.</p>';return;}
-    box.innerHTML=products.map(function(p){
-      var name=(p.nome&&p.nome.it)||p.name_it||p.slug||p.id;
-      return '<button type="button" class="admin-product-row" data-id="'+String(p.id).replace(/"/g,"&quot;")+'"><strong>'+name+'</strong><span>'+((p.categoria||"").toString())+(p.active?"":" · nascosto")+'</span></button>';
-    }).join("");
+    var labels={
+      "abbigliamento":"Abitare il corpo · Abbigliamento",
+      "accessorio-tessile":"Abitare il corpo · Accessorio tessile",
+      "bijoux":"Abitare il corpo · Bijoux",
+      "tessile":"Abitare la casa · Tessile",
+      "tavola":"Abitare la casa · Tavola",
+      "bottiglia":"Abitare la casa · Bottiglie",
+      "tazze":"Abitare la casa · Tazze",
+      "arte":"Abitare l'arte"
+    };
+    var grouped={};
+    products.forEach(function(p){
+      var cat=(p.categoria||"senza-categoria").toString();
+      if(!grouped[cat])grouped[cat]=[];
+      grouped[cat].push(p);
+    });
+    var order=["abbigliamento","accessorio-tessile","bijoux","tessile","tavola","bottiglia","tazze","arte","senza-categoria"];
+    var html="";
+    order.concat(Object.keys(grouped).filter(function(cat){return order.indexOf(cat)===-1;})).forEach(function(cat){
+      var items=grouped[cat];
+      if(!items||!items.length)return;
+      html+='<div class="admin-product-group"><h3>'+escapeHtml(labels[cat]||cat.replace(/-/g," "))+' <span>'+items.length+'</span></h3>';
+      html+=items.map(function(p){
+        var details=p.details||{};
+        var name=(p.nome&&p.nome.it)||p.name_it||details.nome_prodotto||details.nome_opera||p.slug||p.id;
+        var flags=[];
+        if(p.active===false)flags.push("nascosto");
+        if(details.non_in_vendita==="true"||details.non_in_vendita===true)flags.push("non in shop");
+        if(details.nascondi_prezzo==="true"||details.nascondi_prezzo===true)flags.push("prezzo nascosto");
+        return '<button type="button" class="admin-product-row" data-id="'+String(p.id).replace(/"/g,"&quot;")+'"><strong>'+escapeHtml(name)+'</strong><span>'+escapeHtml(flags.join(" · ")||"visibile")+'</span></button>';
+      }).join("");
+      html+='</div>';
+    });
+    box.innerHTML=html;
   }
 
   function renderDynamicFields(category,values,labels){
@@ -338,16 +370,16 @@
       var enInput=field.querySelector(".dynamic-input-en");
       var itLabel=field.querySelector(".dynamic-label-input");
       var enLabel=field.querySelector(".dynamic-label-input-en");
-      if(itInput&&enInput&&itInput.value.trim()&&!enInput.value.trim()){
+      if(itInput&&enInput&&itInput.value.trim()){
         enInput.value=autoTranslateText(itInput.value);
         count++;
       }
-      if(itLabel&&enLabel&&itLabel.value.trim()&&!enLabel.value.trim()){
+      if(itLabel&&enLabel&&itLabel.value.trim()){
         enLabel.value=autoTranslateText(itLabel.value);
         count++;
       }
     });
-    status("admin-product-status",count?("Traduzioni EN generate: "+count+". Controllale e salva il prodotto."):"Le traduzioni EN sono già compilate.");
+    status("admin-product-status",count?("Traduzioni EN rigenerate: "+count+". Controllale e salva il prodotto."):"Nessun campo italiano da tradurre.");
   }
 
   function detailTitle(details,category){
@@ -365,6 +397,21 @@
       parts.push(details.variante||details.colore||"");
     }
     return parts.filter(Boolean).join(" ");
+  }
+
+  function shouldAutoUpdateSlug(){
+    var current=el("product-slug").value.trim();
+    return !slugWasEdited||!current||current===lastAutoSlug;
+  }
+
+  function updateAutoSlug(){
+    if(!shouldAutoUpdateSlug())return;
+    var details=collectDynamicDetails();
+    var category=el("product-category").value;
+    var slug=slugify(buildSlugSource(details,category));
+    if(!slug)return;
+    lastAutoSlug=slug;
+    el("product-slug").value=slug;
   }
 
   function syncSizeFromDetails(details){
@@ -392,11 +439,14 @@
     el("admin-form-title").textContent="Nuovo prodotto";
     el("product-id").value="";
     el("product-slug").value="";
+    slugWasEdited=false;
+    lastAutoSlug="";
     el("product-sort").value="100";
     el("product-category").value="abbigliamento";
     el("product-active").checked=true;
     el("product-for-sale").checked=true;
     el("product-hide-price").checked=false;
+    el("product-layout").value="";
     ["price","sizes","badge","stripe","images"].forEach(function(id){
       var node=el("product-"+id);
       if(node)node.value=id==="price"?"0":"";
@@ -410,12 +460,15 @@
     el("admin-form-title").textContent="Modifica prodotto";
     el("product-id").value=product.id||"";
     el("product-slug").value=product.slug||"";
+    slugWasEdited=true;
+    lastAutoSlug=product.slug||"";
     el("product-sort").value=product.sort_order||100;
     el("product-category").value=product.categoria||"abbigliamento";
     el("product-active").checked=product.active!==false;
     var details=product.details||{};
     el("product-for-sale").checked=!(product.for_sale===false||details.non_in_vendita===true||details.non_in_vendita==="true"||details.non_in_vendita==="1");
     el("product-hide-price").checked=product.hide_price===true||details.nascondi_prezzo===true||details.nascondi_prezzo==="true"||details.nascondi_prezzo==="1";
+    el("product-layout").value=details.layout_prodotto||"";
     el("product-price").value=product.prezzo||0;
     el("product-sizes").value=(product.taglie||[]).join(", ");
     el("product-badge").value=product.badge||"";
@@ -456,6 +509,8 @@
       else delete details.nascondi_prezzo;
       if(!el("product-for-sale").checked)details.non_in_vendita="true";
       else delete details.non_in_vendita;
+      if(el("product-layout").value)details.layout_prodotto=el("product-layout").value;
+      else delete details.layout_prodotto;
       syncSizeFromDetails(details);
       var category=el("product-category").value;
       var urls=lines(el("product-images").value).map(function(url){return normalizeImageUrl(url,category);}).filter(Boolean);
@@ -528,7 +583,16 @@
       catch(err){status("admin-login-status",err.message);}
     });
     el("admin-product-form").addEventListener("submit",saveProduct);
-    el("product-category").addEventListener("change",function(){renderDynamicFields(this.value,{},{});});
+    el("product-category").addEventListener("change",function(){renderDynamicFields(this.value,{},{});updateAutoSlug();});
+    el("product-slug").addEventListener("input",function(){
+      var current=this.value.trim();
+      slugWasEdited=!!current&&current!==lastAutoSlug;
+      if(!current)slugWasEdited=false;
+    });
+    el("dynamic-fields").addEventListener("input",function(e){
+      var key=e.target&&e.target.getAttribute("data-detail-key");
+      if(key==="nome_prodotto"||key==="nome_opera"||key==="descrizione"||key==="descrizione_prodotto"||key==="variante"||key==="colore")updateAutoSlug();
+    });
     el("admin-generate-urls").addEventListener("click",generateStorageUrls);
     el("admin-translate-en").addEventListener("click",populateEnglishTranslations);
     el("admin-new-product").addEventListener("click",clearForm);
