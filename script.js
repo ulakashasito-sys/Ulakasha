@@ -339,6 +339,7 @@ function openProd(id,nav){
   for(var i=0;i<T[lang].products.length;i++){if(T[lang].products[i].id===id){prod=T[lang].products[i];break;}}
   if(!prod)return;
   curProd=prod;selSz=null;selColor="";selVariantImages=[];
+  applyProductDetailLayout(prod);
   el("pdImg").innerHTML=productCarouselHTML(prod,"pd");
   set("pd-nm",prod.name);
   var priceEl=el("pd-pr");
@@ -364,6 +365,20 @@ function openProd(id,nav){
   var atc=el("atcBtn");if(atc)atc.style.display=canBuy?"":"none";
   var acc=el("productAcc");if(acc)acc.innerHTML=productAccordionsHTML(prod);
   if(nav!==false)showProductDetail();
+}
+function productDetailLayout(prod){
+  var details=prod&&prod.details?prod.details:{};
+  var value=String((prod&&prod.layout)||details.layout_prodotto||"").trim();
+  if(value)return value;
+  var cat=String(prod&&prod.category||"").toLowerCase();
+  if(cat==="tavola"||cat==="bottiglia"||cat==="tazze")return "text-below";
+  return "standard";
+}
+function applyProductDetailLayout(prod){
+  var modal=el("productModal");
+  if(!modal)return;
+  modal.classList.remove("layout-standard","layout-text-below");
+  modal.classList.add("layout-"+productDetailLayout(prod));
 }
 function pickSz(btn,sz){var opts=document.querySelectorAll(".sz-opt");for(var i=0;i<opts.length;i++)opts[i].classList.remove("sel");btn.classList.add("sel");selSz=sz;}
 function splitColorNames(value){
@@ -503,7 +518,7 @@ function productDetailsHTML(prod){
   var html=prod.material?'<p>'+escHtml(autoTranslateText(prod.material,lang)).replace(/\n/g,"<br>")+'</p>':"";
   var details=prod.details||{},labels=prod.details_labels||{},rows=[];
   for(var key in details){
-    if(key==="varianti_colore"||key==="varianti"||key==="color_variants"||key==="non_in_vendita")continue;
+    if(key==="varianti_colore"||key==="varianti"||key==="color_variants"||key==="non_in_vendita"||key==="nascondi_prezzo"||key==="layout_prodotto")continue;
     if(details[key])rows.push('<div class="prod-detail-row"><strong>'+escHtml(autoTranslateText(labels[key]||key.replace(/_/g," "),lang))+'</strong><span>'+escHtml(autoTranslateText(details[key],lang)).replace(/\n/g,"<br>")+'</span></div>');
   }
   if(rows.length)html+='<div class="prod-detail-list">'+rows.join("")+'</div>';
@@ -532,7 +547,7 @@ function productAccordionsHTML(prod){
   var used={},usedLabels={},items=[];
   function add(key,label){
     if(used[key]||!details[key])return;
-    if(key==="varianti_colore"||key==="varianti"||key==="color_variants"||key==="nascondi_prezzo"||key==="non_in_vendita")return;
+    if(key==="varianti_colore"||key==="varianti"||key==="color_variants"||key==="nascondi_prezzo"||key==="non_in_vendita"||key==="layout_prodotto")return;
     if(key==="colore"||key==="nome_prodotto"||key==="nome_opera"||key==="dimensione_taglia"||key==="dimensione"||key==="dimensioni"||key==="variante")return;
     used[key]=true;
     var finalLabel=labels[key]||label||key.replace(/_/g," ");
@@ -553,17 +568,21 @@ function productImages(prod){
   var imgs=prod.images&&prod.images.length?prod.images.slice():[];
   if(!imgs.length&&prod.img)imgs=[prod.img];
   return imgs.map(function(img){
+    img=preferPrimaryStorageFolder(img,prod);
     if(/^https?:\/\//.test(img)||img.indexOf("data:image")===0)return img;
     return IMGS[img]||img;
   }).filter(Boolean);
+}
+function preferPrimaryStorageFolder(src,prod){
+  return String(src||"");
 }
 function productStorageFolders(category){
   var value=String(category||"").toLowerCase().trim();
   var slug=value.replace(/\s+/g,"-");
   if(slug==="accessorio-tessile"||value.indexOf("accessorio tessile")!==-1||value.indexOf("foul")!==-1||value.indexOf("stola")!==-1)return ["accessorio tessile"];
-  if(value.indexOf("bottiglia")!==-1||value.indexOf("bottle")!==-1||value.indexOf("cristall")!==-1||value.indexOf("crystal")!==-1)return ["bottiglia","bottiglie","abitare la casa","tavola"];
-  if(value.indexOf("tazza")!==-1||value.indexOf("tazze")!==-1||value.indexOf("cup")!==-1||value.indexOf("ceramic")!==-1)return ["tazze","tazza","abitare la casa","tavola"];
-  if(value.indexOf("tavola")!==-1)return ["tavola","abitare la casa","tazze","bottiglia"];
+  if(value.indexOf("bottiglia")!==-1||value.indexOf("bottle")!==-1||value.indexOf("cristall")!==-1||value.indexOf("crystal")!==-1)return ["abitare la casa","bottiglia","bottiglie","tavola"];
+  if(value.indexOf("tazza")!==-1||value.indexOf("tazze")!==-1||value.indexOf("cup")!==-1||value.indexOf("ceramic")!==-1)return ["abitare la casa","tazze","tazza","tavola"];
+  if(value.indexOf("tavola")!==-1)return ["abitare la casa","tavola","tazze","bottiglia"];
   if(value.indexOf("abitare la casa")!==-1||value.indexOf("casa")!==-1||value.indexOf("home")!==-1||slug==="tessile"||value.indexOf("cusc")!==-1||value.indexOf("pillow")!==-1)return ["abitare la casa","tessile"];
   if(value.indexOf("abbigliamento")!==-1)return ["abbigliamento"];
   if(value.indexOf("bijoux")!==-1)return ["bijoux"];
@@ -675,10 +694,39 @@ function autoTranslateText(value,locale){
     "Le parole dell'Akasha":"Akasha words","Frasi Akasha":"Akasha phrases","Materiale e cura":"Materials and care","Composizione":"Composition","Colore":"Color","Variante":"Variant","Varianti colore":"Color variants",
     "Dimensione":"Size","Dimensioni":"Dimensions","Dimensione - taglia":"Size","Taglia":"Size","Tecnica":"Technique","Spedizioni e resi":"Shipping and returns",
     "Cuscino Artigianale 50x50":"Artisanal Cushion 50x50","Abitare la casa":"Inhabit the home","Abitare il corpo":"Inhabit the body","Abitare l'arte":"Inhabit art",
-    "Accessorio tessile":"Textile accessory","Abbigliamento":"Clothing","Tessile":"Textile","Tavola":"Tableware","Bottiglie":"Bottles","Tazze":"Cups","Arte":"Art"
+    "Accessorio tessile":"Textile accessory","Abbigliamento":"Clothing","Tessile":"Textile","Tavola":"Tableware","Bottiglie":"Bottles","Tazze":"Cups","Arte":"Art",
+    "Foulard balena":"Whale scarf","Scarf balena":"Whale scarf","Foulard Donna Oro":"Donna Oro scarf","Scarf Donna Oro":"Donna Oro scarf","Bandeau Madre Cacao":"Madre Cacao bandeau"
   };
   if(exact[text])return exact[text];
   var phrases=[
+    [/Il foulard "Donna d'oro"/gi,"The \"Donna d'oro\" scarf"],
+    [/Il dipinto riportato su stampa\s+è stato eseguito originalmente su tela con\s+acrilico e pastelli\./gi,"The painting reproduced as a print was originally created on canvas with acrylic and pastels."],
+    [/I suoi colori compatti e decisi svelano la forma iconica di\s+un volto di donna, che al suo fianco porta la scritta/gi,"Its compact, decisive colours reveal the iconic shape of a woman's face, with an inscription beside it"],
+    [/L'immagine riportata su silk\s+è il dettaglio di un dipinto su carta a tecniche mista\./gi,"The image printed on silk is a detail from a mixed-media painting on paper."],
+    [/L'immagine riportata su seta\s+è il dettaglio di un dipinto su carta a tecniche mista\./gi,"The image printed on silk is a detail from a mixed-media painting on paper."],
+    [/L'immagine riportata su silk\s+è il dettaglio di un dipinto su carta a tecnica mista\./gi,"The image printed on silk is a detail from a mixed-media painting on paper."],
+    [/I colori si dissolvono in una trasparenza quasi onirica e\s+i tratti pastello accarezzano la forma, come a\s+svegliarla da un sonno\./gi,"The colours dissolve into an almost dreamlike transparency, while pastel strokes caress the form as if awakening it from sleep."],
+    [/La stampa Madre Cacao riprende i fiori e il frutto della pianta del Cacao\./gi,"The Madre Cacao print recalls the flowers and fruit of the cacao plant."],
+    [/Le pennellate acquarellate del fondo la rendono molto fresca\./gi,"The watercolour brushstrokes in the background make it feel very fresh."],
+    [/Le ali permettono di osservare l’eterno\./gi,"The wings allow one to observe the eternal."],
+    [/Le ali permettono di osservare l'eterno\./gi,"The wings allow one to observe the eternal."],
+    [/La balena vibra, le sue parole sono onde che spostano materia, che creano maree\./gi,"The whale vibrates; her words are waves that move matter and create tides."],
+    [/Lei è colei che nel mare dell'etere risale e con occhio vigile collega le memorie alle stelle creando costellazioni nello spazio infinito con il tempo eterno\./gi,"She is the one who rises through the sea of ether and, with a watchful eye, connects memories to the stars, creating constellations in infinite space with eternal time."],
+    [/Lei è la balena che si muove nel mare infinito dell’akasha\./gi,"She is the whale moving through the infinite sea of Akasha."],
+    [/Lei è la balena che si muove nel mare infinito dell'akasha\./gi,"She is the whale moving through the infinite sea of Akasha."],
+    [/Il fiore del cacao si schiude quando si collega al Sole formando una costellazione\./gi,"The cacao flower opens when it connects to the Sun, forming a constellation."],
+    [/Osservo il mondo mio attraverso la stella del fiore dell'amore/gi,"I observe my world through the star of the flower of love"],
+    [/Materiale principale: Seta/gi,"Main material: Silk"],
+    [/Evitare il lavaggio in acqua/gi,"Avoid washing in water"],
+    [/Non utilizzare candeggina o prodotti aggressivi/gi,"Do not use bleach or harsh products"],
+    [/Evitare l'asciugatura naturale e il tumbler/gi,"Avoid natural drying and tumble drying"],
+    [/Stirare a temperatura bassa/gi,"Iron at low temperature"],
+    [/Lavaggio a secco con percloroetilene/gi,"Dry clean with perchloroethylene"],
+    [/Spedizioni e resi gratuiti/gi,"Free shipping and returns"],
+    [/La spedizione è gratuita e avviene in 2-3 giorni lavorativi dalla conferma dell'ordine\./gi,"Shipping is free and takes 2-3 business days from order confirmation."],
+    [/Una volta spedito, potrai seguire il tuo pacco in ogni momento tramite il numero di tracciamento che riceverai via email\./gi,"Once shipped, you can track your parcel at any time using the tracking number you will receive by email."],
+    [/Hai 14 giorni dalla ricezione per richiedere un reso gratuito\./gi,"You have 14 days from receipt to request a free return."],
+    [/Il ritiro viene organizzato e gestito direttamente dai nostri corrieri\./gi,"Collection is organised and handled directly by our couriers."],
     [/Tessuto a mano su telai del 1800, in collaborazione con Tessitura La Colombina\./gi,"Handwoven on 19th-century looms, in collaboration with Tessitura La Colombina."],
     [/Tessuto a mano su telai del 1800/gi,"Handwoven on 19th-century looms"],
     [/Fili preziosi e naturali/gi,"Precious natural yarns"],[/cashmere, cotone, seta, lino/gi,"cashmere, cotton, silk, linen"],
@@ -695,7 +743,7 @@ function autoTranslateText(value,locale){
   for(var i=0;i<phrases.length;i++)text=text.replace(phrases[i][0],phrases[i][1]);
   var words=[
     [/\bCuscino Artigianale\b/gi,"Artisanal Cushion"],[/\bcuscino artigianale\b/gi,"artisanal cushion"],[/\bCuscino\b/gi,"Cushion"],[/\bcuscino\b/gi,"cushion"],[/\bFoulard\b/gi,"Scarf"],[/\bfoulard\b/gi,"scarf"],
-    [/\bAbito\b/gi,"Dress"],[/\babito\b/gi,"dress"],[/\bKaftano\b/gi,"Kaftan"],[/\bPantalone\b/gi,"Trousers"],[/\bpantalone\b/gi,"trousers"],[/\bMadre\b/gi,"Mother"],[/\bmadre\b/gi,"mother"],
+    [/\bAbito\b/gi,"Dress"],[/\babito\b/gi,"dress"],[/\bKaftano\b/gi,"Kaftan"],[/\bPantalone\b/gi,"Trousers"],[/\bpantalone\b/gi,"trousers"],[/\bBandeau\b/gi,"Bandeau"],[/\bbandeau\b/gi,"bandeau"],[/\bMadre\b/gi,"Mother"],[/\bmadre\b/gi,"mother"],[/\bBalena\b/gi,"Whale"],[/\bbalena\b/gi,"whale"],
     [/\bLibellula\b/gi,"Dragonfly"],[/\blibellula\b/gi,"dragonfly"],[/\bazzurra\b/gi,"light blue"],[/\bgiallino\b/gi,"pale yellow"],[/\bgiallo\b/gi,"yellow"],[/\bverde\b/gi,"green"],[/\brosa\b/gi,"pink"],[/\bcacao\b/gi,"cocoa"],
     [/\bceramica\b/gi,"ceramic"],[/\bfrangia\b/gi,"fringe"],[/\bfrange\b/gi,"fringes"],[/\bTessuto\b/gi,"Fabric"],[/\btessuto\b/gi,"fabric"],[/\bTessile\b/gi,"Textile"],[/\btessile\b/gi,"textile"],
     [/\bDescrizione\b/gi,"Description"],[/\bdescrizione\b/gi,"description"],[/\bProdotto\b/gi,"Product"],[/\bprodotto\b/gi,"product"],[/\bOpera\b/gi,"Artwork"],[/\bopera\b/gi,"artwork"],[/\bMateriale\b/gi,"Material"],[/\bmateriale\b/gi,"material"],
@@ -731,7 +779,7 @@ function localizedDetails(prod,locale){
   var source=prod.details||{};
   var scoped=prod["details_"+locale]||prod[locale+"_details"]||source[locale]||{};
   var result={};
-  function skipKey(key){return key==="it"||key==="en"||/_it$|_en$/.test(key);}
+  function skipKey(key){return key==="it"||key==="en"||key==="layout_prodotto"||/_it$|_en$/.test(key);}
   for(var key in source){
     if(skipKey(key))continue;
     result[key]=localizedValue(source[key],locale)||autoTranslateText(source[key],locale);
@@ -841,6 +889,7 @@ function normalizeBackendProduct(prod,locale){
     material: rootLocalizedValue(prod,"materiale",locale)||rootLocalizedValue(prod,"material",locale)||detailMaterial(details),
     story: rootLocalizedValue(prod,"storia",locale)||rootLocalizedValue(prod,"story",locale)||rootLocalizedValue(prod,"descrizione",locale)||fallbackStory||"",
     category: prod.categoria||prod.category||prod.shop_category||detailValue(details,"categoria","categoria_shop","macro_categoria","sottocategoria")||"",
+    layout: prod.layout_prodotto||(prod.details&&prod.details.layout_prodotto)||"",
     hide_price: prod.hide_price===true||prod.nascondi_prezzo===true||details.nascondi_prezzo===true||details.nascondi_prezzo==="true"||details.nascondi_prezzo==="1",
     details: details,
     details_labels: localizedDetailLabels(prod,locale),
@@ -889,7 +938,7 @@ function productCategoryText(prod){
   var details=prod.details||{};
   var detailCategory=detailValue(details,"categoria","categoria_shop","macro_categoria","sottocategoria","categoria_prodotto","sezione","famiglia","percorso","path","slug_categoria");
   var detailPath=detailValue(details,"category_path","percorso_categoria","percorso_shop","shop_path");
-  var imagePaths=productImages(prod).join(" ");
+  var imagePaths=[prod.img,(prod.images||[]).join(" ")].join(" ");
   return [prod.category,prod.shop_category,prod.categoria,prod.category_path,prod.path,prod.slug,prod.id,detailCategory,detailPath,prod.sub,prod.name,imagePaths].join(" ");
 }
 function productShopCategory(prod){
@@ -928,6 +977,7 @@ function getFilteredProducts(products){
     var cat=isShopPage()?productShopCategory(prod):productMacroCategory(prod);
     if(currentFilter==="body")return cat==="body-clothing"||cat==="body-textile-accessory"||cat==="body-bijoux"||cat==="body";
     if(currentFilter==="home")return cat==="home-textile"||cat==="home-table"||cat==="home-bottles"||cat==="home-cups"||cat==="home";
+    if(currentFilter==="home-table")return cat==="home-table"||cat==="home-bottles"||cat==="home-cups";
     return cat===currentFilter;
   });
 }
