@@ -1284,7 +1284,7 @@ function applyLang(){
   set("fa",t.fAll);set("fs",t.fSilk);set("fk",t.fKnit);set("ff",t.fSc);set("facc",t.fAcc);
   if(isShopPage()){
     set("sh-ttl",isCreazioniPage()?(lang==="it"?"CREAZIONI":"CREATIONS"):(lang==="it"?"Shop":"Shop"));
-    set("sh-sub",isCreazioniPage()?(lang==="it"?"Abiti, opere d'arte, oggetti per la casa.":"Clothing, artworks and objects for the home."):(lang==="it"?"Una selezione editoriale per scoprire l universo Ulakasha: arte indossabile, capi su ordinazione, ceramiche, cristalli e oggetti Casa & Lifestyle":"An editorial selection to discover the Ulakasha universe: wearable art, made-to-order garments, ceramics, crystals and Home & Lifestyle objects."));
+    set("sh-sub",isCreazioniPage()?(lang==="it"?"Abiti, opere d'arte, oggetti per la casa.":"Clothing, artworks and objects for the home."):"");
     set("shop-copy",isCreazioniPage()?(lang==="it"?"Ogni creazione porta in sé parole che arrivano da Akasha, uno spazio infinito d'amore - e con esse, il potenziale di avvicinare l'essere umano al ricordo di sé. Un atto sacro, nella vita di tutti i giorni.":"Each creation carries words that come from Akasha, an infinite space of love - and with them, the potential to bring the human being closer to the memory of the self. A sacred act in everyday life."):"");
     set("fa",lang==="it"?"Tutto":"All");
     set("fg-body",lang==="it"?"Abitare il corpo":"Inhabit the body");

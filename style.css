@@ -518,7 +518,7 @@ body{letter-spacing:.01em;}
 #lusso-body-lusso p{font-size:clamp(17px,2vw,24px);line-height:1.75;letter-spacing:.02em;}
 #lusso-body-arte p{font-size:clamp(17px,2vw,24px);line-height:1.75;letter-spacing:.02em;}
 .hero + .lusso-section{padding-top:44px;}
-.brand-intro-copy{font-family:'Poppins',sans-serif;font-weight:300;font-size:clamp(18px,2vw,26px);color:#3F6FA5;line-height:1.75;letter-spacing:.06em;text-align:center;max-width:980px;margin:0 auto;font-variant:small-caps;}
+.brand-intro-copy{font-family:'Poppins',sans-serif;font-weight:400;font-size:clamp(17px,2vw,24px);color:#3F6FA5;line-height:1.75;letter-spacing:.02em;text-align:center;max-width:980px;margin:0 auto;font-variant:small-caps;}
 .lusso-body strong{font-weight:700;font-variant:normal;text-transform:uppercase;}
 .lusso-bracket{color:var(--blue);opacity:.6;}
 
