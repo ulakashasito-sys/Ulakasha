@@ -140,9 +140,9 @@ ul{list-style:none;}
 .mean-div{width:1px;height:48px;background:var(--gold);margin:44px auto;}
 
 /* COSMOS */
-.cosmos{display:grid;grid-template-columns:1fr 1fr;}
+.cosmos{display:grid;grid-template-columns:1fr 1fr;max-width:1100px;margin:0 auto;background:#fff;column-gap:64px;}
 .cosmos-img{position:relative;overflow:hidden;min-height:500px;}
-.cosmos-img img{width:100%;height:100%;object-fit:cover;object-position:right center;}
+.cosmos-img img{width:100%;height:100%;object-fit:cover;object-position:center center;}
 .cosmos-txt{background:var(--navy);padding:80px 64px;display:flex;flex-direction:column;justify-content:center;}
 .cosmos-txt .t-label{color:rgba(208,223,240,.42);}
 .cosmos-txt .t-heading{color:var(--gold-l);font-style:italic;}
@@ -162,7 +162,7 @@ ul{list-style:none;}
 .pcard-img{aspect-ratio:3/4;background:var(--ivory);position:relative;overflow:hidden;margin-bottom:14px;}
 .pcard-img-inner{position:absolute;inset:0;padding:4px;display:flex;align-items:center;justify-content:center;transition:transform .6s cubic-bezier(.25,.1,.25,1);}
 .pcard:hover .pcard-img-inner{transform:scale(1.04);}
-.pcard-img-inner img{width:100%;height:100%;object-fit:contain;}
+.pcard-img-inner img{width:100%;height:100%;object-fit:contain;object-position:center center;}
 .prod-carousel{overflow:hidden;}
 .prod-carousel img{position:absolute;inset:4px;width:calc(100% - 8px);height:calc(100% - 8px);object-fit:contain;opacity:0;transition:opacity .35s ease;}
 .prod-carousel img.on{opacity:1;}
@@ -201,6 +201,8 @@ ul{list-style:none;}
 .shop-intro:has(.shop-intro-copy:empty){padding-top:0;}
 .shop-intro-copy{max-width:900px;font-size:var(--editorial-copy-size);line-height:var(--editorial-copy-line);color:#535558;font-style:italic;}
 .shop-intro-copy:empty{display:none;}
+.creations-page .shop-intro{justify-content:center;text-align:center;}
+.creations-page .shop-intro-copy{max-width:1080px;margin:0 auto;text-align:center;}
 .shop-intro-meta{font-family:'Poppins',sans-serif;font-weight:400;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--blue);white-space:nowrap;}
 .shop-filters{padding:16px 48px;display:flex;gap:9px;flex-wrap:wrap;border-bottom:1px solid rgba(74,111,165,.09);background:var(--cream);position:sticky;top:88px;z-index:100;}
 .shop-filters-tree{align-items:center;row-gap:10px;}
@@ -423,6 +425,7 @@ footer{background:var(--navy);padding:72px 64px 36px;}
 @media(max-width:900px){
   .lux-strip-in{padding:18px 20px;grid-template-columns:1fr;}
   .grid-2,.cosmos,.art-feat-in,.pd-wrap,.founders,.art-strip{grid-template-columns:1fr;}
+  .cosmos{column-gap:0;}
   .grid-prev,.shop-grid{grid-template-columns:repeat(2,1fr);}
   .nav{padding:14px 20px;}
   .nav-links{display:none;}
@@ -518,7 +521,7 @@ body{letter-spacing:.01em;}
 #lusso-body-lusso p{font-size:clamp(17px,2vw,24px);line-height:1.75;letter-spacing:.02em;}
 #lusso-body-arte p{font-size:clamp(17px,2vw,24px);line-height:1.75;letter-spacing:.02em;}
 .hero + .lusso-section{padding-top:44px;}
-.brand-intro-copy{font-family:'Poppins',sans-serif;font-weight:400;font-size:clamp(17px,2vw,24px);color:#3F6FA5;line-height:1.75;letter-spacing:.02em;text-align:center;max-width:980px;margin:0 auto;font-variant:small-caps;}
+.brand-intro-copy{font-family:'Poppins',sans-serif;font-weight:400;font-size:clamp(17px,2vw,24px);color:#3F6FA5;line-height:1.75;letter-spacing:.02em;text-align:center;max-width:980px;margin:0 auto;font-variant:small-caps;text-transform:none;}
 .lusso-body strong{font-weight:700;font-variant:normal;text-transform:uppercase;}
 .lusso-bracket{color:var(--blue);opacity:.6;}
 
@@ -537,7 +540,7 @@ body{letter-spacing:.01em;}
 .ulakasha-testi-section{background:#fff;padding:80px 64px;}
 .ulakasha-testi-in{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start;}
 .ulakasha-big{font-family:'Poppins',sans-serif;font-weight:200;font-size:clamp(48px,7vw,96px);color:var(--blue-d);line-height:1;margin-bottom:28px;letter-spacing:-.01em;}
-.ulakasha-big--alt{color:var(--muted);font-size:clamp(36px,5vw,72px);}
+.ulakasha-big--alt{color:var(--muted);font-size:clamp(48px,7vw,96px);}
 .ulakasha-testi-body{font-family:'Poppins',sans-serif;font-weight:300;font-size:var(--editorial-copy-size);line-height:var(--editorial-copy-line);color:#535558;}
 
 /* ─── LUX PILL UPDATES (3 cols: gold dot separator) ─── */
@@ -559,13 +562,13 @@ body{letter-spacing:.01em;}
   .lux-pill{border-right:none;border-bottom:1px dotted rgba(196,151,58,.3);padding:32px 24px;}
 }
 /* ─── ŪLAKASHA INLINE SECTION (after marquee) ─── */
-.ulakasha-inline-section{background:#fff;padding:80px 64px 64px;}
-.ulakasha-inline-in{max-width:680px;}
+.ulakasha-inline-section{background:#fff;padding:80px 64px 64px;text-align:center;}
+.ulakasha-inline-in{max-width:980px;margin:0 auto;}
 .ulakasha-inline-heading{font-family:'Poppins',sans-serif;font-weight:200;font-size:clamp(48px,6vw,88px);color:#BD9743;line-height:1;margin-bottom:20px;letter-spacing:-.01em;}
 .ulakasha-inline-body{font-family:'Poppins',sans-serif;font-weight:300;font-size:var(--editorial-copy-size);line-height:var(--editorial-copy-line);color:#535558;margin-bottom:56px;}
 @media(max-width:767px){
   .ulakasha-inline-section{padding:48px 24px;}
-  .ulakasha-inline-in{grid-template-columns:1fr;gap:48px;}
+  .ulakasha-inline-in{grid-template-columns:1fr;gap:48px;max-width:100%;}
   .ulakasha-inline-sep{display:none;}
 }
 
@@ -880,6 +883,12 @@ body{letter-spacing:.01em;}
 .art-intermezzo-text h2{color:var(--blue-d);font-size:clamp(1.7rem,3.5vw,2.8rem);}
 .art-intermezzo-text p{color:#535558;font-size:1rem;margin-top:12px;}
 .art-intermezzo-text em{font-style:italic;color:var(--blue-d);}
+.art-intermezzo:not(.creations-art-preview){height:clamp(420px,48vw,620px);background:#0d1f3c;}
+.art-intermezzo:not(.creations-art-preview) img{object-fit:cover;object-position:center 36%;background:#0d1f3c;}
+.art-intermezzo:not(.creations-art-preview) .art-intermezzo-overlay{background:linear-gradient(90deg,rgba(13,31,60,.72) 0%,rgba(13,31,60,.42) 34%,rgba(13,31,60,.08) 64%,rgba(13,31,60,.2) 100%);}
+.art-intermezzo:not(.creations-art-preview) .art-intermezzo-text h2,
+.art-intermezzo:not(.creations-art-preview) .art-intermezzo-text em{color:#fff;text-shadow:0 3px 18px rgba(13,31,60,.48);}
+.art-intermezzo:not(.creations-art-preview) .art-intermezzo-text p{color:rgba(255,255,255,.82);}
 .creations-art-preview{display:none;margin:8px auto 0;max-width:1300px;height:260px;}
 .creations-art-preview.on{display:block;}
 .creations-art-preview img{object-fit:cover;}
@@ -1185,6 +1194,67 @@ body{letter-spacing:.01em;}
 .collab-item p{font-family:'Poppins',sans-serif;font-weight:300;font-size:var(--editorial-copy-size);line-height:var(--editorial-copy-line);color:#535558;max-width:900px;}
 .collab-item a{color:var(--blue-d);font-weight:500;text-decoration:none;border-bottom:1px solid rgba(44,74,124,.35);}
 .collab-item a:hover{color:var(--gold);border-bottom-color:var(--gold);}
+
+/* Public pages: typography aligned to Collaborazioni */
+.shop-h h1,
+.ab-hero h1,
+.contatti-left h1,
+.contatti-left h2,
+.concept-store-page .ev-hero h1,
+.collection-title{
+  font-family:'Poppins',sans-serif;
+  font-weight:500;
+  font-size:clamp(34px,5vw,64px);
+  line-height:1.08;
+  color:var(--blue-d);
+  letter-spacing:0;
+}
+.shop-h p,
+.shop-intro-copy,
+.ab-hero p,
+.contatti-left p,
+.concept-store-page .ev-desc,
+.collection-quote,
+.collection-body p,
+.curator-note p,
+.bio-credits p,
+.art-intermezzo-text p{
+  font-family:'Poppins',sans-serif;
+  font-weight:300;
+  font-size:var(--editorial-copy-size);
+  line-height:var(--editorial-copy-line);
+  color:#535558;
+  letter-spacing:0;
+}
+.shop-h p,
+.shop-intro-copy,
+.ab-hero p,
+.collection-quote{
+  font-style:normal;
+}
+.collection-kicker,
+.contatti-left .sub,
+.founder-role,
+.concept-store-page .ev-hero p,
+.art-intermezzo-text .t-label{
+  font-family:'Poppins',sans-serif;
+  font-weight:600;
+  font-size:10px;
+  letter-spacing:.28em;
+  text-transform:uppercase;
+  color:var(--gold);
+}
+.founder-nm,
+.collection-body h2,
+.curator-note h3,
+.art-intermezzo-text h2{
+  font-family:'Poppins',sans-serif;
+  font-weight:500;
+  font-size:clamp(22px,2.8vw,36px);
+  line-height:1.2;
+  color:var(--blue-d);
+  letter-spacing:0;
+}
 .shop-concept-link{display:flex;justify-content:center;align-items:center;text-align:center;margin:18px auto 0;padding:12px 18px;max-width:680px;border:1px solid rgba(44,74,124,.18);font-family:'Poppins',sans-serif;font-weight:500;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--blue-d);text-decoration:none;background:#fff;}
 .shop-concept-link:hover{border-color:rgba(196,151,58,.65);color:var(--gold);}
 .shop-filters .f-btn,.shop-filters .filter-dd-toggle,.shop-filters .filter-group-label{color:var(--blue-d);}
@@ -1226,4 +1296,20 @@ body{letter-spacing:.01em;}
   .collab-hero h1{font-size:34px;}
   .collab-hero p{font-size:17px;line-height:1.7;}
   .collab-item p{font-size:17px;line-height:1.7;}
+  .shop-h h1,
+  .ab-hero h1,
+  .contatti-left h1,
+  .contatti-left h2,
+  .concept-store-page .ev-hero h1,
+  .collection-title{font-size:34px;line-height:1.08;}
+  .shop-h p,
+  .shop-intro-copy,
+  .ab-hero p,
+  .contatti-left p,
+  .concept-store-page .ev-desc,
+  .collection-quote,
+  .collection-body p,
+  .curator-note p,
+  .bio-credits p,
+  .art-intermezzo-text p{font-size:17px;line-height:1.7;}
 }

@@ -504,6 +504,7 @@
     el("product-active").checked=true;
     el("product-for-sale").checked=true;
     el("product-hide-price").checked=false;
+    el("product-show-description-below").checked=false;
     el("product-layout").value="";
     ["price","sizes","badge","stripe","images"].forEach(function(id){
       var node=el("product-"+id);
@@ -526,6 +527,7 @@
     var details=product.details||{};
     el("product-for-sale").checked=!(product.for_sale===false||details.non_in_vendita===true||details.non_in_vendita==="true"||details.non_in_vendita==="1");
     el("product-hide-price").checked=product.hide_price===true||details.nascondi_prezzo===true||details.nascondi_prezzo==="true"||details.nascondi_prezzo==="1";
+    el("product-show-description-below").checked=details.mostra_descrizione_sotto===true||details.mostra_descrizione_sotto==="true"||details.mostra_descrizione_sotto==="1"||details.mostra_descrizione_anche_sotto===true||details.mostra_descrizione_anche_sotto==="true"||details.mostra_descrizione_anche_sotto==="1";
     el("product-layout").value=details.layout_prodotto||"";
     el("product-price").value=product.prezzo||0;
     el("product-sizes").value=(product.taglie||[]).join(", ");
@@ -567,6 +569,11 @@
       else delete details.nascondi_prezzo;
       if(!el("product-for-sale").checked)details.non_in_vendita="true";
       else delete details.non_in_vendita;
+      if(el("product-show-description-below").checked)details.mostra_descrizione_sotto="true";
+      else{
+        delete details.mostra_descrizione_sotto;
+        delete details.mostra_descrizione_anche_sotto;
+      }
       if(el("product-layout").value)details.layout_prodotto=el("product-layout").value;
       else delete details.layout_prodotto;
       syncSizeFromDetails(details);
