@@ -25,7 +25,7 @@
 <meta name="twitter:description" content="Creazioni Ulakasha: abiti, opere d'arte e oggetti per la casa. Ogni creazione porta in sé parole che arrivano da Akasha.">
 <meta name="twitter:image" content="https://www.ulakasha.com/assets/opera-order-reversed.jpg">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","name":"Creazioni Ulakasha | Abiti, opere d'arte e oggetti per la casa","url":"https://www.ulakasha.com/collezione.html","description":"Creazioni Ulakasha: abiti, opere d'arte e oggetti per la casa. Ogni creazione porta in sé parole che arrivano da Akasha.","image":"https://www.ulakasha.com/assets/opera-order-reversed.jpg","isPartOf":{"@type":"WebSite","name":"Ulakasha","url":"https://www.ulakasha.com"},"publisher":{"@type":"Organization","name":"Ulakasha","sameAs":["https://www.instagram.com/ulakashaofficial/","https://www.tiktok.com/@ulakashaofficial"]}}</script>
-<link rel="stylesheet" href="style.css?v=40">
+<link rel="stylesheet" href="style.css?v=50">
 <script>(function(){var s=localStorage.getItem("ulang");if(s&&s!=="it")document.documentElement.setAttribute("data-lang-init",s);})();</script>
 </head>
 <body>
@@ -125,16 +125,31 @@
 </nav>
 
 <div class="page on creations-page" id="p-creazioni" data-catalog-page="creazioni">
-<div class="shop-h"><h1 id="sh-ttl">CREAZIONI</h1><p id="sh-sub">Abiti, opere d'arte, oggetti per la casa.</p></div>
+<div class="shop-h"><h1 id="sh-ttl">Creazioni</h1><p id="sh-sub">Abiti, opere d'arte, oggetti per la casa.</p></div>
 <div class="shop-intro">
   <div class="shop-intro-copy" id="shop-copy">Ogni creazione porta in sé parole che arrivano da Akasha, uno spazio infinito d'amore - e con esse, il potenziale di avvicinare l'essere umano al ricordo di sé. Un atto sacro, nella vita di tutti i giorni.</div>
   <div class="shop-intro-meta" id="shop-meta" style="display:none;">Catalogo dinamico · sincronizzato con backend</div>
 </div>
-<div class="shop-filters creations-filters">
+<div class="shop-filters shop-filters-tree creations-filters">
   <button class="f-btn on" id="fa">Tutto</button>
-  <button class="f-btn" id="fs">Abitare il corpo</button>
-  <button class="f-btn" id="fk">Abitare la casa</button>
-  <button class="f-btn" id="ff">Abitare l'arte</button>
+  <div class="filter-dd">
+    <button class="filter-dd-toggle" type="button" id="fg-body" aria-expanded="false">Abitare il corpo</button>
+    <div class="filter-dd-menu">
+      <button class="f-btn" id="f-body">Tutto corpo</button>
+      <button class="f-btn" id="f-clothing">Abbigliamento</button>
+      <button class="f-btn" id="f-textile-accessory">Accessorio tessile</button>
+      <button class="f-btn" id="f-bijoux">Bijoux</button>
+    </div>
+  </div>
+  <div class="filter-dd">
+    <button class="filter-dd-toggle" type="button" id="fg-home" aria-expanded="false">Abitare la casa</button>
+    <div class="filter-dd-menu">
+      <button class="f-btn" id="f-home">Tutta casa</button>
+      <button class="f-btn" id="f-home-textile">Tessile</button>
+      <button class="f-btn" id="f-table">Tavola</button>
+    </div>
+  </div>
+  <button class="f-btn" id="f-art">Abitare l'arte</button>
 </div>
 <section class="art-intermezzo creations-art-preview" id="artPreview" aria-label="Abitare l'arte">
   <div class="art-intermezzo-overlay"></div>
@@ -161,6 +176,6 @@
 </div>
 
 <script src="supabase-config.js?v=2"></script>
-<script src="script.js?v=45"></script>
+<script src="script.js?v=58"></script>
 </body>
 </html>

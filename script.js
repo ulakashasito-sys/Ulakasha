@@ -14,8 +14,12 @@ T.it.lsHomeP2="Ogni pezzo è pensato come un atto di presenza consapevole: porta
 T.en.lsHomeP2="Each piece is conceived as an act of conscious presence: bringing into your space the same energy you wear.";
 T.it.lsItem1N="Bottiglie in cristallo";T.en.lsItem1N="Crystal bottles";
 T.it.lsItem1D="Con opere originali e testi poetici — i quattro elementi, l'akasha.";T.en.lsItem1D="With original artworks and poetic texts — the four elements, the akasha.";
+T.it.lsItem1Logo="Madre Cristallo";T.en.lsItem1Logo="Madre Cristallo";
+T.it.lsItem1Link="Scopri Madre Cristallo";T.en.lsItem1Link="Discover Madre Cristallo";
 T.it.lsItem2N="Ceramiche";T.en.lsItem2N="Ceramics & glasses";
 T.it.lsItem2D="Pezzi artigianali con disegni e segni di Francesca Càndito e Valeria Villegas Duenas.";T.en.lsItem2D="Artisanal pieces with Francesca Càndito and Valeria Villegas Duenas's drawings and signs.";
+T.it.lsItem2Logo="Antārĭus";T.en.lsItem2Logo="Antārĭus";
+T.it.lsItem2Link="Scopri Antārĭus";T.en.lsItem2Link="Discover Antārĭus";
 T.it.lsItem3N="Su ordinazione";T.en.lsItem3N="Custom orders";
 T.it.lsItem3D="Creazioni personalizzate per te o per chi ami.";T.en.lsItem3D="Personalised creations for you or those you love.";
 T.it.lsItem4N="Made in Italy";T.en.lsItem4N="Made in Italy";
@@ -27,11 +31,15 @@ T.it.lsHomeCta2="Richiedi informazioni";T.en.lsHomeCta2="Request information";
 // ── CONTATTI TRANSLATIONS ─────────────────────────────────────────────
 T.it.ctSub="Contatti";T.en.ctSub="Contact";
 T.it.ctH="Vieni a trovarci<br>a Milano";T.en.ctH="Come visit us<br>in Milan";
-T.it.ctP="I capi di ūlakasha, gli accessori, gli oggetti e le opere d'arte puoi acquistarli nel nostro concept store a Milano o ordinarli online. Ti aspettiamo.";
-T.en.ctP="You can purchase ūlakasha garments, accessories, objects and artworks in our concept store in Milan or order them online. We look forward to welcoming you.";
+T.it.ctP="I capi di ūlakasha, gli accessori, gli oggetti e le opere d'arte sono disponibili nel nostro concept store a Milano e online. Ti aspettiamo.";
+T.en.ctP="ūlakasha garments, accessories, objects and artworks are available in our concept store in Milan and online. We look forward to welcoming you.";
 T.it.ctEmail="Collezione, prenotazioni, press<br>Disponibile nel concept store Aura · Via Festa del Perdono 10, Milano";T.en.ctEmail="Collection, reservations, press<br>Available at Concept Store Aura · Via Festa del Perdono 10, Milan";
 T.it.ctIg="Seguici per aggiornamenti e backstage";T.en.ctIg="Follow us for updates and behind the scenes";
 T.it.ctPress="Curatrice mostra Concept Store";T.en.ctPress="Exhibition curator Concept Store";
+T.it.ctEmailLabel="Email";T.en.ctEmailLabel="Email";
+T.it.ctIgLabel="Instagram";T.en.ctIgLabel="Instagram";
+T.it.ctSiteLabel="Sito";T.en.ctSiteLabel="Website";
+T.it.ctPressLabel="Press & curatore";T.en.ctPressLabel="Press & curator";
 T.it.mbLabel="Concept Store";T.en.mbLabel="Concept Store";
 T.it.mbDates="21–26 Aprile 2026 · ore 10:00–22:00";T.en.mbDates="21–26 April 2026 · 10:00–22:00";
 T.it.mbPlace='Via Festa del Perdono 10, Milano<br>Concept Store "AURA" — ingresso libero';T.en.mbPlace='Via Festa del Perdono 10, Milan<br>Concept Store "AURA" — free entry';
@@ -80,18 +88,46 @@ T.it.lsV3="L'amore che prende forma nasce dalle mani di chi porta con sé una st
 T.it.shopCopy="Ogni creazione porta in sé parole che arrivano da Akasha, uno spazio infinito d'amore - e con esse, il potenziale di avvicinare l'essere umano al ricordo di sé. Un atto sacro, nella vita di tutti i giorni.";
 T.en.shopCopy="Each creation carries words that arrive from Akasha, an infinite space of love - and with them, the potential to bring the human being closer to the memory of the self. A sacred act in everyday life.";
 T.it.shopMeta="";T.en.shopMeta="";
+T.it.shopConcept="Presente anche al Concept Store Aura · Via Festa del Perdono 10, Milano →";T.en.shopConcept="Also available at Concept Store Aura · Via Festa del Perdono 10, Milan →";
+T.it.homeIntro="ūlakasha è uno strumento per ricordare che ogni gesto ordinario porta in sé una forza straordinaria. In un mondo dove la materia è stata svuotata del suo significato, ūlakasha vuole restituirle nutrimento - a ogni oggetto, ogni capo, ogni atto di cura.<br><br>Un ecosistema vivo che connette persone, artigiani, cultura e comunità.";
+T.en.homeIntro="ūlakasha is a tool for remembering that every ordinary gesture carries an extraordinary force. In a world where matter has been emptied of its meaning, ūlakasha seeks to restore nourishment to it - to every object, every garment, every act of care.<br><br>A living ecosystem connecting people, artisans, culture and community.";
+T.it.homeTextileTitle1="ūlakasha";T.en.homeTextileTitle1="ūlakasha";
+T.it.homeTextileBody1="propone abiti che sono ponti di riconnessione con la parte più autentica di noi e con le energie che vogliamo portare nel mondo. Le immagini e le parole che abitano i tessuti, così immediate ed evocative, hanno la forza di aprire uno spazio di sospensione e di riflessione nello scorrere veloce del nostro tempo quotidiano per sussurrare significati di nutrimento per l'anima.";T.en.homeTextileBody1="proposes garments that are bridges of reconnection with the most authentic part of ourselves and with the energies we wish to bring into the world. The images and words that inhabit the fabrics, so immediate and evocative, have the power to open a space of pause and reflection within the fast flow of everyday time, whispering meanings that nourish the soul.";
+T.it.homeTextileTitle2="I tessuti";T.en.homeTextileTitle2="The fabrics";
+T.it.homeTextileBody2="si popolano di parole e disegni anche nel loro interno, a contatto con la persona, con la pelle, con il cuore; è qui che i messaggi e i segni incontrano l'intimità e richiamano antiche tradizioni, in cui elementi simbolici venivano cuciti o segnati all'interno dei vestiti, per sostenere le intenzioni che la persona esprimeva in alcuni momenti della vita e che accompagnavano le tappe significative del cammino umano.";T.en.homeTextileBody2="are filled with words and drawings even on the inside, in contact with the person, with the skin, with the heart; this is where messages and signs meet intimacy and recall ancient traditions, when symbolic elements were sewn or marked inside garments to support the intentions a person expressed in certain moments of life and to accompany the meaningful stages of the human journey.";
+T.it.homeLussoTitle="Che cosa è il Lusso?";T.en.homeLussoTitle="What is Luxury?";
+T.it.homeLussoP1="<span class=\"lusso-bracket\">[....]</span> Il lusso non è altro che <strong>LUCE</strong> che entra nelle trame, nelle frange della materia, visibile e invisibile all'occhio maldestro che ancora non vede. Lusso è uno stile di vita, è abitare il Divino. <span class=\"lusso-bracket\">[...]</span>";
+T.en.homeLussoP1="<span class=\"lusso-bracket\">[....]</span> Luxury is nothing other than <strong>LIGHT</strong> entering the weave, the fringes of matter, visible and invisible to the clumsy eye that cannot yet see. Luxury is a way of life; it is inhabiting the Divine. <span class=\"lusso-bracket\">[...]</span>";
+T.it.homeLussoP2="Prima di avvicinarti al Lusso devi vivere il lusso, ovvero portare con te la luce della creazione.";T.en.homeLussoP2="Before approaching Luxury, you must live luxury: carry with you the light of creation.";
+T.it.homeLussoP3="Cosa nasce in noi quando siamo pieni del Divino?";T.en.homeLussoP3="What is born within us when we are full of the Divine?";
+T.it.homeLussoP4="Il Lusso è il muoversi senza titubanza dentro un mondo abbondante, già completo. La parola <em>completo</em> riempie il significato di Lusso";T.en.homeLussoP4="Luxury is moving without hesitation within an abundant world, already complete. The word <em>complete</em> fills the meaning of Luxury.";
+T.it.homeLussoP5="Quando l'uomo si muove nel completo della sua opera sta vivendo nella piena ricchezza. <span class=\"lusso-bracket\">[...]</span>";T.en.homeLussoP5="When the human being moves in the completeness of their work, they are living in full richness. <span class=\"lusso-bracket\">[...]</span>";
+T.it.homeArteTitle="Che cosa è l'Arte?";T.en.homeArteTitle="What is Art?";
+T.it.homeArteP1="L'arte è uno dei semi venuto sulla terra, l'arte è l'energia che si fa materia ma che passa a senso contrario,";T.en.homeArteP1="Art is one of the seeds that came to earth; art is energy becoming matter, but moving in the opposite direction,";
+T.it.homeArteP2="il flusso di energia arriva dal Mondo Divino per poi passare da quello che gli esseri umani chiamano &ldquo;mondo spirituale&rdquo; per poi farsi materia. Dal suono diventa verbo.";T.en.homeArteP2="the flow of energy arrives from the Divine World, then passes through what human beings call the &ldquo;spiritual world&rdquo; before becoming matter. From sound it becomes word.";
+T.it.homeArteP3="Il mondo che l'artista fa scendere è in realtà un suono, è un'onda e dentro quelle informazioni vi sono sapienze superiori al normale comprendere dell'umano. <span class=\"lusso-bracket\">[...]</span>";T.en.homeArteP3="The world the artist brings down is in truth a sound, a wave; within that information lives knowledge beyond ordinary human understanding. <span class=\"lusso-bracket\">[...]</span>";
+T.it.homeArteP4="Continua l'artista a chiamare dalla culla dell'arte e a tessere sul filo della Vita, ci sono relazioni che hanno il potere di contaminarsi e di elevarsi in un continuo scambio.";T.en.homeArteP4="The artist continues to call from the cradle of art and to weave along the thread of Life; some relationships have the power to contaminate and elevate one another in a continuous exchange.";
+T.it.homeArteP5="<span class=\"lusso-bracket\">[...]</span> Affidarsi al senso ampliante permette la permanenza consapevole — che nasce nudo dal parto di creazione per permettere all'essere di farsi. <span class=\"lusso-bracket\">[...]</span>";T.en.homeArteP5="<span class=\"lusso-bracket\">[...]</span> Trusting the expanding sense allows conscious permanence - born bare from the act of creation so that being may become. <span class=\"lusso-bracket\">[...]</span>";
+T.it.homeArteP6="Che l'arte sia strumento, che entri nella realtà delle cose per far sì che le qualità diventino il sistema creato.";T.en.homeArteP6="May art be an instrument, entering the reality of things so that qualities may become the created system.";
+T.it.homeReadMore="CONTINUA A LEGGERE";T.en.homeReadMore="READ MORE";
+T.it.homeClose="CLOSE";T.en.homeClose="CLOSE";
+T.it.homeCollabLink="Apri collaborazioni";T.en.homeCollabLink="Open collaborations";
+T.it.fbCredits="Mostre recenti: “Per tempo infinito”, Vicenza · “Akasha”, Gilda Contemporary Art, Milano · “Rinascita”, Gilda Contemporary Art, Milano.";T.en.fbCredits="Recent exhibitions: “Per tempo infinito”, Vicenza · “Akasha”, Gilda Contemporary Art, Milan · “Rinascita”, Gilda Contemporary Art, Milan.";
+T.it.fb5="Ha collaborato con ISA Seta su sviluppi per John Galliano, Stella McCartney e Roberto Cavalli, per poi lavorare per oltre otto anni nell’universo Ferragamo tra Milano e Firenze. In Ulakasha traduce arte, ritualità e savoir-faire in una grammatica di lusso più personale e contemporanea.";T.en.fb5="She collaborated with ISA Seta on developments for John Galliano, Stella McCartney and Roberto Cavalli, then worked for over eight years within the Ferragamo universe between Milan and Florence. In Ulakasha she translates art, rituality and savoir-faire into a more personal and contemporary language of luxury.";
+T.it.fb6="Approfondisce da anni il rapporto tra culture indigene, artigianato autentico e manifattura italiana di alta gamma.";T.en.fb6="For years she has explored the relationship between Indigenous cultures, authentic craftsmanship and high-end Italian manufacturing.";
+T.it.curatorP="Curatrice della mostra lancio del Brand “Su Tela Ogni Passo”, accompagna il progetto con uno sguardo storico artistico e sensibile alle relazioni tra arte, design, materia e spiritualità. La sua presenza rafforza il posizionamento del brand come esperienza culturale, non solo espositiva o commerciale.";T.en.curatorP="Curator of the brand launch exhibition “Su Tela Ogni Passo”, she accompanies the project with an art-historical eye and a sensitivity to the relationships between art, design, matter and spirituality. Her presence strengthens the brand's positioning as a cultural experience, not only as an exhibition or commercial project.";
 T.it.collabK="Collaborazioni";T.en.collabK="Collaborations";
 T.it.collabH="Intrecci & Collaborazioni";T.en.collabH="Interweavings & Collaborations";
 T.it.collabP1="L'amore che prende forma nasce dalle mani di chi porta con sé una storia.";T.en.collabP1="Love taking form is born from the hands of those who carry a story with them.";
 T.it.collabP2="Per la nostra prima collezione, presentata durante il Fuori Salone 2026, abbiamo intrecciato cinque incontri con artigiani da ogni angolo del mondo — perché ogni pezzo potesse portare in sé memoria, intenzione e vita.";T.en.collabP2="For our first collection, presented during Fuori Salone 2026, we wove together five encounters with artisans from every corner of the world — so that each piece could carry memory, intention and life.";
 T.it.collabC1="Messico";T.en.collabC1="Mexico";
-T.it.collabT1="Ceramica Antārius";T.en.collabT1="Antārius Ceramics";
+T.it.collabT1="Palma Viva";T.en.collabT1="Palma Viva";
 T.it.collabD1="Nel paese d'origine di Valeria, abbiamo sviluppato una serie di oggetti in ceramica che hanno dato vita alla nostra capsule <a href=\"antarius.html\">Antārĭus</a>. La ceramica porta in sé un significato profondo per noi.";T.en.collabD1="In Valeria's country of origin, we developed a series of ceramic objects that gave life to our <a href=\"antarius.html\">Antārĭus</a> capsule. Ceramics carry a profound meaning for us.";
 T.it.collabC2="Italia";T.en.collabC2="Italy";
-T.it.collabT2="Tessitura Antica";T.en.collabT2="Ancient Weaving";
+T.it.collabT2="Tessitura La Colombina";T.en.collabT2="Tessitura La Colombina";
 T.it.collabD2="Un antico opificio tessile italiano ha prodotto i nostri cuscini utilizzando telai a navetta risalenti all'Ottocento. Una tecnica rara e preziosa, capace di creare tessuti che semplicemente non potrebbero esistere senza queste macchine straordinarie.";T.en.collabD2="An historic Italian textile mill produced our cushions using shuttle looms dating back to the nineteenth century. A rare and precious technique, capable of creating fabrics that simply could not exist without these extraordinary machines.";
 T.it.collabC3="Perù";T.en.collabC3="Peru";
-T.it.collabT3="Memoria Ancestrale";T.en.collabT3="Ancestral Memory";
+T.it.collabT3="Warmi Kawsay";T.en.collabT3="Warmi Kawsay";
 T.it.collabD3="Un'artigiana indigena del Perù ha ricamato a mano i nostri capi in cashmere 100%, portando in ogni punto di ago una conoscenza antica, tramandata di generazione in generazione. Ogni tecnica di ricamo è stata scelta con intenzione, perché ogni dettaglio doveva avere un significato.";T.en.collabD3="An indigenous artisan from Peru hand-embroidered our 100% cashmere pieces, bringing into every stitch an ancient knowledge handed down through generations. Each embroidery technique was chosen with intention, because every detail had to carry meaning.";
 T.it.collabC4="India";T.en.collabC4="India";
 T.it.collabT4="Fiori di Cacao";T.en.collabT4="Cacao Flowers";
@@ -99,8 +135,32 @@ T.it.collabD4="Artigiani indiani hanno realizzato una serie di spille interament
 T.it.collabC5="Italia";T.en.collabC5="Italy";
 T.it.collabT5="L'Acqua come Rituale - Madre Cristallo";T.en.collabT5="Water as Ritual - Madre Cristallo";
 T.it.collabD5="Con una piccola realtà artigianale italiana abbiamo selezionato un vetro di qualità particolare e creato per esso una stampa esclusiva. L'acqua è un conduttore di energia. Crediamo profondamente nell'importanza di avere un oggetto capace di contenerla e amplificarne il beneficio, qualcosa che diventi parte di un rituale quotidiano di intenzione e benessere.";T.en.collabD5="With a small Italian artisan workshop, we selected a particular quality of glass and created an exclusive print for it. Water is a conductor of energy. We deeply believe in the importance of having an object capable of containing it and amplifying its benefit, something that becomes part of a daily ritual of intention and wellbeing.";
+T.it.mcTitle="Madre Cristallo";T.en.mcTitle="Madre Cristallo";
+T.it.mcQuote="“Il mio cristallo si chiarisce ad ogni sorso di te, Madre acqua. Il mio cristallo si bagna di luce che vive in me e io mi ritrovo in te, Madre acqua.”";T.en.mcQuote="“My crystal becomes clearer with every sip of you, Mother water. My crystal is bathed in the light that lives in me and I find myself again in you, Mother water.”";
+T.it.mcBodyTitle="La bottiglia Madre Cristallo";T.en.mcBodyTitle="The Madre Cristallo bottle";
+T.it.mcP1="La bottiglia “Madre Cristallo” nasce dalla volontà di portare attenzione all’uso quotidiano dell’elemento acqua, la base del nostro essere.";T.en.mcP1="The “Madre Cristallo” bottle was born from the desire to bring attention to the daily use of water, the element at the foundation of our being.";
+T.it.mcP2="L’acqua è viva ed è per questo che si può creare uno scambio, una conversazione con lei.";T.en.mcP2="Water is alive, and for this reason an exchange, a conversation with it, can be created.";
+T.it.mcP3="Le parole, i suoni, i simboli e i colori lasciano un’informazione che interagisce con il sistema di chi l’accoglie. Bere acqua in modo consapevole può diventare un grande vantaggio, i nostri antenati conoscevano bene questo potere e Ulakasha vuol fare semplicemente riemergere il ricordo.";T.en.mcP3="Words, sounds, symbols and colours leave information that interacts with the system of those who receive it. Drinking water consciously can become a great benefit; our ancestors knew this power well, and Ulakasha simply wishes to let the memory resurface.";
+T.it.mcP4="Nelle bottiglie è stata stampata, con una tecnica antica di vetrofusione, una preghiera e un simbolo ancestrale, proveniente dal mondo sottile dell’Akasha. Abbiamo voluto una bottiglia creata da mani gentili, mani che si prendono cura, mani che portano l’oro.";T.en.mcP4="A prayer and an ancestral symbol, coming from the subtle world of Akasha, have been printed on the bottles using an ancient glass-fusing technique. We wanted a bottle created by gentle hands, hands that care, hands that carry gold.";
+T.it.mcCta1="Casa & Lifestyle";T.en.mcCta1="Home & Lifestyle";
+T.it.mcCta2="Richiedi informazioni";T.en.mcCta2="Request information";
+T.it.antTitle="Ceramiche Antārĭus";T.en.antTitle="Antārĭus Ceramics";
+T.it.antBodyTitle="Ceramiche Antārĭus";T.en.antBodyTitle="Antārĭus Ceramics";
+T.it.antP1="Ulakasha inizia il suo primo passo nel mondo della ceramica con la collezione Antarius.";T.en.antP1="Ulakasha takes its first step into the world of ceramics with the Antārĭus collection.";
+T.it.antP2="Abbiamo voluto partire dalla terra per onorare il ricordo del luogo in cui noi esseri umani abbiamo deciso di vivere per muovere i nostri passi evolutivi, dandoci la possibilità di ritrovare la nostra vera natura, muovendo ogni passo.";T.en.antP2="We chose to begin from the earth to honour the memory of the place where we human beings decided to live and move our evolutionary steps, giving ourselves the possibility of rediscovering our true nature with every movement.";
+T.it.antP3="La tazza Antārĭus è stata creata da Palma Viva, un piccolo laboratorio del Messico, dove la natura vibra nel vento e gli uccelli fanno il loro canto.";T.en.antP3="The Antārĭus cup was created by Palma Viva, a small workshop in Mexico, where nature vibrates in the wind and birds offer their song.";
+T.it.antP4="Le donne che creano queste ceramiche hanno accolto questo progetto con il cuore colmo di entusiasmo, comprendendone il significato profondo e cercando di trasferirlo nella terra che hanno modellato, cotto e dipinto.";T.en.antP4="The women who create these ceramics welcomed the project with hearts full of enthusiasm, understanding its deep meaning and seeking to transfer it into the earth they shaped, fired and painted.";
+T.it.antP5="Antarius è una parola latina, arrivata dall’etere come tutte le parole di Ulakasha, e significa “di sostegno”.";T.en.antP5="Antārĭus is a Latin word, arrived from the ether like all Ulakasha words, and it means “of support”.";
+T.it.antP6="Ascoltando la vita, osservando senza giudizio ciò che ci accade, possiamo sentire che c’è una forza che è pronta a guidarci, a sostenerci a respirare con noi.";T.en.antP6="By listening to life and observing what happens to us without judgement, we can feel that there is a force ready to guide us, support us and breathe with us.";
+T.it.antP7="Questa forza possiamo chiamarla come desideriamo, la sostanza non cambia: è una luce che diventa costellazione, perché la luce, più la si vede e più si moltiplica. Nella costellazione della vita, la luce ci sostiene per navigare nella vita.";T.en.antP7="We may call this force whatever we wish; its substance does not change: it is a light that becomes constellation, because the more light is seen, the more it multiplies. In the constellation of life, light supports us as we navigate life.";
+T.it.antCta1="Casa & Lifestyle";T.en.antCta1="Home & Lifestyle";
+T.it.antCta2="Richiedi informazioni";T.en.antCta2="Request information";
 T.it.sfShop="Shop";T.en.sfShop="Shop";
 T.it.sfVisit="Newsletter";T.en.sfVisit="Newsletter";
+T.it.ftNewsletterAria="Iscriviti alla newsletter Ulakasha";T.en.ftNewsletterAria="Subscribe to the Ulakasha newsletter";
+T.it.ftNewsletterTitle="Iscriviti alla nostra newsletter";T.en.ftNewsletterTitle="Subscribe to our newsletter";
+T.it.ftNewsletterText="Se desideri rimanere aggiornato su eventi, collaborazioni, progetti e storie da ricordare del mondo Ulakasha iscriviti alla News Letter. Saremo felici di portarti con noi in questo meraviglioso viaggio.";T.en.ftNewsletterText="If you would like to stay updated on events, collaborations, projects and stories to remember from the Ulakasha world, subscribe to the newsletter. We will be happy to take you with us on this wonderful journey.";
+T.it.ftNewsletterLine="Vai alla newsletter →";T.en.ftNewsletterLine="Go to the newsletter →";
 T.it.leadClose="Chiudi";T.en.leadClose="Close";
 T.it.leadKicker="Newsletter";T.en.leadKicker="Newsletter";
 T.it.leadTitle="Resta in contatto con Ulakasha";T.en.leadTitle="Stay in touch with Ulakasha";
@@ -122,7 +182,7 @@ T.it.cartNote="Su ordinazione. Ogni capo è realizzato individualmente con eccel
 T.en.cartNote="Made to order. Each piece is individually crafted with artisanal excellence. Under art. 59(c) of Italian Legislative Decree 206/2005 and art. 16(c) of Directive 2011/83/EU, the right of withdrawal does not apply to made-to-measure or clearly personalised goods. Details: <a href=\"recesso.html\">Right of withdrawal</a>. Delivery within 4-6 weeks.";
 T.it.addedLabel="Aggiunto correttamente al carrello";
 T.en.addedLabel="Added correctly to the bag";
-var lang="it",cart=loadStoredJSON("ulakasha_cart"),curProd=null,selSz=null,selColor="",selVariantImages=[],productsLoaded=false,currentFilter="all";
+var lang="it",cart=loadStoredJSON("ulakasha_cart"),curProd=null,selSz=null,selColor="",selVariantImages=[],productsLoaded=false,currentFilter="all",productsLoadError="";
 var eventLoaded=false,eventData=null;
 var SUPABASE_URL=(window.ULAKASHA_SUPABASE_URL||"https://hjlcboehxcubgewyhcmo.supabase.co").replace(/\/$/,"");
 var SUPABASE_ANON_KEY=window.ULAKASHA_SUPABASE_ANON_KEY||"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhqbGNib2VoeGN1Ymdld3loY21vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNjA0NTMsImV4cCI6MjA5NjgzNjQ1M30.Egf-nrbM3h9-yvn1dHsGUg0RXFK55O3C8gSuFmc-A0g";
@@ -234,7 +294,7 @@ function renderCart(){
   if(!cartN||!body||!ft)return;
   cartN.textContent=cnt;
   updateMobileCartShortcut(cnt);
-  if(cart.length===0){body.innerHTML='<p style="font-family:\'Courier Prime\',monospace;font-size:10px;letter-spacing:.13em;color:var(--muted);text-transform:uppercase;padding:20px 0;">'+t.emptyBag+'</p>';ft.style.display="none";return;}
+  if(cart.length===0){body.innerHTML='<p style="font-family:\'Poppins\',sans-serif;font-size:10px;letter-spacing:.13em;color:var(--muted);text-transform:uppercase;padding:20px 0;">'+t.emptyBag+'</p>';ft.style.display="none";return;}
   ft.style.display="block";
   var html="";
   for(var i=0;i<cart.length;i++){
@@ -331,21 +391,22 @@ function ensureProductDetail(){
     +'<section class="product-modal-box" role="dialog" aria-modal="true" aria-labelledby="pd-nm">'
     +'<button class="product-modal-x" type="button" onclick="closeProductDetail()" aria-label="Chiudi">×</button>'
     +'<div class="pd-wrap product-modal-wrap">'
-    +'<div class="pd-gal"><div class="pd-left-copy"><button class="pd-back" id="pd-back" type="button" onclick="backFromProduct()">← Shop</button><h1 class="pd-name" id="pd-nm"></h1><p class="pd-story" id="pd-story"></p></div><div class="pd-img" id="pdImg"></div></div>'
+    +'<div class="pd-gal"><div class="pd-left-copy"><button class="pd-back" id="pd-back" type="button" onclick="backFromProduct()">← Shop</button><h1 class="pd-name" id="pd-nm"></h1><div class="pd-story" id="pd-story"></div></div><div class="pd-img" id="pdImg"></div></div>'
     +'<div class="pd-info">'
     +'<div class="pd-price" id="pd-pr"></div>'
     +'<div class="color-variant-block" id="colorVariantBlock"><div class="sz-lbl" id="color-lbl">Colore</div><div class="color-row" id="colorRow"></div></div>'
     +'<div class="sz-lbl" id="sz-lbl">Taglia</div><div class="sz-row" id="szRow"></div>'
     +'<button class="atc" id="atcBtn" type="button"></button>'
-    +'<div class="acc" id="productAcc"></div></div></div></section>';
+    +'<div class="acc" id="productAcc"></div></div></div><div class="pd-sticky-atc" id="pdStickyAtc"><span id="pdStickyMeta"></span><button type="button" id="pdStickyBtn"></button></div></section>';
   document.body.appendChild(wrap);
   var btn=el("atcBtn");if(btn)btn.addEventListener("click",addCurrentProductToCart);
+  var stickyBtn=el("pdStickyBtn");if(stickyBtn)stickyBtn.addEventListener("click",addCurrentProductToCart);
 }
 function showProductDetail(){var m=el("productModal");if(m){m.classList.add("open");document.body.classList.add("modal-open");}}
 function closeProductDetail(){var m=el("productModal");if(m)m.classList.remove("open");document.body.classList.remove("modal-open");}
 function backFromProduct(){
   closeProductDetail();
-  if(isShopPage()){
+  if(isShopPage()||isCreazioniPage()){
     var shop=document.querySelector(".shop-grid")||document.querySelector(".shop-intro")||document.body;
     setTimeout(function(){shop.scrollIntoView({behavior:"smooth",block:"start"});},80);
   }else{
@@ -372,19 +433,69 @@ function openProd(id,nav){
       priceEl.style.display="none";
     }
   }
-  set("pd-story",autoTranslateText(prod.story,lang));
-  var storyEl=el("pd-story");if(storyEl)storyEl.style.display=prod.story?"":"none";
+  renderProductStory(prod);
   renderColorVariants(prod);
   var t=T[lang];set("artB",t.artText);set("delB",t.delText);
   var szHtml="",sizes=prod.sizes||[];
-  set("pd-back",t.pdBack);set("sz-lbl",t.szLbl);set("color-lbl",lang==="en"?"Color":"Colore");set("atcBtn",t.addBtn);
+  setProductBreadcrumb(prod);set("sz-lbl",t.szLbl);set("color-lbl",lang==="en"?"Color":"Colore");updateProductColorLabel();set("atcBtn",t.addBtn);
   for(var j=0;j<sizes.length;j++)szHtml+='<div class="sz-opt" onclick="pickSz(this,\''+jsString(sizes[j])+'\')">'+sizes[j]+'</div>';
   el("szRow").innerHTML=canBuy?szHtml:"";
   var szLabel=el("sz-lbl");if(szLabel)szLabel.style.display=canBuy&&sizes.length?"":"none";
   var atc=el("atcBtn");if(atc)atc.style.display=canBuy?"":"none";
+  var sticky=el("pdStickyAtc");if(sticky)sticky.style.display=canBuy?"":"none";
+  var stickyBtn=el("pdStickyBtn");if(stickyBtn)stickyBtn.textContent=t.addBtn;
+  updateProductStickyCta();
   var acc=el("productAcc");if(acc)acc.innerHTML=productAccordionsHTML(prod);
   if(nav!==false)showProductDetail();
 }
+function renderProductStory(prod){
+  var storyEl=el("pd-story");if(!storyEl)return;
+  var text=autoTranslateText(prod&&prod.story,lang);
+  if(!text){storyEl.innerHTML="";storyEl.style.display="none";return;}
+  var isLong=String(text).length>430;
+  storyEl.style.display="";
+  storyEl.className="pd-story"+(isLong?" pd-story-long is-collapsed":"");
+  storyEl.innerHTML='<div class="pd-story-text">'+escHtml(text).replace(/\n/g,"<br>")+'</div>'
+    +(isLong?'<button type="button" class="pd-story-more" onclick="toggleProductStory(event,this)">'+(lang==="en"?"READ MORE ↓":"LEGGI TUTTO ↓")+'</button>':"");
+}
+function toggleProductStory(event,btn){
+  if(event){event.preventDefault();event.stopPropagation();}
+  var box=btn?btn.closest(".pd-story"):null;if(!box)return;
+  var expanded=box.classList.toggle("is-expanded");
+  box.classList.toggle("is-collapsed",!expanded);
+  btn.textContent=expanded?(lang==="en"?"CLOSE ↑":"CHIUDI ↑"):(lang==="en"?"READ MORE ↓":"LEGGI TUTTO ↓");
+}
+window.toggleProductStory=toggleProductStory;
+function productCategoryTrail(prod){
+  var shop=productShopCategory(prod),macro=productMacroCategory(prod),trail=[];
+  if(macro==="body")trail.push(lang==="en"?"Body":"Abitare il corpo");
+  else if(macro==="home")trail.push(lang==="en"?"Home":"Abitare la casa");
+  else if(macro==="art")trail.push(lang==="en"?"Art":"Abitare l'arte");
+  if(shop==="body-clothing")trail.push(lang==="en"?"Clothing":"Abbigliamento");
+  if(shop==="body-accessory")trail.push(lang==="en"?"Textile accessory":"Accessorio tessile");
+  if(shop==="body-bijoux")trail.push("Bijoux");
+  if(shop==="home-textile")trail.push(lang==="en"?"Textile":"Tessile");
+  if(shop==="home-table")trail.push(lang==="en"?"Table":"Tavola");
+  if(shop==="home-bottles")trail.push(lang==="en"?"Bottles":"Bottiglie");
+  if(shop==="home-cups")trail.push(lang==="en"?"Cups":"Tazze");
+  return trail;
+}
+function setProductBreadcrumb(prod){
+  var btn=el("pd-back");if(!btn)return;
+  var root=isShopPage()?"Shop":"Creazioni";
+  if(lang==="en"&&root==="Creazioni")root="Creations";
+  var trail=productCategoryTrail(prod),name=prod&&prod.name?prod.name:"";
+  btn.innerHTML='<span class="bc-mobile">← '+escHtml(root)+'</span><span class="bc-full">'+escHtml([root].concat(trail).concat(name?[name]:[]).join(" / "))+'</span>';
+}
+function openProdVariant(id,index){
+  openProd(id,false);
+  var btn=null;
+  var opts=document.querySelectorAll("#colorRow .color-opt");
+  if(index>=0&&index<opts.length)btn=opts[index];
+  pickColorVariant(btn,id,index);
+  showProductDetail();
+}
+window.openProdVariant=openProdVariant;
 function productDetailLayout(prod){
   var details=prod&&prod.details?prod.details:{};
   var value=String((prod&&prod.layout)||details.layout_prodotto||"").trim();
@@ -399,7 +510,14 @@ function applyProductDetailLayout(prod){
   modal.classList.remove("layout-standard","layout-text-below");
   modal.classList.add("layout-"+productDetailLayout(prod));
 }
-function pickSz(btn,sz){var opts=document.querySelectorAll(".sz-opt");for(var i=0;i<opts.length;i++)opts[i].classList.remove("sel");btn.classList.add("sel");selSz=sz;}
+function pickSz(btn,sz){var opts=document.querySelectorAll(".sz-opt");for(var i=0;i<opts.length;i++)opts[i].classList.remove("sel");btn.classList.add("sel");selSz=sz;updateProductStickyCta();}
+function updateProductStickyCta(){
+  var meta=el("pdStickyMeta");if(!meta||!curProd)return;
+  var parts=[];
+  if(productPriceVisible(curProd))parts.push("€ "+Number(curProd.price||0).toLocaleString("it-IT"));
+  if(selSz)parts.push(selSz);
+  meta.textContent=parts.join(" · ");
+}
 function splitColorNames(value){
   var text=String(value||"").trim();
   if(!text)return [];
@@ -447,6 +565,11 @@ function renderColorVariants(prod){
   }
   block.style.display="";
   var html="";
+  html+='<div class="pd-color-swatches" aria-label="Varianti colore">';
+  for(var s=0;s<variants.length;s++){
+    html+='<button type="button" class="pd-color-swatch '+(s===0?"sel":"")+'" title="'+escAttr(variants[s].name)+'" aria-label="'+escAttr(variants[s].name)+'" style="background:'+escAttr(colorNameToSwatch(variants[s].name))+'" onclick="pickColorVariant(this,\''+jsString(prod.id)+'\','+s+')"></button>';
+  }
+  html+='</div>';
   for(var i=0;i<variants.length;i++){
     html+='<button type="button" class="color-opt '+(i===0?"sel":"")+'" onclick="pickColorVariant(this,\''+jsString(prod.id)+'\','+i+')">'+escHtml(variants[i].name)+'</button>';
   }
@@ -454,6 +577,7 @@ function renderColorVariants(prod){
   if(variants[0]){
     selColor=variants[0].name;
     selVariantImages=variants[0].images.slice();
+    updateProductColorLabel();
     var displayProd={};
     for(var key in prod)displayProd[key]=prod[key];
     displayProd.images=variants[0].images;
@@ -466,20 +590,86 @@ function pickColorVariant(btn,productId,index){
   for(var i=0;i<T[lang].products.length;i++){if(T[lang].products[i].id===productId){prod=T[lang].products[i];break;}}
   if(!prod)return;
   var opts=document.querySelectorAll(".color-opt");for(var j=0;j<opts.length;j++)opts[j].classList.remove("sel");
-  if(btn)btn.classList.add("sel");
+  var swatches=document.querySelectorAll(".pd-color-swatch");
+  for(var s=0;s<swatches.length;s++)swatches[s].classList.remove("sel");
   var variants=parseColorVariants(prod);
   var displayProd=prod;
   if(index>=0&&variants[index]){
     selColor=variants[index].name;
     selVariantImages=variants[index].images.slice();
+    for(var o=0;o<opts.length;o++)opts[o].classList.toggle("sel",o===index);
+    for(var w=0;w<swatches.length;w++)swatches[w].classList.toggle("sel",w===index);
     displayProd={};
     for(var key in prod)displayProd[key]=prod[key];
     displayProd.images=variants[index].images;
     displayProd.img=variants[index].images[0]||prod.img;
   }
+  updateProductColorLabel();
   el("pdImg").innerHTML=productCarouselHTML(displayProd,"pd");
 }
 window.pickColorVariant=pickColorVariant;
+function updateProductColorLabel(){
+  var label=el("color-lbl");if(!label)return;
+  var base=lang==="en"?"Color":"Colore";
+  label.textContent=selColor?base+" · "+selColor:base;
+}
+function colorNameToSwatch(name){
+  var text=String(name||"").toLowerCase();
+  if(/pistacch|pistachio/.test(text))return "#b9d69a";
+  if(/blu\s*caribe|blue\s*caribe|caribe|caribbean/.test(text))return "#78c8e8";
+  var colors=[];
+  if(/azzurr|celeste|sky/.test(text))colors.push("#9ec9df");
+  if(/blu|blue/.test(text))colors.push("#244b8f");
+  if(/gial|yellow/.test(text))colors.push("#eadb7c");
+  if(/verde|green/.test(text))colors.push("#9fbd8b");
+  if(/grig|grey|gray/.test(text))colors.push("#c9ced6");
+  if(/perla|pearl/.test(text))colors.push("#eef0f2");
+  if(/beige|avorio|ivory|cream/.test(text))colors.push("#e7d7c5");
+  if(/cacao|cioccol|marron|brown/.test(text))colors.push("#7a4f3d");
+  if(/oro|gold/.test(text))colors.push("#c4973a");
+  if(/rosa|pink/.test(text))colors.push("#eac1be");
+  if(/nero|black/.test(text))colors.push("#222");
+  if(/bianco|white/.test(text))colors.push("#fff");
+  if(!colors.length)colors.push("#d9d9d9");
+  if(colors.length===1)return colors[0];
+  var stops=colors.map(function(c,i){var start=Math.round(100*i/colors.length),end=Math.round(100*(i+1)/colors.length);return c+" "+start+"% "+end+"%";}).join(",");
+  return "linear-gradient(135deg,"+stops+")";
+}
+function productVariantSwatchesHTML(prod){
+  var variants=parseColorVariants(prod);
+  var names=variants.length?variants.map(function(v){return v.name;}):splitColorNames(prod&&prod.details&&prod.details.colore);
+  if(names.length<2)return "";
+  var html='<div class="card-swatches" aria-label="Varianti colore">';
+  for(var i=0;i<names.length;i++){
+    var action=variants.length?' onclick="pickCardColorVariant(event,\''+jsString(prod.id)+'\','+i+')" ondblclick="openProdVariant(\''+jsString(prod.id)+'\','+i+')"':'';
+    html+='<button type="button" class="card-swatch" title="'+escAttr(names[i])+'" aria-label="'+escAttr(names[i])+'" style="background:'+escAttr(colorNameToSwatch(names[i]))+'"'+action+'></button>';
+  }
+  return html+'</div>';
+}
+function pickCardColorVariant(event,productId,index){
+  if(event){event.preventDefault();event.stopPropagation();}
+  var prod=null;
+  for(var i=0;i<T[lang].products.length;i++){if(T[lang].products[i].id===productId){prod=T[lang].products[i];break;}}
+  if(!prod)return;
+  var variants=parseColorVariants(prod);
+  if(!variants[index])return;
+  var card=event&&event.currentTarget?event.currentTarget.closest(".pcard"):null;
+  if(!card)return;
+  var displayProd={};
+  for(var key in prod)displayProd[key]=prod[key];
+  displayProd.images=variants[index].images;
+  displayProd.img=variants[index].images[0]||prod.img;
+  var imgBox=card.querySelector(".pcard-img");
+  if(imgBox){
+    var badge=card.querySelector(".badge");
+    var overlay=card.querySelector(".pcard-ov");
+    imgBox.innerHTML=productCarouselHTML(displayProd,"card")+(badge?badge.outerHTML:"")+(overlay?overlay.outerHTML:"");
+  }
+  var swatches=card.querySelectorAll(".card-swatch");
+  for(var j=0;j<swatches.length;j++)swatches[j].classList.toggle("sel",j===index);
+  card.setAttribute("data-variant-index",String(index));
+}
+window.pickCardColorVariant=pickCardColorVariant;
 function togAcc(head){var body=head.nextElementSibling,ico=head.querySelector(".acc-ico"),isOpen=body.classList.contains("open");body.classList.toggle("open",!isOpen);head.classList.toggle("open",!isOpen);ico.textContent=isOpen?"+":"−";}
 function productPriceVisible(prod){
   var details=prod&&prod.details?prod.details:{};
@@ -508,18 +698,38 @@ function cardHTML(p,viewLabel){
   var pid=jsString(p.id),sub=p.sub||"";
   var hideMeta=isCreazioniPage();
   var showPrice=!hideMeta&&productForSale(p)&&productPriceVisible(p);
-  return '<div class="pcard" onclick="openProd(\''+pid+'\')">'
+  var classes=["pcard"];
+  if(productMacroCategory(p)==="art"||productShopCategory(p)==="art")classes.push("is-art");
+  if(/cuscino|cushion|pillow/i.test(productSearchText(p)))classes.push("is-cushion");
+  if(/avorio\s*lurex|ivory\s*lurex/i.test(productSearchText(p)))classes.push("is-cushion-lurex");
+  if(/65\s*x\s*65|65x65/i.test(productSearchText(p)))classes.push("is-cushion-large");
+  var swatches=productVariantSwatchesHTML(p);
+  return '<div class="'+classes.join(" ")+'" onclick="openProdFromCardElement(this,\''+pid+'\')">'
     +'<div class="pcard-img">'
     +productCarouselHTML(p,"card")
     +badge
-    +'<div class="pcard-ov"><button type="button" class="pcard-ov-btn" onclick="openProdFromCard(event,\''+pid+'\')">'+viewLabel+'</button></div>'
+    +'<div class="pcard-ov"><button type="button" class="pcard-ov-btn" onclick="openProdFromCard(event,\''+pid+'\')">'+productCardCtaLabel(p,viewLabel)+'</button></div>'
     +'</div>'
-    +'<div class="pcard-name">'+p.name+'</div>'
+    +'<div class="pcard-title-row"><div class="pcard-name">'+escHtml(p.name)+'</div>'+swatches+'</div>'
     +(hideMeta?"":'<div class="pcard-mat">'+sub.split("·").slice(1).join("·").trim()+'</div>')
     +(showPrice?'<div class="pcard-price">&#8364; '+Number(p.price||0).toLocaleString("it-IT")+'</div>':"")
     +'</div>';
 }
-function openProdFromCard(event,id){if(event){event.preventDefault();event.stopPropagation();}openProd(id);}
+function productCardCtaLabel(prod,fallback){
+  var macro=productMacroCategory(prod),shop=productShopCategory(prod);
+  if(macro==="home"||macro==="art"||shop==="body-bijoux")return lang==="it"?"Scopri il pezzo":"View piece";
+  return fallback;
+}
+function openProdFromCardElement(card,id){
+  var idx=card?Number(card.getAttribute("data-variant-index")):NaN;
+  if(isFinite(idx))openProdVariant(id,idx);else openProd(id);
+}
+function openProdFromCard(event,id){
+  if(event){event.preventDefault();event.stopPropagation();}
+  var card=event&&event.currentTarget?event.currentTarget.closest(".pcard"):null;
+  openProdFromCardElement(card,id);
+}
+window.openProdFromCardElement=openProdFromCardElement;
 function buildPrevGrid(prods){var grid=el("prevGrid");if(!grid)return;var vl=lang==="it"?"Scopri il capo":"View piece";var h="";for(var i=0;i<prods.length;i++)h+=cardHTML(prods[i],vl);grid.innerHTML=h;}
 function isCreazioniPage(){return !!document.querySelector("[data-catalog-page='creazioni']")||location.pathname.indexOf("collezione.html")!==-1;}
 function isShopPage(){return location.pathname.indexOf("shop.html")!==-1;}
@@ -589,9 +799,24 @@ function productAccordionsHTML(prod){
   if(!items.length&&prod&&prod.material)items.push([T[lang].ac1t,prod.material]);
   if(!items.length)return "";
   return items.map(function(item){
-    return '<div class="acc-i"><div class="acc-h" onclick="togAcc(this)"><span class="acc-t">'+escHtml(autoTranslateText(item[0],lang))+'</span><span class="acc-ico">+</span></div><div class="acc-b">'+escHtml(autoTranslateText(item[1],lang)).replace(/\n/g,"<br>")+'</div></div>';
+    var label=autoTranslateText(item[0],lang),value=autoTranslateText(item[1],lang);
+    var isAkasha=/akasha/i.test(label);
+    var isLong=String(value||"").length>360;
+    var bodyClass="acc-b"+(isAkasha?" open":"")+(isLong?" acc-long is-collapsed":"");
+    var headClass="acc-h"+(isAkasha?" open":"");
+    var icon=isAkasha?"−":"+";
+    var more=isLong?'<button type="button" class="acc-more" onclick="toggleAccMore(event,this)">'+(lang==="en"?"READ MORE ↓":"LEGGI TUTTO ↓")+'</button>':"";
+    return '<div class="acc-i '+(isAkasha?"acc-akasha":"")+'"><div class="'+headClass+'" onclick="togAcc(this)"><span class="acc-t">'+escHtml(label)+'</span><span class="acc-ico">'+icon+'</span></div><div class="'+bodyClass+'"><div class="acc-text">'+escHtml(value).replace(/\n/g,"<br>")+'</div>'+more+'</div></div>';
   }).join("");
 }
+function toggleAccMore(event,btn){
+  if(event){event.preventDefault();event.stopPropagation();}
+  var body=btn?btn.closest(".acc-b"):null;if(!body)return;
+  var expanded=body.classList.toggle("is-expanded");
+  body.classList.toggle("is-collapsed",!expanded);
+  btn.textContent=expanded?(lang==="en"?"CLOSE ↑":"CHIUDI ↑"):(lang==="en"?"READ MORE ↓":"LEGGI TUTTO ↓");
+}
+window.toggleAccMore=toggleAccMore;
 function productImages(prod){
   if(!prod)return [];
   var imgs=prod.images&&prod.images.length?prod.images.slice():[];
@@ -667,11 +892,13 @@ function productCarouselHTML(prod,mode){
   if(!imgs.length)return '<div class="pcard-img-inner pcard-img-empty"></div>';
   var id=(mode||"card")+"-"+String(prod.id||Math.random()).replace(/[^a-zA-Z0-9_-]/g,"-");
   var slides=imgs.map(function(src,i){
-    return '<img class="'+(i===0?"on":"")+'" src="'+escAttr(src)+'" '+imageFallbackAttrs(src,prod)+'alt="'+name+'" loading="lazy">';
+    return '<img class="'+(i===0?"on":"")+'" src="'+escAttr(src)+'" '+imageFallbackAttrs(src,prod)+'alt="'+name+'" loading="lazy" '+(mode==="pd"?'onclick="openProductImageZoom(this)" tabindex="0" role="button"':'')+'>';
   }).join("");
   var dots=imgs.length>1?'<div class="prod-dots">'+imgs.map(function(_,i){return '<button type="button" class="'+(i===0?"on":"")+'" onclick="setProductSlide(event,\''+id+'\','+i+')" aria-label="Foto '+(i+1)+'"></button>';}).join("")+'</div>':"";
   var arrows=imgs.length>1?'<button type="button" class="prod-arr prod-prev" onclick="moveProductSlide(event,\''+id+'\',-1)" aria-label="Foto precedente">‹</button><button type="button" class="prod-arr prod-next" onclick="moveProductSlide(event,\''+id+'\',1)" aria-label="Foto successiva">›</button>':"";
-  return '<div class="pcard-img-inner prod-carousel '+(mode==="pd"?"prod-carousel-detail":"")+'" id="'+id+'" data-slide="0">'+slides+arrows+dots+'</div>';
+  var hint=mode==="pd"?'<div class="pd-zoom-hint">'+(lang==="en"?"Click to enlarge":"Clicca per ingrandire")+'</div>':"";
+  var thumbs=mode==="pd"&&imgs.length>1?'<div class="pd-thumbs">'+imgs.map(function(src,i){return '<button type="button" class="pd-thumb '+(i===0?"on":"")+'" onclick="setProductSlide(event,\''+id+'\','+i+')" aria-label="Foto '+(i+1)+'"><img src="'+escAttr(src)+'" '+imageFallbackAttrs(src,prod)+'alt="'+name+'"></button>';}).join("")+'</div>':"";
+  return thumbs+'<div class="pcard-img-inner prod-carousel '+(mode==="pd"?"prod-carousel-detail":"")+'" id="'+id+'" data-slide="0">'+slides+arrows+dots+hint+'</div>';
 }
 function setProductSlide(event,id,index){
   if(event){event.preventDefault();event.stopPropagation();}
@@ -682,6 +909,8 @@ function setProductSlide(event,id,index){
   box.setAttribute("data-slide",next);
   for(var i=0;i<imgs.length;i++)imgs[i].classList.toggle("on",i===next);
   for(var d=0;d<dots.length;d++)dots[d].classList.toggle("on",d===next);
+  var root=box.parentElement||box,thumbs=root.querySelectorAll(".pd-thumb");
+  for(var t=0;t<thumbs.length;t++)thumbs[t].classList.toggle("on",t===next);
 }
 function moveProductSlide(event,id,step){
   if(event){event.preventDefault();event.stopPropagation();}
@@ -691,12 +920,31 @@ function moveProductSlide(event,id,step){
 }
 window.setProductSlide=setProductSlide;
 window.moveProductSlide=moveProductSlide;
+function openProductImageZoom(img){
+  if(!img||!img.src)return;
+  var zoom=el("productImageZoom");
+  if(!zoom){
+    zoom=document.createElement("div");
+    zoom.id="productImageZoom";
+    zoom.className="product-image-zoom";
+    zoom.innerHTML='<button type="button" class="product-image-zoom-x" onclick="closeProductImageZoom()" aria-label="Chiudi">×</button><img alt="">';
+    zoom.addEventListener("click",function(event){if(event.target===zoom)closeProductImageZoom();});
+    document.body.appendChild(zoom);
+  }
+  var zimg=zoom.querySelector("img");
+  if(zimg){zimg.src=img.src;zimg.alt=img.alt||"";}
+  zoom.classList.add("open");
+}
+function closeProductImageZoom(){var zoom=el("productImageZoom");if(zoom)zoom.classList.remove("open");}
+window.openProductImageZoom=openProductImageZoom;
+window.closeProductImageZoom=closeProductImageZoom;
 function buildMarquee(items){var mq=el("mqT");if(!mq)return;var d=items.concat(items);var h="";for(var i=0;i<d.length;i++)h+='<span class="mq-i">'+d[i]+'<span class="mq-dot"> · </span></span>';mq.innerHTML=h;}
 function toggleLusso(id,btn){
   var body=el(id);
   if(!body||!btn)return;
   var isCollapsed=body.classList.toggle("collapsed");
-  btn.textContent=isCollapsed?(lang==="en"?"Read more":"Continua a leggere"):(lang==="en"?"Close":"Riduci");
+  var t=T[lang]||T.it;
+  btn.textContent=isCollapsed?t.homeReadMore:t.homeClose;
 }
 window.toggleLusso=toggleLusso;
 function setLang(l){localStorage.setItem("ulang",l);
@@ -869,6 +1117,15 @@ function detailMaterial(details){
   return [details.materiale_cura,details.descrizione_tessuto,details.composizione,details.colore].filter(Boolean).join("\n\n");
 }
 
+function titleCaseProductName(name){
+  return String(name||"").replace(/\s+/g," ").trim().split(" ").map(function(word,index){
+    if(!word)return word;
+    if(index>0&&/^(and|of|the|with|in|for|di|del|della|e|&|·)$/i.test(word))return word.toLowerCase();
+    if(/^[A-Z]{2,}$/.test(word)||/^\d/.test(word))return word;
+    return word.charAt(0).toUpperCase()+word.slice(1);
+  }).join(" ");
+}
+
 function fetchJsonFromEndpoints(endpoints){
   if(!window.fetch)return Promise.reject(new Error("fetch unavailable"));
   var idx=0;
@@ -887,15 +1144,32 @@ function fetchJsonFromEndpoints(endpoints){
 
 function fetchSupabaseProducts(){
   if(!supabaseReady())return Promise.reject(new Error("Supabase not configured"));
-  var query="?select=*&order=sort_order.asc";
-  return fetch(supabaseRest(PRODUCTS_TABLE,query),{headers:supabaseHeaders()}).then(function(res){
-    if(!res.ok)throw new Error("Supabase products HTTP "+res.status);
-    return res.json().then(function(rows){
-      return (rows||[]).filter(function(row){
-        return row&&row.active!==false&&row.active!=="false"&&row.active!==0&&row.active!=="0";
+  var queries=["?select=*&order=sort_order.asc","?select=*&order=ordine.asc","?select=*"];
+  var lastError=null;
+  function next(idx){
+    if(idx>=queries.length)return Promise.reject(lastError||new Error("Supabase products failed"));
+    return fetch(supabaseRest(PRODUCTS_TABLE,queries[idx]),{headers:supabaseHeaders()}).then(function(res){
+      return res.text().then(function(text){
+        var rows=null;
+        try{rows=text?JSON.parse(text):[];}catch(parseErr){}
+        if(!res.ok){
+          lastError=new Error("Supabase products HTTP "+res.status+" "+(text||"").slice(0,260));
+          return next(idx+1);
+        }
+        if(!Array.isArray(rows)){
+          lastError=new Error("Supabase products response is not an array: "+(text||"").slice(0,260));
+          return next(idx+1);
+        }
+        return (rows||[]).filter(function(row){
+          return row&&row.active!==false&&row.active!=="false"&&row.active!==0&&row.active!=="0";
+        });
       });
+    }).catch(function(err){
+      lastError=err;
+      return next(idx+1);
     });
-  });
+  }
+  return next(0);
 }
 
 function normalizeBackendProduct(prod,locale){
@@ -904,9 +1178,11 @@ function normalizeBackendProduct(prod,locale){
   var fallbackName=detailValue(details,"nome_prodotto","nome_opera")||prod.slug||prod.id;
   var fallbackSub=detailValue(details,"descrizione","descrizione_prodotto","variante","dimensione_taglia","dimensione","dimensioni");
   var fallbackStory=detailValue(details,"descrizione","descrizione_prodotto","parole_akasha","frasi_akasha");
+  var productName=rootLocalizedValue(prod,"nome",locale)||rootLocalizedValue(prod,"name",locale)||fallbackName;
+  if(locale==="en")productName=titleCaseProductName(productName);
   return {
     id: prod.id||prod.slug,
-    name: rootLocalizedValue(prod,"nome",locale)||rootLocalizedValue(prod,"name",locale)||fallbackName,
+    name: productName,
     sub: rootLocalizedValue(prod,"sottotitolo",locale)||rootLocalizedValue(prod,"subtitle",locale)||fallbackSub||"",
     price: prod.prezzo||0,
     for_sale: !(prod.for_sale===false||prod.non_in_vendita===true||details.non_in_vendita===true||details.non_in_vendita==="true"||details.non_in_vendita==="1"),
@@ -1150,11 +1426,21 @@ function syncReservationOptions(products){
   size.innerHTML=sizeHtml;
 }
 
+function renderProductsLoadNotice(count){
+  var grid=el("shopGrid");
+  if(!grid||count||!productsLoadError)return;
+  var message=productsLoadError.indexOf("exceed_cached_egress_quota")!==-1
+    ? "Catalogo momentaneamente non disponibile: il progetto Supabase ha superato la quota di traffico. Rimuovi lo spend cap o aggiorna il piano Supabase per ripristinare Creazioni e Shop."
+    : "Catalogo momentaneamente non disponibile. Controlla la configurazione Supabase o riprova tra poco.";
+  grid.innerHTML='<div class="products-load-notice"><h3>Catalogo non disponibile</h3><p>'+message+'</p></div>';
+}
+
 function applyLoadedProducts(){
   var t=T[lang];
   var filtered=getFilteredProducts(t.products);
   buildPrevGrid(t.products.slice(0,3));
   buildShopGrid(filtered);
+  renderProductsLoadNotice(filtered.length);
   syncArtPreview();
   renderCart();
   renderWishlist();
@@ -1185,12 +1471,14 @@ function loadExternalProducts(){
     applyLoadedProducts();
   }
   if(window.fetch){
-    fetchSupabaseProducts().then(function(raw){applyRawProducts(raw||[]);}).catch(function(){
+    fetchSupabaseProducts().then(function(raw){applyRawProducts(raw||[]);}).catch(function(supabaseErr){
       fetchJsonFromEndpoints(endpoints).then(function(data){
         var raw=data&&data.prodotti?data.prodotti:(data&&data.products?data.products:[]);
         applyRawProducts(raw);
       }).catch(function(err){
-        console.error("Ulakasha products load failed:",err);
+        productsLoadError=(supabaseErr&&supabaseErr.message)||"";
+        console.error("Ulakasha Supabase products load failed:",supabaseErr);
+        console.error("Ulakasha fallback products load failed:",err);
         applyLoadedProducts();
       });
     });
@@ -1294,6 +1582,18 @@ function sendViaEmail(){
   },800);
 }
 
+function applyFooterNewsletterLang(t){
+  document.querySelectorAll(".ft-newsletter-main").forEach(function(link){
+    link.setAttribute("aria-label",t.ftNewsletterAria);
+    var title=link.querySelector("strong");
+    var text=link.querySelector("em");
+    var line=link.querySelector(".ft-newsletter-line");
+    if(title)title.textContent=t.ftNewsletterTitle;
+    if(text)text.textContent=t.ftNewsletterText;
+    if(line)line.textContent=t.ftNewsletterLine;
+  });
+}
+
 // ═══════════════════════════════════════════════════════════════════════
 // RESERVATION FORM
 // ═══════════════════════════════════════════════════════════════════════
@@ -1338,9 +1638,18 @@ function applyLang(){
   set("bagLbl",t.bagLbl);
   set("h-sup",t.hSup);set("h-tag",t.hTag,true);set("h-cta1",t.hCta1);set("h-cta2",t.hCta2);set("h-scroll",t.hScroll);
   set("hp-1",t.heroProof1);set("hp-2",t.heroProof2);set("hp-3",t.heroProof3);
+  set("home-intro-copy",t.homeIntro,true);set("home-lusso-title",t.homeLussoTitle);set("home-arte-title",t.homeArteTitle);
+  for(var hi=1;hi<=5;hi++)set("home-lusso-p"+hi,t["homeLussoP"+hi],true);
+  for(var ai=1;ai<=6;ai++)set("home-arte-p"+ai,t["homeArteP"+ai],true);
+  [["lusso-body-lusso","btn-lusso"],["lusso-body-arte","btn-arte"]].forEach(function(pair){var body=el(pair[0]),btn=el(pair[1]);if(body&&btn)btn.textContent=body.classList.contains("collapsed")?t.homeReadMore:t.homeClose;});
+  set("home-collab-link",t.homeCollabLink);
   set("ls-k1",t.lsK1);set("ls-v1",t.lsV1);set("ls-k2",t.lsK2);set("ls-v2",t.lsV2);set("ls-k3",t.lsK3);set("ls-v3",t.lsV3);
   buildMarquee(t.mq);
   set("ph-lbl",t.phLbl);set("ph-h",t.phH,true);set("ph-p1",t.phP1);set("ph-p2",t.phP2);set("ph-ref",t.phRef);set("ph-q",t.phQ);
+  set("home-textile-title-1",t.homeTextileTitle1);
+  set("home-textile-body-1",t.homeTextileBody1);
+  set("home-textile-title-2",t.homeTextileTitle2);
+  set("home-textile-body-2",t.homeTextileBody2);
   set("qu-lbl",t.quLbl);set("qu-h",t.quH,true);set("qu-p1",t.quP1);set("qu-p2",t.quP2);set("qu-cta",t.quCta);
   set("mn-lbl",t.mnLbl);set("mn-sk1",t.mnSk1);set("mn-d1",t.mnD1);set("mn-sk2",t.mnSk2);set("mn-d2",t.mnD2);
   set("cos-lbl",t.cosLbl);set("cos-h",t.cosH,true);set("cos-p",t.cosP,true);
@@ -1351,13 +1660,20 @@ function applyLang(){
     set("collab-t"+ci,t["collabT"+ci]);
     set("collab-d"+ci,t["collabD"+ci],true);
   }
+  set("mc-title",t.mcTitle);set("mc-quote",t.mcQuote);set("mc-body-title",t.mcBodyTitle);
+  set("mc-p1",t.mcP1);set("mc-p2",t.mcP2);set("mc-p3",t.mcP3);set("mc-p4",t.mcP4);
+  set("mc-cta1",t.mcCta1);set("mc-cta2",t.mcCta2);
+  set("ant-title",t.antTitle);set("ant-body-title",t.antBodyTitle);
+  for(var antI=1;antI<=7;antI++)set("ant-p"+antI,t["antP"+antI]);
+  set("ant-cta1",t.antCta1);set("ant-cta2",t.antCta2);
   var ftIds={"ft-tag":t.ftTag,"ft-exp":t.ftExp,"ft-exp2":t.ftExp,"ft-exp3":t.ftExp,"ft-exp4":t.ftExp,"ft-c":t.ftC,"ft-c3":t.ftC,"ft-c4":t.ftC,"ft-f":t.ftF,"ft-f2":t.ftF,"ft-ev4":"Concept Store Aura","ft-w":t.ftW,"ft-ab2":t.ftW,"ft-ab3":t.ftW,"ft-ct":t.ftContact,"ft-copy":t.fcopy,"ft-cp2":t.fcopy};
   for(var k in ftIds)set(k,ftIds[k]);
+  applyFooterNewsletterLang(t);
   set("sh-ttl",t.shTtl);set("sh-sub",t.shSub);
-  set("shop-copy",t.shopCopy);set("shop-meta",t.shopMeta);set("sf-shop",t.sfShop);set("sf-visit",t.sfVisit);
+  set("shop-copy",t.shopCopy);set("shop-meta",t.shopMeta);set("shop-concept-link",t.shopConcept);set("sf-shop",t.sfShop);set("sf-visit",t.sfVisit);
   set("fa",t.fAll);set("fs",t.fSilk);set("fk",t.fKnit);set("ff",t.fSc);set("facc",t.fAcc);
-  if(isShopPage()){
-    set("sh-ttl",isCreazioniPage()?(lang==="it"?"CREAZIONI":"CREATIONS"):(lang==="it"?"Shop":"Shop"));
+  if(isShopPage()||isCreazioniPage()){
+    set("sh-ttl",isCreazioniPage()?(lang==="it"?"Creazioni":"Creations"):(lang==="it"?"Shop":"Shop"));
     set("sh-sub",isCreazioniPage()?(lang==="it"?"Abiti, opere d'arte, oggetti per la casa.":"Clothing, artworks and objects for the home."):"");
     set("shop-copy",isCreazioniPage()?(lang==="it"?"Ogni creazione porta in sé parole che arrivano da Akasha, uno spazio infinito d'amore - e con esse, il potenziale di avvicinare l'essere umano al ricordo di sé. Un atto sacro, nella vita di tutti i giorni.":"Each creation carries words that come from Akasha, an infinite space of love - and with them, the potential to bring the human being closer to the memory of the self. A sacred act in everyday life."):"");
     set("fa",lang==="it"?"Tutto":"All");
@@ -1381,7 +1697,9 @@ function applyLang(){
   set("ev-sup",t.evSup);set("ev-d1",t.evD1);set("ev-l1",t.evL1);set("ev-date",t.evDate,true);set("ev-l2",t.evL2);set("ev-l3",t.evL3);set("ev-v3",t.evV3);set("ev-d2",t.evD2);set("ev-lead-intro",t.evLeadIntro,true);set("ev-lead-cta",t.evLeadCta);set("ev-cta",t.evCta);
   set("ab-h1",t.abH1);set("ab-sub",t.abSub);
   set("fr1",t.fr1);set("fb1",t.fb1);set("fb2",t.fb2);set("fa1",t.fa1);set("fb-mus",t.fbMuseums);
-  set("fr2",t.fr2);set("fb3",t.fb3);set("fb4",t.fb4);set("fa2",t.fa2);
+  set("fr2",t.fr2);set("fb3",t.fb3);set("fb4",t.fb4);set("fb5",t.fb5);set("fb6",t.fb6);set("fa2",t.fa2);
+  set("fb-credits",t.fbCredits);
+  set("curator-p",t.curatorP);
   set("as-lbl",t.asLbl);set("as-h",t.asH,true);set("as-p",t.asP);
   if(productsLoaded)syncReservationOptions(t.products);
   // reservation form labels
@@ -1395,7 +1713,9 @@ function applyLang(){
   set("ls-home-lbl",t.lsHomeLbl);set("ls-home-h",t.lsHomeH,true);
   set("ls-home-p1",t.lsHomeP1);set("ls-home-p2",t.lsHomeP2);
   set("ls-item1-n",t.lsItem1N);set("ls-item1-d",t.lsItem1D);
+  set("ls-item1-logo",t.lsItem1Logo);set("ls-item1-link",t.lsItem1Link);
   set("ls-item2-n",t.lsItem2N);set("ls-item2-d",t.lsItem2D);
+  set("ls-item2-logo",t.lsItem2Logo);set("ls-item2-link",t.lsItem2Link);
   set("ls-item3-n",t.lsItem3N);set("ls-item3-d",t.lsItem3D);
   set("ls-item4-n",t.lsItem4N);set("ls-item4-d",t.lsItem4D);
   set("ls-home-cta1",t.lsHomeCta1);set("ls-home-cta2",t.lsHomeCta2);
@@ -1407,7 +1727,7 @@ var fBtns=document.querySelectorAll(".f-btn");
 for(var fb=0;fb<fBtns.length;fb++){fBtns[fb].addEventListener("click",function(){
   for(var i=0;i<fBtns.length;i++)fBtns[i].classList.remove("on");
   this.classList.add("on");
-  if(isShopPage()){
+  if(isShopPage()||isCreazioniPage()){
     var shopMap={"f-body":"body","f-clothing":"body-clothing","f-textile-accessory":"body-textile-accessory","f-bijoux":"body-bijoux","f-home":"home","f-home-textile":"home-textile","f-table":"home-table","f-bottles":"home-bottles","f-cups":"home-cups","f-art":"art"};
     currentFilter=shopMap[this.id]||"all";
   }
@@ -1470,6 +1790,10 @@ function applyContattiLang(){
   var t=T[lang];
   function ss(id,val,isH){var e=document.getElementById(id);if(!e)return;if(isH)e.innerHTML=val;else e.textContent=val;}
   ss('ct-sub',t.ctSub);
+  ss('ct-email-label',t.ctEmailLabel);
+  ss('ct-ig-label',t.ctIgLabel);
+  ss('ct-site-label',t.ctSiteLabel);
+  ss('ct-press-label',t.ctPressLabel);
   ss('ct-h',t.ctH,true);
   ss('ct-p',t.ctP);
   ss('ct-email-sub',t.ctEmail,true);
