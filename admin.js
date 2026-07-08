@@ -364,7 +364,7 @@
     box.innerHTML=config.fields.map(function(field){
       var key=field[0],baseLabel=escapeHtml(field[1]),type=field[2];
       var labelIt=escapeHtml(fieldValue(labels,key,"it")||field[1]);
-      var labelEn=escapeHtml(fieldValue(labels,key,"en")||autoTranslateText(fieldValue(labels,key,"it")||field[1]));
+      var labelEn=escapeHtml(fieldValue(labels,key,"en"));
       var valueIt=escapeHtml(fieldValue(values,key,"it"));
       var valueEn=escapeHtml(fieldValue(values,key,"en"));
       var labelItInput='<span class="dynamic-label-row"><span>Nome campo IT</span><input class="dynamic-label-input" data-label-key="'+key+'" type="text" value="'+labelIt+'"></span>';
@@ -372,10 +372,10 @@
       var inputIt,inputEn;
       if(type==="textarea"){
         inputIt='<textarea class="dynamic-input" data-detail-key="'+key+'" rows="4">'+valueIt+'</textarea>';
-        inputEn='<textarea class="dynamic-input-en" data-detail-key="'+key+'" rows="4" placeholder="English translation generated on save">'+valueEn+'</textarea>';
+        inputEn='<textarea class="dynamic-input-en" data-detail-key="'+key+'" rows="4" placeholder="English translation">'+valueEn+'</textarea>';
       }else{
         inputIt='<input class="dynamic-input" data-detail-key="'+key+'" type="text" value="'+valueIt+'">';
-        inputEn='<input class="dynamic-input-en" data-detail-key="'+key+'" type="text" value="'+valueEn+'" placeholder="English translation generated on save">';
+        inputEn='<input class="dynamic-input-en" data-detail-key="'+key+'" type="text" value="'+valueEn+'" placeholder="English translation">';
       }
       return '<fieldset class="dynamic-translation-field"><legend>'+baseLabel+'</legend><label><span class="dynamic-lang-label">Italiano</span>'+labelItInput+inputIt+'</label><label><span class="dynamic-lang-label">English</span>'+labelEnInput+inputEn+'</label></fieldset>';
     }).join("");
@@ -395,7 +395,6 @@
       if(enKey){
         var itValue=details[enKey]||"";
         if(enValue)details[enKey+"_en"]=enValue;
-        else if(itValue)details[enKey+"_en"]=autoTranslateText(itValue);
       }
     }
     return details;
@@ -415,7 +414,6 @@
       if(enKey){
         var itValue=labels[enKey]||"";
         if(enValue)labels[enKey+"_en"]=enValue;
-        else if(itValue)labels[enKey+"_en"]=autoTranslateText(itValue);
       }
     }
     return labels;
@@ -659,7 +657,6 @@
       if(key==="nome_prodotto"||key==="nome_opera"||key==="descrizione"||key==="descrizione_prodotto"||key==="variante"||key==="colore")updateAutoSlug();
     });
     el("admin-generate-urls").addEventListener("click",generateStorageUrls);
-    el("admin-translate-en").addEventListener("click",populateEnglishTranslations);
     el("admin-new-product").addEventListener("click",clearForm);
     el("admin-delete-product").addEventListener("click",deleteProduct);
     el("admin-logout").addEventListener("click",function(){localStorage.removeItem("ulakasha_admin_token");location.reload();});

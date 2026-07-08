@@ -472,7 +472,7 @@ function productCategoryTrail(prod){
   else if(macro==="home")trail.push(lang==="en"?"Home":"Abitare la casa");
   else if(macro==="art")trail.push(lang==="en"?"Art":"Abitare l'arte");
   if(shop==="body-clothing")trail.push(lang==="en"?"Clothing":"Abbigliamento");
-  if(shop==="body-accessory")trail.push(lang==="en"?"Textile accessory":"Accessorio tessile");
+  if(shop==="body-textile-accessory")trail.push(lang==="en"?"Textile accessory":"Accessorio tessile");
   if(shop==="body-bijoux")trail.push("Bijoux");
   if(shop==="home-textile")trail.push(lang==="en"?"Textile":"Tessile");
   if(shop==="home-table")trail.push(lang==="en"?"Table":"Tavola");
@@ -892,7 +892,7 @@ function productCarouselHTML(prod,mode){
   if(!imgs.length)return '<div class="pcard-img-inner pcard-img-empty"></div>';
   var id=(mode||"card")+"-"+String(prod.id||Math.random()).replace(/[^a-zA-Z0-9_-]/g,"-");
   var slides=imgs.map(function(src,i){
-    return '<img class="'+(i===0?"on":"")+'" src="'+escAttr(src)+'" '+imageFallbackAttrs(src,prod)+'alt="'+name+'" loading="lazy" '+(mode==="pd"?'onclick="openProductImageZoom(this)" tabindex="0" role="button"':'')+'>';
+    return '<img class="'+(i===0?"on":"")+'" src="'+escAttr(src)+'" '+imageFallbackAttrs(src,prod)+'alt="'+name+'" loading="lazy" data-zoom-index="'+i+'" '+(mode==="pd"?'onclick="openProductImageZoom(this)" tabindex="0" role="button"':'')+'>';
   }).join("");
   var dots=imgs.length>1?'<div class="prod-dots">'+imgs.map(function(_,i){return '<button type="button" class="'+(i===0?"on":"")+'" onclick="setProductSlide(event,\''+id+'\','+i+')" aria-label="Foto '+(i+1)+'"></button>';}).join("")+'</div>':"";
   var arrows=imgs.length>1?'<button type="button" class="prod-arr prod-prev" onclick="moveProductSlide(event,\''+id+'\',-1)" aria-label="Foto precedente">‹</button><button type="button" class="prod-arr prod-next" onclick="moveProductSlide(event,\''+id+'\',1)" aria-label="Foto successiva">›</button>':"";
@@ -927,17 +927,44 @@ function openProductImageZoom(img){
     zoom=document.createElement("div");
     zoom.id="productImageZoom";
     zoom.className="product-image-zoom";
-    zoom.innerHTML='<button type="button" class="product-image-zoom-x" onclick="closeProductImageZoom()" aria-label="Chiudi">×</button><img alt="">';
+    zoom.innerHTML='<button type="button" class="product-image-zoom-x" onclick="closeProductImageZoom()" aria-label="Chiudi">×</button><button type="button" class="product-image-zoom-arr product-image-zoom-prev" onclick="moveProductImageZoom(event,-1)" aria-label="Foto precedente">‹</button><img alt=""><button type="button" class="product-image-zoom-arr product-image-zoom-next" onclick="moveProductImageZoom(event,1)" aria-label="Foto successiva">›</button>';
     zoom.addEventListener("click",function(event){if(event.target===zoom)closeProductImageZoom();});
     document.body.appendChild(zoom);
   }
-  var zimg=zoom.querySelector("img");
-  if(zimg){zimg.src=img.src;zimg.alt=img.alt||"";}
+  var carousel=img.closest(".prod-carousel-detail"),imgs=[];
+  if(carousel){
+    carousel.querySelectorAll("img").forEach(function(item){
+      if(item.src)imgs.push({src:item.src,alt:item.alt||""});
+    });
+  }
+  if(!imgs.length)imgs=[{src:img.src,alt:img.alt||""}];
+  var index=carousel?parseInt(carousel.getAttribute("data-slide")||"0",10):parseInt(img.getAttribute("data-zoom-index")||"0",10);
+  if(!isFinite(index)||index<0||index>=imgs.length)index=0;
+  zoom._ulakashaImages=imgs;
+  zoom._ulakashaIndex=index;
+  renderProductImageZoom();
   zoom.classList.add("open");
+}
+function renderProductImageZoom(){
+  var zoom=el("productImageZoom");if(!zoom)return;
+  var imgs=zoom._ulakashaImages||[],index=zoom._ulakashaIndex||0,zimg=zoom.querySelector("img");
+  if(!imgs.length||!zimg)return;
+  var current=imgs[(index+imgs.length)%imgs.length];
+  zoom._ulakashaIndex=(index+imgs.length)%imgs.length;
+  zimg.src=current.src;
+  zimg.alt=current.alt||"";
+  zoom.classList.toggle("has-gallery",imgs.length>1);
+}
+function moveProductImageZoom(event,step){
+  if(event){event.preventDefault();event.stopPropagation();}
+  var zoom=el("productImageZoom");if(!zoom)return;
+  zoom._ulakashaIndex=(zoom._ulakashaIndex||0)+step;
+  renderProductImageZoom();
 }
 function closeProductImageZoom(){var zoom=el("productImageZoom");if(zoom)zoom.classList.remove("open");}
 window.openProductImageZoom=openProductImageZoom;
 window.closeProductImageZoom=closeProductImageZoom;
+window.moveProductImageZoom=moveProductImageZoom;
 function buildMarquee(items){var mq=el("mqT");if(!mq)return;var d=items.concat(items);var h="";for(var i=0;i<d.length;i++)h+='<span class="mq-i">'+d[i]+'<span class="mq-dot"> · </span></span>';mq.innerHTML=h;}
 function toggleLusso(id,btn){
   var body=el(id);
@@ -965,6 +992,7 @@ function productImgSrc(prod){
 
 function autoTranslateText(value,locale){
   var text=String(value||"");
+  return text;
   if(locale!=="en"||!text)return text;
   var exact={
     "Nome prodotto":"Product name","Nome opera":"Artwork name","Descrizione":"Description","Descrizione prodotto":"Product description","Descrizione opera":"Artwork description","Descrizione tessuto":"Fabric description",
@@ -1037,10 +1065,10 @@ function autoTranslateText(value,locale){
 }
 
 function localizedValue(val,locale){
-  if(typeof val==="string")return autoTranslateText(val,locale);
+  if(typeof val==="string")return val;
   if(val&&typeof val==="object"){
-    if(val[locale])return autoTranslateText(val[locale],locale);
-    if(val.it)return autoTranslateText(val.it,locale);
+    if(val[locale])return val[locale];
+    if(val.it)return val.it;
     if(val.en)return val.en;
   }
   return "";
@@ -1049,7 +1077,7 @@ function rootLocalizedValue(obj,base,locale){
   obj=obj||{};
   var suffix=locale==="en"?"_en":"_it";
   var altSuffix=locale==="en"?"_it":"_en";
-  return autoTranslateText(obj[base+suffix]||obj[base+"_"+locale]||localizedValue(obj[base],locale)||obj[base+altSuffix]||"",locale);
+  return obj[base+suffix]||obj[base+"_"+locale]||localizedValue(obj[base],locale)||obj[base+altSuffix]||"";
 }
 function localizedDetails(prod,locale){
   prod=prod||{};
@@ -1059,17 +1087,17 @@ function localizedDetails(prod,locale){
   function skipKey(key){return key==="it"||key==="en"||key==="layout_prodotto"||/_it$|_en$/.test(key);}
   for(var key in source){
     if(skipKey(key))continue;
-    result[key]=localizedValue(source[key],locale)||autoTranslateText(source[key],locale);
+    result[key]=localizedValue(source[key],locale)||source[key];
   }
   for(var key2 in scoped){
     if(skipKey(key2))continue;
-    result[key2]=localizedValue(scoped[key2],locale)||autoTranslateText(scoped[key2],locale);
+    result[key2]=localizedValue(scoped[key2],locale)||scoped[key2];
   }
   var suffix=locale==="en"?"_en":"_it";
   for(var key3 in source){
     if(key3.slice(-3)===suffix){
       var base=key3.slice(0,-3);
-      if(source[key3])result[base]=autoTranslateText(source[key3],locale);
+      if(source[key3])result[base]=source[key3];
     }
   }
   return result;
@@ -1082,17 +1110,17 @@ function localizedDetailLabels(prod,locale){
   function skipKey(key){return key==="it"||key==="en"||/_it$|_en$/.test(key);}
   for(var key in source){
     if(skipKey(key))continue;
-    result[key]=localizedValue(source[key],locale)||autoTranslateText(source[key],locale);
+    result[key]=localizedValue(source[key],locale)||source[key];
   }
   for(var key2 in scoped){
     if(skipKey(key2))continue;
-    result[key2]=localizedValue(scoped[key2],locale)||autoTranslateText(scoped[key2],locale);
+    result[key2]=localizedValue(scoped[key2],locale)||scoped[key2];
   }
   var suffix=locale==="en"?"_en":"_it";
   for(var key3 in source){
     if(key3.slice(-3)===suffix){
       var base=key3.slice(0,-3);
-      if(source[key3])result[base]=autoTranslateText(source[key3],locale);
+      if(source[key3])result[base]=source[key3];
     }
   }
   return result;
@@ -1179,7 +1207,6 @@ function normalizeBackendProduct(prod,locale){
   var fallbackSub=detailValue(details,"descrizione","descrizione_prodotto","variante","dimensione_taglia","dimensione","dimensioni");
   var fallbackStory=detailValue(details,"descrizione","descrizione_prodotto","parole_akasha","frasi_akasha");
   var productName=rootLocalizedValue(prod,"nome",locale)||rootLocalizedValue(prod,"name",locale)||fallbackName;
-  if(locale==="en")productName=titleCaseProductName(productName);
   return {
     id: prod.id||prod.slug,
     name: productName,
@@ -1318,9 +1345,9 @@ function getFilteredProducts(products){
   var list=sortProductsForDisplay(products);
   if(currentFilter==="all")return list;
   return list.filter(function(prod){
-    var cat=isShopPage()?productShopCategory(prod):productMacroCategory(prod);
-    if(currentFilter==="body")return cat==="body-clothing"||cat==="body-textile-accessory"||cat==="body-bijoux"||cat==="body";
-    if(currentFilter==="home")return cat==="home-textile"||cat==="home-table"||cat==="home-bottles"||cat==="home-cups"||cat==="home";
+    var cat=productShopCategory(prod),macro=productMacroCategory(prod);
+    if(currentFilter==="body")return cat==="body-clothing"||cat==="body-textile-accessory"||cat==="body-bijoux"||macro==="body";
+    if(currentFilter==="home")return cat==="home-textile"||cat==="home-table"||cat==="home-bottles"||cat==="home-cups"||macro==="home";
     if(currentFilter==="home-table")return cat==="home-table"||cat==="home-bottles"||cat==="home-cups";
     return cat===currentFilter;
   });
