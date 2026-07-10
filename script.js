@@ -701,6 +701,9 @@ function showProductDescriptionBelow(prod){
   var details=prod&&prod.details?prod.details:{};
   return productFlag(prod&&prod.show_description_below)||productFlag(details.mostra_descrizione_sotto)||productFlag(details.mostra_descrizione_anche_sotto);
 }
+function shouldShowDetailDescription(prod){
+  return showProductDescriptionBelow(prod)||productShopCategory(prod)==="body-bijoux";
+}
 function cardHTML(p,viewLabel){
   var badge=p.badge?'<span class="badge '+p.bc+'">'+p.badge+'</span>':"";
   var pid=jsString(p.id),sub=p.sub||"";
@@ -770,7 +773,7 @@ function productDetailsHTML(prod){
   var details=prod.details||{},labels=prod.details_labels||{},rows=[];
   for(var key in details){
     if(key==="varianti_colore"||key==="varianti"||key==="color_variants"||key==="non_in_vendita"||key==="nascondi_prezzo"||key==="layout_prodotto"||key==="mostra_descrizione_sotto"||key==="mostra_descrizione_anche_sotto")continue;
-    if(!showProductDescriptionBelow(prod)&&(key==="descrizione"||key==="descrizione_prodotto"||key==="descrizione_opera"))continue;
+    if(!shouldShowDetailDescription(prod)&&(key==="descrizione"||key==="descrizione_prodotto"||key==="descrizione_opera"))continue;
     if(details[key])rows.push('<div class="prod-detail-row"><strong>'+escHtml(autoTranslateText(labels[key]||key.replace(/_/g," "),lang))+'</strong><span>'+escHtml(autoTranslateText(details[key],lang)).replace(/\n/g,"<br>")+'</span></div>');
   }
   if(rows.length)html+='<div class="prod-detail-list">'+rows.join("")+'</div>';
@@ -780,6 +783,8 @@ function productAccordionsHTML(prod){
   var details=prod&&prod.details?prod.details:{};
   var labels=prod&&prod.details_labels?prod.details_labels:{};
   var order=lang==="en"?[
+    ["descrizione","PRODUCT DESCRIPTION"],
+    ["descrizione_prodotto","PRODUCT DESCRIPTION"],
     ["parole_akasha","AKASHA WORDS"],
     ["frasi_akasha","AKASHA WORDS"],
     ["materiale_cura","MATERIALS AND CARE"],
@@ -788,6 +793,8 @@ function productAccordionsHTML(prod){
     ["spedizioni_resi","SHIPPING AND RETURNS"],
     ["tecnica","TECHNIQUE"]
   ]:[
+    ["descrizione","DESCRIZIONE PRODOTTO"],
+    ["descrizione_prodotto","DESCRIZIONE PRODOTTO"],
     ["parole_akasha","LE PAROLE DELL'AKASHA"],
     ["frasi_akasha","LE PAROLE DELL'AKASHA"],
     ["materiale_cura","MATERIALE E CURA"],
@@ -800,7 +807,7 @@ function productAccordionsHTML(prod){
   function add(key,label){
     if(used[key]||!details[key])return;
     if(key==="varianti_colore"||key==="varianti"||key==="color_variants"||key==="nascondi_prezzo"||key==="non_in_vendita"||key==="layout_prodotto"||key==="mostra_descrizione_sotto"||key==="mostra_descrizione_anche_sotto")return;
-    if(!showProductDescriptionBelow(prod)&&(key==="descrizione"||key==="descrizione_prodotto"||key==="descrizione_opera"))return;
+    if(!shouldShowDetailDescription(prod)&&(key==="descrizione"||key==="descrizione_prodotto"||key==="descrizione_opera"))return;
     if(key==="colore"||key==="nome_prodotto"||key==="nome_opera"||key==="dimensione_taglia"||key==="dimensione"||key==="dimensioni"||key==="variante")return;
     used[key]=true;
     var finalLabel=labels[key]||label||key.replace(/_/g," ");
@@ -810,7 +817,6 @@ function productAccordionsHTML(prod){
   }
   for(var i=0;i<order.length;i++)add(order[i][0],order[i][1]);
   for(var key in details)add(key,labels[key]);
-  if(!items.length&&prod&&prod.material)items.push([T[lang].ac1t,prod.material]);
   if(!items.length)return "";
   return items.map(function(item){
     var label=autoTranslateText(item[0],lang),value=autoTranslateText(item[1],lang);
@@ -1320,23 +1326,41 @@ function isCushion50(prod){
   return /cuscino|cushion|pillow/i.test(productSearchText(prod))&&/(^|[^0-9])50\s*x\s*50([^0-9]|$)|(^|[^0-9])50x50([^0-9]|$)/i.test(productSearchText(prod));
 }
 function isCushionProduct(prod){return /cuscino|cushion|pillow/i.test(productSearchText(prod));}
-function productAllGroupRank(prod){
-  var cat=productShopCategory(prod);
-  if(isCushion50(prod))return 10;
-  if(isCushionProduct(prod))return 20;
-  if(cat==="body-clothing")return 30;
-  if(cat==="body-bijoux")return 40;
-  if(cat==="body-textile-accessory")return 50;
-  if(cat==="home-textile")return 60;
-  if(cat==="home-table"||cat==="home-bottles"||cat==="home-cups")return 65;
-  if(cat==="art")return 70;
-  return 80;
+function productAllFamilyRank(prod){
+  var cat=productShopCategory(prod),text=productSearchText(prod).toLowerCase();
+  if(isCushion50(prod))return 100;
+  if(isCushionProduct(prod))return 110;
+  if(cat==="body-clothing")return 200;
+  if(cat==="body-bijoux"){
+    if(/collana|collane|necklace|necklaces/.test(text))return 300;
+    if(/bracciale|bracciali|bracelet|bracelets/.test(text))return 310;
+    if(/orecchin|earring/.test(text))return 320;
+    if(/anello|anelli|ring/.test(text))return 330;
+    if(/spilla|spille|brooch|pin/.test(text))return 340;
+    return 390;
+  }
+  if(cat==="body-textile-accessory"){
+    if(/mini\s*bandeau|minibandeau/.test(text))return 400;
+    if(/bandeau/.test(text))return 410;
+    if(/foulard|scarf|scarves/.test(text))return 420;
+    if(/stola|stole|shawl/.test(text))return 430;
+    return 490;
+  }
+  if(cat==="home-textile")return 500;
+  if(cat==="home-bottles")return 600;
+  if(cat==="home-cups")return 610;
+  if(cat==="home-table")return 620;
+  if(cat==="art")return 700;
+  return 900;
+}
+function useFamilyGroupingForCurrentFilter(){
+  return currentFilter==="all"||currentFilter==="body"||currentFilter==="home"||currentFilter==="body-textile-accessory"||currentFilter==="body-bijoux"||currentFilter==="home-textile";
 }
 function sortProductsForDisplay(list){
   return list.map(function(prod,index){return{prod:prod,index:index};}).sort(function(a,b){
-    if(currentFilter==="all"){
-      var ag=productAllGroupRank(a.prod);
-      var bg=productAllGroupRank(b.prod);
+    if(useFamilyGroupingForCurrentFilter()){
+      var ag=productAllFamilyRank(a.prod);
+      var bg=productAllFamilyRank(b.prod);
       if(ag!==bg)return ag-bg;
     }
     var ao=productOrderValue(a.prod,a.index);
