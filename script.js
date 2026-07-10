@@ -1316,43 +1316,32 @@ function productOrderValue(prod,index){
   if(!isFinite(n))n=Number(prod&&prod.ordine);
   return isFinite(n)?n:index;
 }
-function productDisplayCategoryRank(prod){
-  var cat=productShopCategory(prod);
-  if(cat==="body-textile-accessory")return 10;
-  if(cat==="body-clothing")return 20;
-  if(cat==="body-bijoux")return 30;
-  if(cat==="home-textile")return 40;
-  if(cat==="home-bottles")return 50;
-  if(cat==="home-cups")return 60;
-  if(cat==="home-table")return 70;
-  if(cat==="art")return 80;
-  if(cat==="body")return 15;
-  if(cat==="home")return 45;
-  return 90;
-}
-function productFamilyRank(prod){
-  var text=productSearchText(prod).toLowerCase();
-  if(text.indexOf("foulard")!==-1||text.indexOf("scarf")!==-1)return 10;
-  if(text.indexOf("mini bandeau")!==-1)return 20;
-  if(text.indexOf("bandeau")!==-1&&text.indexOf("frang")!==-1)return 22;
-  if(text.indexOf("bandeau")!==-1)return 24;
-  if(text.indexOf("stola")!==-1)return 30;
-  if(text.indexOf("cuscino")!==-1||text.indexOf("cushion")!==-1||text.indexOf("pillow")!==-1)return 40;
-  if(text.indexOf("bottiglia")!==-1||text.indexOf("bottle")!==-1||text.indexOf("cristall")!==-1)return 50;
-  if(text.indexOf("tazza")!==-1||text.indexOf("cup")!==-1||text.indexOf("ceramic")!==-1)return 60;
-  return 90;
-}
 function isCushion50(prod){
   return /cuscino|cushion|pillow/i.test(productSearchText(prod))&&/(^|[^0-9])50\s*x\s*50([^0-9]|$)|(^|[^0-9])50x50([^0-9]|$)/i.test(productSearchText(prod));
 }
+function isCushionProduct(prod){return /cuscino|cushion|pillow/i.test(productSearchText(prod));}
+function productAllGroupRank(prod){
+  var cat=productShopCategory(prod);
+  if(isCushion50(prod))return 10;
+  if(isCushionProduct(prod))return 20;
+  if(cat==="body-clothing")return 30;
+  if(cat==="body-bijoux")return 40;
+  if(cat==="body-textile-accessory")return 50;
+  if(cat==="home-textile")return 60;
+  if(cat==="home-table"||cat==="home-bottles"||cat==="home-cups")return 65;
+  if(cat==="art")return 70;
+  return 80;
+}
 function sortProductsForDisplay(list){
   return list.map(function(prod,index){return{prod:prod,index:index};}).sort(function(a,b){
+    if(currentFilter==="all"){
+      var ag=productAllGroupRank(a.prod);
+      var bg=productAllGroupRank(b.prod);
+      if(ag!==bg)return ag-bg;
+    }
     var ao=productOrderValue(a.prod,a.index);
     var bo=productOrderValue(b.prod,b.index);
     if(ao!==bo)return ao-bo;
-    var ac=isCushion50(a.prod)?0:1;
-    var bc=isCushion50(b.prod)?0:1;
-    if(ac!==bc)return ac-bc;
     return a.index-b.index;
   }).map(function(item){return item.prod;});
 }
