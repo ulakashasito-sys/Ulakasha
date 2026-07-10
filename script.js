@@ -403,7 +403,14 @@ function ensureProductDetail(){
   var stickyBtn=el("pdStickyBtn");if(stickyBtn)stickyBtn.addEventListener("click",addCurrentProductToCart);
 }
 function showProductDetail(){var m=el("productModal");if(m){m.classList.add("open");document.body.classList.add("modal-open");}}
-function closeProductDetail(){var m=el("productModal");if(m)m.classList.remove("open");document.body.classList.remove("modal-open");}
+function setProductUrlState(id){
+  if(!(isShopPage()||isCreazioniPage())||!window.history||!window.location)return;
+  var url=new URL(window.location.href);
+  if(id)url.searchParams.set("product",id);
+  else url.searchParams.delete("product");
+  window.history.replaceState(null,"",url.pathname+url.search+url.hash);
+}
+function closeProductDetail(){var m=el("productModal");if(m)m.classList.remove("open");document.body.classList.remove("modal-open");curProd=null;setProductUrlState("");}
 function backFromProduct(){
   closeProductDetail();
   if(isShopPage()||isCreazioniPage()){
@@ -419,6 +426,7 @@ function openProd(id,nav){
   for(var i=0;i<T[lang].products.length;i++){if(T[lang].products[i].id===id){prod=T[lang].products[i];break;}}
   if(!prod)return;
   curProd=prod;selSz=null;selColor="";selVariantImages=[];
+  setProductUrlState(prod.id);
   applyProductDetailLayout(prod);
   el("pdImg").innerHTML=productCarouselHTML(prod,"pd");
   set("pd-nm",prod.name);
@@ -738,6 +746,12 @@ function syncArtPreview(){
   if(!preview)return;
   preview.classList.toggle("on",isCreazioniPage()&&currentFilter==="art");
 }
+function applyArtPreviewLang(){
+  if(!el("art-preview-label"))return;
+  set("art-preview-label",lang==="en"?"INHABIT ART":"ABITARE L'ARTE");
+  set("art-preview-title",lang==="en"?"Artworks and posters":"Opere e poster");
+  set("art-preview-text",lang==="en"?"An open window onto Ulakasha artworks.":"Una finestra aperta sulle opere Ulakasha.");
+}
 function buildShopGrid(prods){
   var grid=el("shopGrid");if(!grid)return;
   var vl=isCreazioniPage()?(lang==="it"?"Scopri la creazione":"View creation"):(lang==="it"?"Scopri il capo":"View piece");
@@ -982,6 +996,7 @@ function setLang(l){localStorage.setItem("ulang",l);
   var enBtns=document.querySelectorAll("#ln-en,#mln-en");for(var i=0;i<enBtns.length;i++)enBtns[i].classList.toggle("on",l==="en");
   var itBtns=document.querySelectorAll("#ln-it,#mln-it");for(var i=0;i<itBtns.length;i++)itBtns[i].classList.toggle("on",l==="it");
   applyLang();
+  if(productsLoaded)applyLoadedProducts();
   ensureWishlistUI();
 }
 
@@ -1209,6 +1224,9 @@ function normalizeBackendProduct(prod,locale){
   var productName=rootLocalizedValue(prod,"nome",locale)||rootLocalizedValue(prod,"name",locale)||fallbackName;
   return {
     id: prod.id||prod.slug,
+    sort_order: prod.sort_order,
+    order: prod.order,
+    ordine: prod.ordine,
     name: productName,
     sub: rootLocalizedValue(prod,"sottotitolo",locale)||rootLocalizedValue(prod,"subtitle",locale)||fallbackSub||"",
     price: prod.prezzo||0,
@@ -1324,19 +1342,17 @@ function productFamilyRank(prod){
   if(text.indexOf("tazza")!==-1||text.indexOf("cup")!==-1||text.indexOf("ceramic")!==-1)return 60;
   return 90;
 }
+function isCushion50(prod){
+  return /cuscino|cushion|pillow/i.test(productSearchText(prod))&&/(^|[^0-9])50\s*x\s*50([^0-9]|$)|(^|[^0-9])50x50([^0-9]|$)/i.test(productSearchText(prod));
+}
 function sortProductsForDisplay(list){
   return list.map(function(prod,index){return{prod:prod,index:index};}).sort(function(a,b){
-    if(currentFilter==="all"){
-      var ar=productDisplayCategoryRank(a.prod);
-      var br=productDisplayCategoryRank(b.prod);
-      if(ar!==br)return ar-br;
-    }
-    var af=productFamilyRank(a.prod);
-    var bf=productFamilyRank(b.prod);
-    if(af!==bf)return af-bf;
     var ao=productOrderValue(a.prod,a.index);
     var bo=productOrderValue(b.prod,b.index);
     if(ao!==bo)return ao-bo;
+    var ac=isCushion50(a.prod)?0:1;
+    var bc=isCushion50(b.prod)?0:1;
+    if(ac!==bc)return ac-bc;
     return a.index-b.index;
   }).map(function(item){return item.prod;});
 }
@@ -1464,8 +1480,9 @@ function renderProductsLoadNotice(count){
 
 function applyLoadedProducts(){
   var t=T[lang];
+  var ordered=sortProductsForDisplay(t.products);
   var filtered=getFilteredProducts(t.products);
-  buildPrevGrid(t.products.slice(0,3));
+  buildPrevGrid(ordered.slice(0,3));
   buildShopGrid(filtered);
   renderProductsLoadNotice(filtered.length);
   syncArtPreview();
@@ -1474,10 +1491,12 @@ function applyLoadedProducts(){
   syncReservationOptions(t.products);
   set("shop-meta",filtered.length+" · "+t.shopMeta);
   updateDynamicSeo(t.products);
-  if(curProd){
+  var productIdFromUrl=new URLSearchParams(window.location.search).get("product");
+  var reopenId=curProd&&curProd.id?curProd.id:productIdFromUrl;
+  if(reopenId){
     var found=null;
-    for(var i=0;i<t.products.length;i++){if(t.products[i].id===curProd.id){found=t.products[i];break;}}
-    if(found)openProd(found.id,false);
+    for(var i=0;i<t.products.length;i++){if(String(t.products[i].id)===String(reopenId)){found=t.products[i];break;}}
+    if(found){openProd(found.id,false);showProductDetail();}
   }
 }
 
@@ -1717,6 +1736,7 @@ function applyLang(){
     set("f-bottles",lang==="it"?"Bottiglie":"Bottles");
     set("f-cups",lang==="it"?"Tazze":"Cups");
     set("f-art",lang==="it"?"Arte":"Art");
+    applyArtPreviewLang();
   }
   set("pd-back",t.pdBack);set("sz-lbl",t.szLbl);set("color-lbl",lang==="en"?"Color":"Colore");set("atcBtn",t.addBtn);
   set("ac1",t.ac1t);set("ac2",t.ac2t);set("ac3",t.ac3t);
