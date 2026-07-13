@@ -704,7 +704,7 @@ function showProductDescriptionBelow(prod){
 function shouldShowDetailDescription(prod){
   return showProductDescriptionBelow(prod)||productShopCategory(prod)==="body-bijoux";
 }
-function cardHTML(p,viewLabel){
+function cardHTML(p,viewLabel,extraClass){
   var badge=p.badge?'<span class="badge '+p.bc+'">'+p.badge+'</span>':"";
   var pid=jsString(p.id),sub=p.sub||"";
   var hideMeta=isCreazioniPage();
@@ -714,6 +714,7 @@ function cardHTML(p,viewLabel){
   if(/cuscino|cushion|pillow/i.test(productSearchText(p)))classes.push("is-cushion");
   if(/avorio\s*lurex|ivory\s*lurex/i.test(productSearchText(p)))classes.push("is-cushion-lurex");
   if(/65\s*x\s*65|65x65/i.test(productSearchText(p)))classes.push("is-cushion-large");
+  if(extraClass)classes.push(extraClass);
   var swatches=productVariantSwatchesHTML(p);
   return '<div class="'+classes.join(" ")+'" onclick="openProdFromCardElement(this,\''+pid+'\')">'
     +'<div class="pcard-img">'
@@ -758,10 +759,13 @@ function applyArtPreviewLang(){
 function buildShopGrid(prods){
   var grid=el("shopGrid");if(!grid)return;
   var vl=isCreazioniPage()?(lang==="it"?"Scopri la creazione":"View creation"):(lang==="it"?"Scopri il capo":"View piece");
-  var h="";
+  var h="",lastRank=null,groupAll=currentFilter==="all";
   for(var i=0;i<prods.length;i++){
     if(isShopPage()&&!productForSale(prods[i]))continue;
-    h+=cardHTML(prods[i],vl);
+    var rank=productAllFamilyRank(prods[i]);
+    var breakClass=groupAll&&lastRank!==null&&rank!==lastRank?"pcard-break":"";
+    h+=cardHTML(prods[i],vl,breakClass);
+    lastRank=rank;
   }
   grid.innerHTML=h;
 }
@@ -785,8 +789,8 @@ function productAccordionsHTML(prod){
   var order=lang==="en"?[
     ["descrizione","PRODUCT DESCRIPTION"],
     ["descrizione_prodotto","PRODUCT DESCRIPTION"],
-    ["parole_akasha","AKASHA WORDS"],
-    ["frasi_akasha","AKASHA WORDS"],
+    ["parole_akasha","Words from Akasha"],
+    ["frasi_akasha","Words from Akasha"],
     ["materiale_cura","MATERIALS AND CARE"],
     ["descrizione_tessuto","FABRIC DESCRIPTION"],
     ["composizione","COMPOSITION"],
@@ -821,6 +825,7 @@ function productAccordionsHTML(prod){
   return items.map(function(item){
     var label=autoTranslateText(item[0],lang),value=autoTranslateText(item[1],lang);
     var isAkasha=/akasha/i.test(label);
+    if(lang==="en"&&isAkasha)label="Words from Akasha";
     var isLong=String(value||"").length>360;
     var bodyClass="acc-b"+(isAkasha?" open":"")+(isLong?" acc-long is-collapsed":"");
     var headClass="acc-h"+(isAkasha?" open":"");
@@ -1161,6 +1166,24 @@ function detailValue(details){
   }
   return "";
 }
+function valueList(value){
+  if(Array.isArray(value))return value.map(function(v){return String(v||"").trim();}).filter(Boolean);
+  if(typeof value==="string")return value.split(/\n|;|,/).map(function(v){return v.trim();}).filter(Boolean);
+  if(value)return [String(value).trim()].filter(Boolean);
+  return [];
+}
+function productSizeList(prod,details,locale){
+  prod=prod||{};details=details||{};
+  var measured=detailValue(details,"dimensione_taglia","dimensione","dimensioni","misura","misure")
+    ||rootLocalizedValue(prod,"dimensione_taglia",locale)
+    ||rootLocalizedValue(prod,"dimensione",locale)
+    ||rootLocalizedValue(prod,"dimensioni",locale)
+    ||rootLocalizedValue(prod,"misura",locale)
+    ||rootLocalizedValue(prod,"misure",locale)
+    ||prod.dimensione_taglia||prod.dimensione||prod.dimensioni||prod.misura||prod.misure;
+  var standard=prod.taglie||prod.sizes||prod.taglia||prod.size||detailValue(details,"taglie","taglia","size","sizes");
+  return valueList(measured||standard);
+}
 function detailMaterial(details){
   details=details||{};
   return [details.materiale_cura,details.descrizione_tessuto,details.composizione,details.colore].filter(Boolean).join("\n\n");
@@ -1237,7 +1260,7 @@ function normalizeBackendProduct(prod,locale){
     sub: rootLocalizedValue(prod,"sottotitolo",locale)||rootLocalizedValue(prod,"subtitle",locale)||fallbackSub||"",
     price: prod.prezzo||0,
     for_sale: !(prod.for_sale===false||prod.non_in_vendita===true||details.non_in_vendita===true||details.non_in_vendita==="true"||details.non_in_vendita==="1"),
-    sizes: prod.taglie||[],
+    sizes: productSizeList(prod,details,locale),
     badge: prod.badge||"",
     bc: prod.badge_class||"",
     img: photos.length?photos[0]:"",
@@ -1328,29 +1351,31 @@ function isCushion50(prod){
 function isCushionProduct(prod){return /cuscino|cushion|pillow/i.test(productSearchText(prod));}
 function productAllFamilyRank(prod){
   var cat=productShopCategory(prod),text=productSearchText(prod).toLowerCase();
-  if(isCushion50(prod))return 100;
-  if(isCushionProduct(prod))return 110;
+  if(cat==="body-textile-accessory"){
+    if(/mini\s*bandeau|minibandeau/.test(text))return 110;
+    if(/bandeau/.test(text))return 100;
+    if(/foulard|scarf|scarves/.test(text))return 120;
+    if(/stola|stole|shawl/.test(text))return 130;
+    return 190;
+  }
   if(cat==="body-clothing")return 200;
-  if(cat==="body-bijoux"){
-    if(/collana|collane|necklace|necklaces/.test(text))return 300;
-    if(/bracciale|bracciali|bracelet|bracelets/.test(text))return 310;
-    if(/orecchin|earring/.test(text))return 320;
-    if(/anello|anelli|ring/.test(text))return 330;
-    if(/spilla|spille|brooch|pin/.test(text))return 340;
+  if(cat==="home-textile"){
+    if(isCushion50(prod))return 300;
+    if(isCushionProduct(prod))return 310;
     return 390;
   }
-  if(cat==="body-textile-accessory"){
-    if(/mini\s*bandeau|minibandeau/.test(text))return 400;
-    if(/bandeau/.test(text))return 410;
-    if(/foulard|scarf|scarves/.test(text))return 420;
-    if(/stola|stole|shawl/.test(text))return 430;
-    return 490;
+  if(cat==="home-bottles")return 400;
+  if(cat==="home-cups")return 410;
+  if(cat==="home-table")return 420;
+  if(cat==="body-bijoux"){
+    if(/collana|collane|necklace|necklaces/.test(text))return 500;
+    if(/bracciale|bracciali|bracelet|bracelets/.test(text))return 510;
+    if(/orecchin|earring/.test(text))return 520;
+    if(/anello|anelli|ring/.test(text))return 530;
+    if(/spilla|spille|brooch|pin/.test(text))return 540;
+    return 590;
   }
-  if(cat==="home-textile")return 500;
-  if(cat==="home-bottles")return 600;
-  if(cat==="home-cups")return 610;
-  if(cat==="home-table")return 620;
-  if(cat==="art")return 700;
+  if(cat==="art")return 600;
   return 900;
 }
 function useFamilyGroupingForCurrentFilter(){
