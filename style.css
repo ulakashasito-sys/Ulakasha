@@ -1145,6 +1145,23 @@ body{letter-spacing:.01em;}
 .concept-store-page .ev-cards{display:none;}
 .concept-store-page .venue-slider{background:#fff;}
 @media(max-width:600px){
+  .concept-store-page .ev-body{
+    padding-left:20px;
+    padding-right:20px;
+    text-align:center;
+  }
+  .concept-store-page .ev-desc{
+    max-width:340px;
+    margin-left:auto;
+    margin-right:auto;
+    text-align:center;
+  }
+  .concept-store-page #ev-d2{
+    margin-top:20px;
+  }
+  .concept-store-page .gallery-card span{
+    text-align:center;
+  }
   .venue-slide img{max-height:400px;}
 }
 /* SCROLLABLE CALENDAR */
