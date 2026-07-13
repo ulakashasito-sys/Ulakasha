@@ -1753,13 +1753,17 @@ function applyLang(){
   var ftIds={"ft-tag":t.ftTag,"ft-exp":t.ftExp,"ft-exp2":t.ftExp,"ft-exp3":t.ftExp,"ft-exp4":t.ftExp,"ft-c":t.ftC,"ft-c3":t.ftC,"ft-c4":t.ftC,"ft-f":t.ftF,"ft-f2":t.ftF,"ft-ev4":"Concept Store Aura","ft-w":t.ftW,"ft-ab2":t.ftW,"ft-ab3":t.ftW,"ft-ct":t.ftContact,"ft-copy":t.fcopy,"ft-cp2":t.fcopy};
   for(var k in ftIds)set(k,ftIds[k]);
   applyFooterNewsletterLang(t);
-  set("sh-ttl",t.shTtl);set("sh-sub",t.shSub);
-  set("shop-copy",t.shopCopy);set("shop-meta",t.shopMeta);set("shop-concept-link",t.shopConcept);set("sf-shop",t.sfShop);set("sf-visit",t.sfVisit);
+  if(!isShopPage()&&!isCreazioniPage()){
+    set("sh-ttl",t.shTtl);set("sh-sub",t.shSub);
+    set("shop-copy",t.shopCopy);set("shop-meta",t.shopMeta);set("shop-concept-link",t.shopConcept);
+  }
+  set("sf-shop",t.sfShop);set("sf-visit",t.sfVisit);
   set("fa",t.fAll);set("fs",t.fSilk);set("fk",t.fKnit);set("ff",t.fSc);set("facc",t.fAcc);
   if(isShopPage()||isCreazioniPage()){
     set("sh-ttl",isCreazioniPage()?(lang==="it"?"Creazioni":"Creations"):(lang==="it"?"Shop":"Shop"));
     set("sh-sub",isCreazioniPage()?(lang==="it"?"Abiti, opere d'arte, oggetti per la casa.":"Clothing, artworks and objects for the home."):"");
     set("shop-copy",isCreazioniPage()?(lang==="it"?"Ogni creazione porta in sé parole che arrivano da Akasha, uno spazio infinito d'amore - e con esse, il potenziale di avvicinare l'essere umano al ricordo di sé. Un atto sacro, nella vita di tutti i giorni.":"Each creation carries words that come from Akasha, an infinite space of love - and with them, the potential to bring the human being closer to the memory of the self. A sacred act in everyday life."):"");
+    set("shop-concept-link",lang==="it"?"Presente anche al Concept Store Aura · Via Festa del Perdono 10, Milano →":"Also available at Concept Store Aura · Via Festa del Perdono 10, Milan →");
     set("fa",lang==="it"?"Tutto":"All");
     set("fg-body",lang==="it"?"Abitare il corpo":"Inhabit the body");
     set("fg-home",lang==="it"?"Abitare la casa":"Inhabit the home");
