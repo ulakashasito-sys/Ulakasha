@@ -5,6 +5,7 @@
   var BUCKET=window.ULAKASHA_PRODUCT_IMAGES_BUCKET||"product-images";
   var token=localStorage.getItem("ulakasha_admin_token")||"";
   var products=[];
+  var newsletterSubscribers=[];
   var slugWasEdited=false;
   var lastAutoSlug="";
   var dynamicFieldsets={
@@ -198,6 +199,34 @@
     return storagePathToUrl(clean,category);
   }
   function escapeHtml(value){return String(value||"").replace(/[&<>"']/g,function(ch){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch];});}
+  function dateTimeLabel(value){
+    if(!value)return "";
+    var d=new Date(value);
+    if(isNaN(d.getTime()))return value;
+    return d.toLocaleString("it-IT",{dateStyle:"short",timeStyle:"short"});
+  }
+  function dateFileStamp(){
+    return new Date().toISOString().slice(0,10);
+  }
+  function downloadBlob(content,type,filename){
+    var blob=content instanceof Blob?content:new Blob([content],{type:type});
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement("a");
+    a.href=url;
+    a.download=filename;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function(){URL.revokeObjectURL(url);a.remove();},250);
+  }
+  function newsletterLanguageLabel(value){
+    return value==="en"?"Inglese":"Italiano";
+  }
+  function consentLabel(value){
+    return value?"Sì":"No";
+  }
+  function emptyLabel(value){
+    return value||"Non indicato";
+  }
   function autoTranslateText(value){
     var text=String(value||"").trim();
     if(!text)return "";
@@ -312,6 +341,158 @@
     if(!res.ok)throw new Error("Non riesco a leggere i prodotti");
     products=await res.json();
     renderList();
+  }
+
+  function newsletterQuery(){
+    var params=["select=created_at,name,email,phone,newsletter_language,site_language,consent,message,page_url,source","order=created_at.desc"];
+    var from=el("newsletter-date-from")?el("newsletter-date-from").value:"";
+    var to=el("newsletter-date-to")?el("newsletter-date-to").value:"";
+    if(from)params.push("created_at=gte."+encodeURIComponent(from+"T00:00:00"));
+    if(to)params.push("created_at=lte."+encodeURIComponent(to+"T23:59:59"));
+    return "?"+params.join("&");
+  }
+
+  async function listNewsletterSubscribers(){
+    if(!el("newsletter-table-body"))return;
+    status("newsletter-status","Caricamento iscritti...");
+    var res=await fetch(rest(window.ULAKASHA_NEWSLETTER_TABLE||"newsletter_subscribers",newsletterQuery()),{headers:headers(true)});
+    if(!res.ok){
+      var detail="";
+      try{detail=await res.text();}catch(e){}
+      throw new Error("Non riesco a leggere gli iscritti newsletter"+(detail?": "+detail:""));
+    }
+    newsletterSubscribers=await res.json();
+    renderNewsletterSubscribers();
+    status("newsletter-status",newsletterSubscribers.length?("Iscritti caricati: "+newsletterSubscribers.length):"Nessun iscritto nel periodo selezionato.");
+  }
+
+  function renderNewsletterSubscribers(){
+    var body=el("newsletter-table-body");
+    var summary=el("newsletter-summary");
+    if(!body)return;
+    if(summary){
+      var first=newsletterSubscribers[newsletterSubscribers.length-1];
+      var last=newsletterSubscribers[0];
+      summary.textContent=newsletterSubscribers.length
+        ? newsletterSubscribers.length+" iscritti visualizzati · dal "+dateTimeLabel(first.created_at)+" al "+dateTimeLabel(last.created_at)
+        : "Nessun iscritto visualizzato.";
+    }
+    if(!newsletterSubscribers.length){
+      body.innerHTML='<tr><td colspan="7">Nessun iscritto nel periodo selezionato.</td></tr>';
+      return;
+    }
+    body.innerHTML=newsletterSubscribers.map(function(item){
+      return '<tr>'+
+        '<td>'+escapeHtml(dateTimeLabel(item.created_at))+'</td>'+
+        '<td>'+escapeHtml(item.name)+'</td>'+
+        '<td><a href="mailto:'+encodeURIComponent(item.email||"")+'">'+escapeHtml(item.email)+'</a></td>'+
+        '<td>'+escapeHtml(emptyLabel(item.phone))+'</td>'+
+        '<td>'+escapeHtml(newsletterLanguageLabel(item.newsletter_language))+'</td>'+
+        '<td>'+escapeHtml(consentLabel(item.consent))+'</td>'+
+        '<td>'+escapeHtml(item.message||"")+'</td>'+
+      '</tr>';
+    }).join("");
+  }
+
+  function applyNewsletterPreset(){
+    var preset=el("newsletter-range-preset").value;
+    var from=el("newsletter-date-from"),to=el("newsletter-date-to");
+    if(!from||!to)return;
+    if(!preset)return;
+    if(preset==="all"){
+      from.value="";
+      to.value="";
+      return;
+    }
+    var end=new Date();
+    var start=new Date();
+    start.setDate(end.getDate()-Number(preset)+1);
+    from.value=start.toISOString().slice(0,10);
+    to.value=end.toISOString().slice(0,10);
+  }
+
+  function newsletterExportRows(){
+    return newsletterSubscribers.map(function(item){
+      return {
+        "Data iscrizione":dateTimeLabel(item.created_at),
+        "Nome":item.name||"",
+        "Email":item.email||"",
+        "Telefono":emptyLabel(item.phone),
+        "Lingua newsletter":newsletterLanguageLabel(item.newsletter_language),
+        "Lingua sito":newsletterLanguageLabel(item.site_language),
+        "Consenso privacy":consentLabel(item.consent),
+        "Messaggio":item.message||"",
+        "Origine":item.source||"",
+        "Pagina":item.page_url||""
+      };
+    });
+  }
+
+  function exportNewsletterExcel(){
+    if(!newsletterSubscribers.length)return status("newsletter-status","Nessun iscritto da esportare.");
+    var rows=newsletterExportRows();
+    var columns=Object.keys(rows[0]);
+    var html='<!doctype html><html><head><meta charset="utf-8"></head><body><table><thead><tr>'+
+      columns.map(function(c){return '<th>'+escapeHtml(c)+'</th>';}).join("")+
+      '</tr></thead><tbody>'+
+      rows.map(function(row){return '<tr>'+columns.map(function(c){return '<td>'+escapeHtml(row[c])+'</td>';}).join("")+'</tr>';}).join("")+
+      '</tbody></table></body></html>';
+    downloadBlob(html,"application/vnd.ms-excel;charset=utf-8","iscritti-newsletter-ulakasha-"+dateFileStamp()+".xls");
+  }
+
+  function pdfSafe(value){
+    return String(value||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^\x20-\x7E]/g," ").replace(/[\\()]/g,function(ch){return "\\"+ch;});
+  }
+  function wrapPdfLine(text,max){
+    var words=String(text||"").split(/\s+/),lines=[],line="";
+    words.forEach(function(word){
+      var test=line?line+" "+word:word;
+      if(test.length>max&&line){lines.push(line);line=word;}
+      else line=test;
+    });
+    if(line)lines.push(line);
+    return lines.length?lines:[""];
+  }
+  function exportNewsletterPdf(){
+    if(!newsletterSubscribers.length)return status("newsletter-status","Nessun iscritto da esportare.");
+    var rows=newsletterExportRows();
+    var printable=["Iscritti newsletter Ulakasha","Esportazione: "+dateTimeLabel(new Date().toISOString()),""];
+    rows.forEach(function(row,index){
+      var line=(index+1)+". "+row["Data iscrizione"]+" | "+row.Nome+" | "+row.Email+" | Tel: "+row.Telefono+" | Lingua: "+row["Lingua newsletter"]+" | Consenso: "+row["Consenso privacy"];
+      wrapPdfLine(pdfSafe(line),92).forEach(function(part){printable.push(part);});
+      if(row.Messaggio){
+        wrapPdfLine(pdfSafe("Messaggio: "+row.Messaggio),92).forEach(function(part){printable.push(part);});
+      }
+      printable.push("");
+    });
+    var chunks=[];
+    while(printable.length)chunks.push(printable.splice(0,50));
+    var pageCount=chunks.length||1;
+    var fontObj=3+pageCount*2;
+    var objects=[
+      "<< /Type /Catalog /Pages 2 0 R >>",
+      "<< /Type /Pages /Kids ["+chunks.map(function(_,i){return (3+i*2)+" 0 R";}).join(" ")+"] /Count "+pageCount+" >>"
+    ];
+    chunks.forEach(function(lines,pageIndex){
+      var contentObj=4+pageIndex*2;
+      var stream=["BT","/F1 14 Tf","50 790 Td"];
+      lines.forEach(function(line,index){
+        if(pageIndex===0&&index===0)stream.push("("+pdfSafe(line)+") Tj","/F1 9 Tf","0 -22 Td");
+        else stream.push("("+pdfSafe(line)+") Tj","0 -13 Td");
+      });
+      stream.push("ET");
+      var streamText=stream.join("\n");
+      objects.push("<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 "+fontObj+" 0 R >> >> /Contents "+contentObj+" 0 R >>");
+      objects.push("<< /Length "+streamText.length+" >>\nstream\n"+streamText+"\nendstream");
+    });
+    objects.push("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>");
+    var pdf="%PDF-1.4\n",offsets=[0];
+    objects.forEach(function(obj,i){offsets.push(pdf.length);pdf+=(i+1)+" 0 obj\n"+obj+"\nendobj\n";});
+    var xref=pdf.length;
+    pdf+="xref\n0 "+(objects.length+1)+"\n0000000000 65535 f \n";
+    for(var i=1;i<offsets.length;i++)pdf+=String(offsets[i]).padStart(10,"0")+" 00000 n \n";
+    pdf+="trailer\n<< /Size "+(objects.length+1)+" /Root 1 0 R >>\nstartxref\n"+xref+"\n%%EOF";
+    downloadBlob(pdf,"application/pdf","iscritti-newsletter-ulakasha-"+dateFileStamp()+".pdf");
   }
 
   function renderList(){
@@ -481,7 +662,12 @@
     el("admin-login-panel").hidden=true;
     el("admin-panel").hidden=false;
     el("admin-panel").style.display="";
+    if(el("admin-newsletter-panel")){
+      el("admin-newsletter-panel").hidden=false;
+      el("admin-newsletter-panel").style.display="";
+    }
     listProducts().catch(function(err){status("admin-product-status",err.message);});
+    listNewsletterSubscribers().catch(function(err){status("newsletter-status",err.message);});
   }
 
   function showLogin(){
@@ -489,6 +675,10 @@
     el("admin-login-panel").hidden=false;
     el("admin-panel").hidden=true;
     el("admin-panel").style.display="none";
+    if(el("admin-newsletter-panel")){
+      el("admin-newsletter-panel").hidden=true;
+      el("admin-newsletter-panel").style.display="none";
+    }
   }
 
   function clearForm(){
@@ -660,6 +850,24 @@
     el("admin-new-product").addEventListener("click",clearForm);
     el("admin-delete-product").addEventListener("click",deleteProduct);
     el("admin-logout").addEventListener("click",function(){localStorage.removeItem("ulakasha_admin_token");location.reload();});
+    if(el("newsletter-filter-form")){
+      el("newsletter-filter-form").addEventListener("submit",function(e){
+        e.preventDefault();
+        listNewsletterSubscribers().catch(function(err){status("newsletter-status",err.message);});
+      });
+    }
+    if(el("newsletter-range-preset"))el("newsletter-range-preset").addEventListener("change",applyNewsletterPreset);
+    if(el("newsletter-clear-filter"))el("newsletter-clear-filter").addEventListener("click",function(){
+      el("newsletter-date-from").value="";
+      el("newsletter-date-to").value="";
+      el("newsletter-range-preset").value="all";
+      listNewsletterSubscribers().catch(function(err){status("newsletter-status",err.message);});
+    });
+    if(el("newsletter-refresh"))el("newsletter-refresh").addEventListener("click",function(){
+      listNewsletterSubscribers().catch(function(err){status("newsletter-status",err.message);});
+    });
+    if(el("newsletter-export-excel"))el("newsletter-export-excel").addEventListener("click",exportNewsletterExcel);
+    if(el("newsletter-export-pdf"))el("newsletter-export-pdf").addEventListener("click",exportNewsletterPdf);
     el("admin-product-list").addEventListener("click",function(e){
       var btn=e.target.closest(".admin-product-row");
       if(!btn)return;

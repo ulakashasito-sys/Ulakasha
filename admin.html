@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex,nofollow">
   <title>Admin prodotti | Ulakasha</title>
-  <link rel="stylesheet" href="style.css?v=61">
+  <link rel="stylesheet" href="style.css?v=62">
 </head>
 <body class="admin-page admin-locked">
   <main class="admin-shell">
@@ -126,8 +126,66 @@
         </form>
       </section>
     </section>
+
+    <section class="admin-card admin-newsletter-card" id="admin-newsletter-panel" hidden style="display:none">
+      <div class="admin-newsletter-head">
+        <div>
+          <span class="admin-kicker">Newsletter</span>
+          <h2>Iscritti</h2>
+          <p>Lista delle persone iscritte alla newsletter, in ordine cronologico.</p>
+        </div>
+        <div class="admin-newsletter-actions">
+          <button type="button" class="admin-ghost" id="newsletter-refresh">Aggiorna</button>
+          <button type="button" id="newsletter-export-excel">Scarica Excel</button>
+          <button type="button" id="newsletter-export-pdf">Scarica PDF</button>
+        </div>
+      </div>
+      <form class="admin-form admin-newsletter-filters" id="newsletter-filter-form">
+        <div class="admin-three">
+          <label>Dal
+            <input id="newsletter-date-from" type="date">
+          </label>
+          <label>Al
+            <input id="newsletter-date-to" type="date">
+          </label>
+          <label>Periodo
+            <select id="newsletter-range-preset">
+              <option value="">Personalizzato</option>
+              <option value="7">Ultimi 7 giorni</option>
+              <option value="30">Ultimi 30 giorni</option>
+              <option value="90">Ultimi 90 giorni</option>
+              <option value="all">Tutto</option>
+            </select>
+          </label>
+        </div>
+        <div class="admin-actions">
+          <button type="submit">Applica filtro</button>
+          <button type="button" class="admin-ghost" id="newsletter-clear-filter">Tutto il periodo</button>
+        </div>
+        <p class="admin-status" id="newsletter-status"></p>
+      </form>
+      <div class="admin-newsletter-summary" id="newsletter-summary"></div>
+      <div class="admin-newsletter-table-wrap">
+        <table class="admin-newsletter-table">
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Nome</th>
+              <th>Email</th>
+              <th>Telefono</th>
+              <th>Lingua</th>
+              <th>Consenso</th>
+              <th>Messaggio</th>
+            </tr>
+          </thead>
+          <tbody id="newsletter-table-body">
+            <tr><td colspan="7">Accedi per vedere gli iscritti.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
   </main>
   <script src="supabase-config.js?v=2"></script>
-  <script src="admin.js?v=29"></script>
+  <script src="admin.js?v=30"></script>
 </body>
 </html>
