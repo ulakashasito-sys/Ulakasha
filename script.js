@@ -248,6 +248,19 @@ function newsletterNotification(payload){
     html:html
   };
 }
+function newsletterWebhookSubscriber(payload){
+  return {
+    name:payload.name,
+    email:payload.email,
+    phone:payload.phone||"Non indicato",
+    newsletter_language:payload.newsletter_language==="en"?"Inglese":"Italiano",
+    site_language:payload.site_language==="en"?"Inglese":"Italiano",
+    message:payload.message||"",
+    source:payload.source,
+    page_url:payload.page_url,
+    consent:payload.consent?"Sì":"No"
+  };
+}
 window.addEventListener("scroll",function(){var n=el("mainNav");if(n)n.classList.toggle("scrolled",window.scrollY>60);},{passive:true});
 function openMob(){var m=el("mobMenu"),h=el("ham"),o=el("mobOv");if(m)m.classList.add("open");if(h)h.classList.add("open");if(o)o.classList.add("show");document.body.style.overflow="hidden";}
 function closeMob(){var m=el("mobMenu"),h=el("ham"),o=el("mobOv");if(m)m.classList.remove("open");if(h)h.classList.remove("open");if(o)o.classList.remove("show");document.body.style.overflow="";}
@@ -308,7 +321,7 @@ async function submitLeadForm(e){
     if(!res.ok)throw new Error("newsletter insert failed");
     if(MAKE_NEWSLETTER_WEBHOOK_URL){
       var notification=newsletterNotification(payload);
-      fetch(MAKE_NEWSLETTER_WEBHOOK_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({event:"newsletter_subscriber_created",subscriber:payload,notification:notification,email_subject:notification.subject,email_text:notification.text,email_html:notification.html})}).catch(function(err){console.error("Make webhook failed",err);});
+      fetch(MAKE_NEWSLETTER_WEBHOOK_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({event:"newsletter_subscriber_created",subscriber:newsletterWebhookSubscriber(payload),subscriber_raw:payload,notification:notification,email_subject:notification.subject,email_text:notification.text,email_html:notification.html})}).catch(function(err){console.error("Make webhook failed",err);});
     }
     form.reset();
     if(status)status.textContent=t.leadSuccess;
