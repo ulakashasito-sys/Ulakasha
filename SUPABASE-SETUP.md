@@ -11,16 +11,18 @@ window.ULAKASHA_SUPABASE_URL = "https://xxxx.supabase.co";
 window.ULAKASHA_SUPABASE_ANON_KEY = "ey...";
 ```
 
-4. Per ricevere una notifica email con Make:
-   - crea uno scenario Make con trigger `Custom webhook`;
-   - copia l'URL del webhook;
-   - incollalo in `supabase-config.js`:
+4. Per ricevere la notifica email newsletter, configura le variabili ambiente server-side su Netlify:
 
-```js
-window.ULAKASHA_MAKE_NEWSLETTER_WEBHOOK_URL = "https://hook.eu2.make.com/...";
+```txt
+SUPABASE_URL=https://xxxx.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=...
+RESEND_API_KEY=...
+RESEND_FROM_EMAIL=contact@ulakasha.com
+CONTACT_NOTIFICATION_EMAIL=...
 ```
 
-Il sito salverà ogni iscrizione nella tabella `newsletter_subscribers` e invierà lo stesso payload a Make.
+Il formulario newsletter invia i dati alla Netlify Function `/.netlify/functions/newsletter`.
+La function salva ogni iscrizione nella tabella `newsletter_subscribers` e invia la notifica email tramite Resend.
 
 5. Per usare `admin.html`:
    - in Supabase vai su `Authentication > Users`;
@@ -54,21 +56,18 @@ alter table public.products
 add column if not exists details_labels jsonb not null default '{}'::jsonb;
 ```
 
-## Campi inviati a Make
+## Campi inviati dal formulario newsletter
 
 ```json
 {
-  "event": "newsletter_subscriber_created",
-  "subscriber": {
-    "name": "...",
-    "email": "...",
-    "phone": "...",
-    "newsletter_language": "it",
-    "site_language": "it",
-    "message": "...",
-    "source": "website",
-    "page_url": "https://...",
-    "consent": true
-  }
+  "name": "...",
+  "email": "...",
+  "phone": "...",
+  "newsletter_language": "it",
+  "site_language": "it",
+  "message": "...",
+  "source": "website",
+  "page_url": "https://...",
+  "consent": true
 }
 ```

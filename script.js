@@ -186,9 +186,7 @@ var lang="it",cart=loadStoredJSON("ulakasha_cart"),curProd=null,selSz=null,selCo
 var eventLoaded=false,eventData=null;
 var SUPABASE_URL=(window.ULAKASHA_SUPABASE_URL||"https://hjlcboehxcubgewyhcmo.supabase.co").replace(/\/$/,"");
 var SUPABASE_ANON_KEY=window.ULAKASHA_SUPABASE_ANON_KEY||"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhqbGNib2VoeGN1Ymdld3loY21vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNjA0NTMsImV4cCI6MjA5NjgzNjQ1M30.Egf-nrbM3h9-yvn1dHsGUg0RXFK55O3C8gSuFmc-A0g";
-var NEWSLETTER_TABLE=window.ULAKASHA_NEWSLETTER_TABLE||"newsletter_subscribers";
 var PRODUCTS_TABLE=window.ULAKASHA_PRODUCTS_TABLE||"products";
-var MAKE_NEWSLETTER_WEBHOOK_URL=window.ULAKASHA_MAKE_NEWSLETTER_WEBHOOK_URL||"https://hook.eu1.make.com/6qfy52lj85dj6r8b2g0r03elk9gk1dqq";
 var WHATSAPP_ORDER_NUMBER="393397743860";
 function el(id){return document.getElementById(id);}
 function set(id,val,isHtml){var e=el(id);if(!e)return;if(isHtml)e.innerHTML=val;else e.textContent=val;}
@@ -206,61 +204,6 @@ function supabaseHeaders(extra){
   return h;
 }
 function supabaseRest(table,query){return SUPABASE_URL+"/rest/v1/"+encodeURIComponent(table)+(query||"");}
-function escapeHtml(value){
-  return String(value||"").replace(/[&<>"']/g,function(ch){
-    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch];
-  });
-}
-function newsletterNotification(payload){
-  var phone=payload.phone||"Non indicato";
-  var langLabel=payload.newsletter_language==="en"?"Inglese":"Italiano";
-  var consent=payload.consent?"Sì":"No";
-  var date=new Date().toLocaleString("it-IT",{dateStyle:"medium",timeStyle:"short"});
-  var lines=[
-    "Nuova iscrizione alla newsletter Ulakasha",
-    "",
-    "È stata ricevuta una nuova richiesta di iscrizione dal sito.",
-    "",
-    "Dettagli iscrizione",
-    "Nome: "+payload.name,
-    "E-mail: "+payload.email,
-    "Telefono: "+phone,
-    "Lingua newsletter: "+langLabel+" ("+payload.newsletter_language+")",
-    "Consenso privacy: "+consent,
-    "Data richiesta: "+date
-  ];
-  var html=''+
-    '<div style="font-family:Arial,sans-serif;color:#1f2937;line-height:1.55;">'+
-      '<h2 style="margin:0 0 12px;color:#2C4A7C;">Nuova iscrizione alla newsletter Ulakasha</h2>'+
-      '<p style="margin:0 0 18px;">È stata ricevuta una nuova richiesta di iscrizione dal sito.</p>'+
-      '<table style="border-collapse:collapse;width:100%;max-width:560px;">'+
-        '<tr><td style="padding:8px 0;color:#6B6459;">Nome</td><td style="padding:8px 0;"><strong>'+escapeHtml(payload.name)+'</strong></td></tr>'+
-        '<tr><td style="padding:8px 0;color:#6B6459;">E-mail</td><td style="padding:8px 0;"><a href="mailto:'+encodeURIComponent(payload.email)+'" style="color:#2C4A7C;">'+escapeHtml(payload.email)+'</a></td></tr>'+
-        '<tr><td style="padding:8px 0;color:#6B6459;">Telefono</td><td style="padding:8px 0;">'+escapeHtml(phone)+'</td></tr>'+
-        '<tr><td style="padding:8px 0;color:#6B6459;">Lingua newsletter</td><td style="padding:8px 0;">'+escapeHtml(langLabel)+' ('+escapeHtml(payload.newsletter_language)+')</td></tr>'+
-        '<tr><td style="padding:8px 0;color:#6B6459;">Consenso privacy</td><td style="padding:8px 0;">'+escapeHtml(consent)+'</td></tr>'+
-        '<tr><td style="padding:8px 0;color:#6B6459;">Data richiesta</td><td style="padding:8px 0;">'+escapeHtml(date)+'</td></tr>'+
-      '</table>'+
-    '</div>';
-  return {
-    subject:"Nuova iscrizione newsletter Ulakasha",
-    text:lines.join("\n"),
-    html:html
-  };
-}
-function newsletterWebhookSubscriber(payload){
-  return {
-    name:payload.name,
-    email:payload.email,
-    phone:payload.phone||"Non indicato",
-    newsletter_language:payload.newsletter_language==="en"?"Inglese":"Italiano",
-    site_language:payload.site_language==="en"?"Inglese":"Italiano",
-    message:payload.message||"",
-    source:payload.source,
-    page_url:payload.page_url,
-    consent:payload.consent?"Sì":"No"
-  };
-}
 window.addEventListener("scroll",function(){var n=el("mainNav");if(n)n.classList.toggle("scrolled",window.scrollY>60);},{passive:true});
 function openMob(){var m=el("mobMenu"),h=el("ham"),o=el("mobOv");if(m)m.classList.add("open");if(h)h.classList.add("open");if(o)o.classList.add("show");document.body.style.overflow="hidden";}
 function closeMob(){var m=el("mobMenu"),h=el("ham"),o=el("mobOv");if(m)m.classList.remove("open");if(h)h.classList.remove("open");if(o)o.classList.remove("show");document.body.style.overflow="";}
@@ -302,7 +245,6 @@ async function submitLeadForm(e){
   e.preventDefault();
   var form=e.target,t=T[lang]||T.it,status=el("lead-status"),btn=el("lead-submit");
   if(!form.checkValidity()){form.reportValidity();return;}
-  if(!supabaseReady()){if(status)status.textContent=t.leadConfig;return;}
   if(status)status.textContent=t.leadSending;
   if(btn)btn.disabled=true;
   try{
@@ -317,12 +259,8 @@ async function submitLeadForm(e){
       page_url:window.location.href,
       consent:!!el("lead-consent").checked
     };
-    var res=await fetch(supabaseRest(NEWSLETTER_TABLE),{method:"POST",headers:supabaseHeaders({"Content-Type":"application/json","Prefer":"return=minimal"}),body:JSON.stringify(payload)});
-    if(!res.ok)throw new Error("newsletter insert failed");
-    if(MAKE_NEWSLETTER_WEBHOOK_URL){
-      var notification=newsletterNotification(payload);
-      fetch(MAKE_NEWSLETTER_WEBHOOK_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({event:"newsletter_subscriber_created",subscriber:newsletterWebhookSubscriber(payload),subscriber_raw:payload,notification:notification,email_subject:notification.subject,email_text:notification.text,email_html:notification.html})}).catch(function(err){console.error("Make webhook failed",err);});
-    }
+    var res=await fetch("/.netlify/functions/newsletter",{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify(payload)});
+    if(!res.ok)throw new Error("newsletter submission failed");
     form.reset();
     if(status)status.textContent=t.leadSuccess;
   }catch(err){
