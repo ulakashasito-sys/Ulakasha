@@ -1840,6 +1840,18 @@ for(var ft=0;ft<filterToggles.length;ft++){filterToggles[ft].addEventListener("c
   var dd=this.closest(".filter-dd");
   var wasOpen=dd&&dd.classList.contains("open");
   closeFilterDropdowns();
+  if(isShopPage()||isCreazioniPage()){
+    var groupMap={"fg-body":["body","f-body"],"fg-home":["home","f-home"]};
+    var group=groupMap[this.id];
+    if(group){
+      for(var i=0;i<fBtns.length;i++)fBtns[i].classList.remove("on");
+      var activeBtn=el(group[1]);
+      if(activeBtn)activeBtn.classList.add("on");
+      currentFilter=group[0];
+      syncArtPreview();
+      if(productsLoaded)applyLoadedProducts();
+    }
+  }
   if(dd&&!wasOpen){dd.classList.add("open");this.setAttribute("aria-expanded","true");}
 });}
 document.addEventListener("click",function(e){if(!e.target.closest(".filter-dd"))closeFilterDropdowns();});
