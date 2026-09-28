@@ -741,7 +741,7 @@ function openProdFromCard(event,id){
 window.openProdFromCardElement=openProdFromCardElement;
 function buildPrevGrid(prods){var grid=el("prevGrid");if(!grid)return;var vl=lang==="it"?"Scopri il capo":"View piece";var h="";for(var i=0;i<prods.length;i++)h+=cardHTML(prods[i],vl);grid.innerHTML=h;}
 function isCreazioniPage(){return !!document.querySelector("[data-catalog-page='creazioni']")||location.pathname.indexOf("collezione.html")!==-1;}
-function isShopPage(){return location.pathname.indexOf("shop.html")!==-1;}
+function isShopPage(){return !!document.getElementById("p-shop")||/\/shop(?:\.html)?\/?$/.test(location.pathname);}
 function syncArtPreview(){
   var preview=el("artPreview");
   if(!preview)return;
