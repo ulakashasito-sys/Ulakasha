@@ -29,7 +29,9 @@ function unbase64url(value) {
 }
 
 function sessionSecret() {
-  return clean(process.env.NEWSLETTER_ADMIN_SESSION_SECRET) || clean(process.env.NEWSLETTER_ADMIN_PASSWORD);
+  return clean(process.env.NEWSLETTER_ADMIN_SESSION_SECRET) ||
+    clean(process.env.NEWSLETTER_ADMIN_PASSWORD) ||
+    clean(process.env.SUPABASE_SERVICE_ROLE_KEY);
 }
 
 function sign(payload) {
@@ -62,12 +64,42 @@ function verifyToken(value) {
 
 function configured() {
   return !!(
-    clean(process.env.NEWSLETTER_ADMIN_USERNAME) &&
-    clean(process.env.NEWSLETTER_ADMIN_PASSWORD) &&
     sessionSecret() &&
     clean(process.env.SUPABASE_URL) &&
     clean(process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY)
   );
+}
+
+async function signInWithSupabase(username, password) {
+  const supabaseUrl = clean(process.env.SUPABASE_URL).replace(/\/$/, "");
+  const anonKey = clean(process.env.SUPABASE_ANON_KEY);
+
+  if (!supabaseUrl || !anonKey || !username || !password) return false;
+
+  const response = await fetch(`${supabaseUrl}/auth/v1/token?grant_type=password`, {
+    method: "POST",
+    headers: {
+      "apikey": anonKey,
+      "Authorization": `Bearer ${anonKey}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      email: username,
+      password
+    })
+  });
+
+  if (!response.ok) return false;
+
+  const data = await response.json().catch(() => null);
+  const allowed = clean(process.env.NEWSLETTER_ADMIN_ALLOWED_EMAILS)
+    .split(",")
+    .map((item) => item.trim().toLowerCase())
+    .filter(Boolean);
+  const email = clean(data && data.user && data.user.email).toLowerCase();
+
+  if (allowed.length && !allowed.includes(email)) return false;
+  return !!email;
 }
 
 function supabaseUrl(query) {
@@ -132,7 +164,12 @@ exports.handler = async function handler(event) {
     const expectedUsername = clean(process.env.NEWSLETTER_ADMIN_USERNAME);
     const expectedPassword = clean(process.env.NEWSLETTER_ADMIN_PASSWORD);
 
-    if (username !== expectedUsername || password !== expectedPassword) {
+    const matchesNetlifyCredentials = expectedUsername && expectedPassword &&
+      username.toLowerCase() === expectedUsername.toLowerCase() &&
+      password === expectedPassword;
+    const matchesSupabaseCredentials = await signInWithSupabase(username, password);
+
+    if (!matchesNetlifyCredentials && !matchesSupabaseCredentials) {
       return json(401, { ok: false, error: "invalid_credentials" });
     }
 
