@@ -1283,7 +1283,7 @@ function normalizeCategory(category){
 }
 function normalizeShopCategory(category){
   var value=(category||"").toString().toLowerCase();
-  var slug=value.replace(/\s+/g,"-");
+  var slug=value.replace(/[_\s]+/g,"-");
   if(slug==="tessile")return "home-textile";
   if(slug==="bottiglia")return "home-bottles";
   if(slug==="tazze")return "home-cups";
@@ -1312,13 +1312,16 @@ function productCategoryText(prod){
   var details=prod.details||{};
   var detailCategory=detailValue(details,"categoria","categoria_shop","macro_categoria","sottocategoria","categoria_prodotto","sezione","famiglia","percorso","path","slug_categoria");
   var detailPath=detailValue(details,"category_path","percorso_categoria","percorso_shop","shop_path");
-  var imagePaths=[prod.img,(prod.images||[]).join(" ")].join(" ");
-  return [prod.category,prod.shop_category,prod.categoria,prod.category_path,prod.path,prod.slug,prod.id,detailCategory,detailPath,prod.sub,prod.name,imagePaths].join(" ");
+  return [prod.category,prod.shop_category,prod.categoria,prod.category_path,prod.path,detailCategory,detailPath].join(" ");
 }
 function productShopCategory(prod){
+  prod=prod||{};
+  var explicitCategory=[prod.category,prod.shop_category,prod.categoria].filter(Boolean).join(" ");
+  var explicit=normalizeShopCategory(explicitCategory);
+  if(explicit!=="all")return explicit;
   var haystack=productCategoryText(prod);
   var fallback=productSearchText(prod);
-  var exact=(prod&&prod.category?String(prod.category):"").toLowerCase().replace(/\s+/g,"-");
+  var exact=(prod&&prod.category?String(prod.category):"").toLowerCase().replace(/[_\s]+/g,"-");
   if(exact==="tessile"||exact.indexOf("abitare-la-casa")!==-1&&exact.indexOf("tessile")!==-1)return "home-textile";
   var cat=normalizeShopCategory(haystack);
   if(cat==="all")cat=normalizeShopCategory(fallback);
@@ -1396,7 +1399,6 @@ function getFilteredProducts(products){
     var cat=productShopCategory(prod),macro=productMacroCategory(prod);
     if(currentFilter==="body")return cat==="body-clothing"||cat==="body-textile-accessory"||cat==="body-bijoux"||macro==="body";
     if(currentFilter==="home")return cat==="home-textile"||cat==="home-table"||cat==="home-bottles"||cat==="home-cups"||macro==="home";
-    if(currentFilter==="home-table")return cat==="home-table"||cat==="home-bottles"||cat==="home-cups";
     return cat===currentFilter;
   });
 }
