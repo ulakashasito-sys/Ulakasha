@@ -1336,6 +1336,13 @@ function productMacroCategory(prod){
   var fallback=productSearchText(prod);
   return normalizeCategory(haystack)||normalizeCategory(fallback);
 }
+function productMatchesCurrentFilter(prod){
+  var cat=productShopCategory(prod),macro=productMacroCategory(prod);
+  if(currentFilter==="body")return cat==="body-clothing"||cat==="body-textile-accessory"||cat==="body-bijoux"||macro==="body";
+  if(currentFilter==="home")return cat==="home-textile"||cat==="home-table"||cat==="home-bottles"||cat==="home-cups"||macro==="home";
+  if(currentFilter==="home-table")return cat==="home-table"||cat==="home-bottles"||cat==="home-cups";
+  return cat===currentFilter;
+}
 function productOrderValue(prod,index){
   var n=Number(prod&&prod.sort_order);
   if(!isFinite(n))n=Number(prod&&prod.order);
@@ -1396,10 +1403,7 @@ function getFilteredProducts(products){
   var list=sortProductsForDisplay(products);
   if(currentFilter==="all")return list;
   return list.filter(function(prod){
-    var cat=productShopCategory(prod),macro=productMacroCategory(prod);
-    if(currentFilter==="body")return cat==="body-clothing"||cat==="body-textile-accessory"||cat==="body-bijoux"||macro==="body";
-    if(currentFilter==="home")return cat==="home-textile"||cat==="home-table"||cat==="home-bottles"||cat==="home-cups"||macro==="home";
-    return cat===currentFilter;
+    return productMatchesCurrentFilter(prod);
   });
 }
 
