@@ -1,23 +1,11 @@
 (function(){
-  var SUPABASE_URL=(window.ULAKASHA_SUPABASE_URL||"").replace(/\/$/,"");
-  var SUPABASE_ANON_KEY=window.ULAKASHA_SUPABASE_ANON_KEY||"";
-  var NEWSLETTER_TABLE=window.ULAKASHA_NEWSLETTER_TABLE||"newsletter_subscribers";
-  var TOKEN_KEY="ulakasha_admin_token";
+  var ADMIN_ENDPOINT="/.netlify/functions/newsletter-admin";
+  var TOKEN_KEY="ulakasha_newsletter_client_token";
   var token=localStorage.getItem(TOKEN_KEY)||"";
   var subscribers=[];
 
   function el(id){return document.getElementById(id);}
-  function configured(){return !!(SUPABASE_URL&&SUPABASE_ANON_KEY);}
   function status(id,msg){var node=el(id);if(node)node.textContent=msg||"";}
-  function headers(auth,extra){
-    var h={"apikey":SUPABASE_ANON_KEY,"Accept":"application/json"};
-    h.Authorization="Bearer "+(auth?token:SUPABASE_ANON_KEY);
-    if(extra){Object.keys(extra).forEach(function(key){h[key]=extra[key];});}
-    return h;
-  }
-  function rest(table,query){
-    return SUPABASE_URL+"/rest/v1/"+encodeURIComponent(table)+(query||"");
-  }
   function escapeHtml(value){
     return String(value||"").replace(/[&<>"']/g,function(ch){
       return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch];
@@ -57,29 +45,29 @@
     },250);
   }
 
-  async function signIn(email,password){
-    var res=await fetch(SUPABASE_URL+"/auth/v1/token?grant_type=password",{
+  async function api(action,payload){
+    var res=await fetch(ADMIN_ENDPOINT,{
       method:"POST",
-      headers:headers(false,{"Content-Type":"application/json"}),
-      body:JSON.stringify({email:email,password:password})
+      headers:{
+        "Content-Type":"application/json",
+        "Authorization":token?"Bearer "+token:""
+      },
+      body:JSON.stringify(Object.assign({action:action},payload||{}))
     });
-    if(!res.ok){
-      var error={};
-      try{error=await res.json();}catch(e){}
-      throw new Error(error.msg||error.message||"Login non riuscito");
+    var data={};
+    try{data=await res.json();}catch(error){}
+    if(!res.ok||data.ok===false){
+      var messages={
+        invalid_credentials:"Account o password non corretti.",
+        unauthorized:"Sessione scaduta. Accedi di nuovo.",
+        server_not_configured:"Configura le credenziali cliente su Netlify.",
+        supabase_error:"Non riesco a leggere gli iscritti newsletter.",
+        invalid_json:"Risposta non valida dal server.",
+        method_not_allowed:"Metodo non consentito."
+      };
+      throw new Error(messages[data.error]||"Operazione non riuscita.");
     }
-    var data=await res.json();
-    token=data.access_token;
-    localStorage.setItem(TOKEN_KEY,token);
-  }
-
-  async function validateSession(){
-    if(!token||!configured())return false;
-    var res=await fetch(SUPABASE_URL+"/auth/v1/user",{headers:headers(true)});
-    if(res.ok)return true;
-    token="";
-    localStorage.removeItem(TOKEN_KEY);
-    return false;
+    return data;
   }
 
   function showPanel(){
@@ -88,7 +76,14 @@
     el("newsletter-login-panel").style.display="none";
     el("newsletter-admin-panel").hidden=false;
     el("newsletter-admin-panel").style.display="";
-    listSubscribers().catch(function(err){status("newsletter-status",err.message);});
+    listSubscribers().catch(function(err){
+      if(/Sessione scaduta/.test(err.message)){
+        logout(false);
+        status("newsletter-login-status",err.message);
+      }else{
+        status("newsletter-status",err.message);
+      }
+    });
   }
 
   function showLogin(){
@@ -99,27 +94,32 @@
     el("newsletter-admin-panel").style.display="none";
   }
 
-  function newsletterQuery(){
-    var params=[
-      "select=created_at,name,email,phone,newsletter_language,site_language,consent,message,page_url,source",
-      "order=created_at.desc"
-    ];
-    var from=el("newsletter-date-from")?el("newsletter-date-from").value:"";
-    var to=el("newsletter-date-to")?el("newsletter-date-to").value:"";
-    if(from)params.push("created_at=gte."+encodeURIComponent(from+"T00:00:00"));
-    if(to)params.push("created_at=lte."+encodeURIComponent(to+"T23:59:59"));
-    return "?"+params.join("&");
+  function currentFilters(){
+    return {
+      from:el("newsletter-date-from")?el("newsletter-date-from").value:"",
+      to:el("newsletter-date-to")?el("newsletter-date-to").value:""
+    };
+  }
+
+  async function login(username,password){
+    var data=await api("login",{username:username,password:password});
+    token=data.token||"";
+    localStorage.setItem(TOKEN_KEY,token);
+  }
+
+  function logout(withMessage){
+    token="";
+    subscribers=[];
+    localStorage.removeItem(TOKEN_KEY);
+    renderSubscribers();
+    showLogin();
+    if(withMessage!==false)status("newsletter-login-status","Accesso chiuso.");
   }
 
   async function listSubscribers(){
     status("newsletter-status","Caricamento iscritti...");
-    var res=await fetch(rest(NEWSLETTER_TABLE,newsletterQuery()),{headers:headers(true)});
-    if(!res.ok){
-      var detail="";
-      try{detail=await res.text();}catch(e){}
-      throw new Error("Non riesco a leggere gli iscritti newsletter"+(detail?": "+detail:""));
-    }
-    subscribers=await res.json();
+    var data=await api("list",currentFilters());
+    subscribers=Array.isArray(data.subscribers)?data.subscribers:[];
     renderSubscribers();
     status("newsletter-status",subscribers.length?("Iscritti caricati: "+subscribers.length):"Nessun iscritto nel periodo selezionato.");
   }
@@ -187,18 +187,21 @@
     });
   }
 
+  function csvCell(value){
+    value=String(value==null?"":value).replace(/\r?\n/g," ");
+    return '"'+value.replace(/"/g,'""')+'"';
+  }
+
   function exportExcel(){
     if(!subscribers.length)return status("newsletter-status","Nessun iscritto da esportare.");
     var rows=exportRows();
     var columns=Object.keys(rows[0]);
-    var html='<!doctype html><html><head><meta charset="utf-8"></head><body><table><thead><tr>'+
-      columns.map(function(column){return '<th>'+escapeHtml(column)+'</th>';}).join("")+
-      '</tr></thead><tbody>'+
+    var csv="\ufeff"+columns.map(csvCell).join(";")+"\r\n"+
       rows.map(function(row){
-        return '<tr>'+columns.map(function(column){return '<td>'+escapeHtml(row[column])+'</td>';}).join("")+'</tr>';
-      }).join("")+
-      '</tbody></table></body></html>';
-    downloadBlob(html,"application/vnd.ms-excel;charset=utf-8","iscritti-newsletter-ulakasha-"+dateFileStamp()+".xls");
+        return columns.map(function(column){return csvCell(row[column]);}).join(";");
+      }).join("\r\n");
+    downloadBlob(csv,"text/csv;charset=utf-8","iscritti-newsletter-ulakasha-"+dateFileStamp()+".csv");
+    status("newsletter-status","File Excel/CSV scaricato.");
   }
 
   function pdfSafe(value){
@@ -267,13 +270,12 @@
 
   document.addEventListener("DOMContentLoaded",function(){
     showLogin();
-    if(!configured())status("newsletter-login-status","Configura Supabase in supabase-config.js prima di usare l'admin.");
 
     el("newsletter-login-form").addEventListener("submit",async function(event){
       event.preventDefault();
       status("newsletter-login-status","Accesso...");
       try{
-        await signIn(el("newsletter-admin-email").value,el("newsletter-admin-password").value);
+        await login(el("newsletter-admin-email").value,el("newsletter-admin-password").value);
         status("newsletter-login-status","");
         showPanel();
       }catch(err){
@@ -297,22 +299,8 @@
     });
     el("newsletter-export-excel").addEventListener("click",exportExcel);
     el("newsletter-export-pdf").addEventListener("click",exportPdf);
-    el("newsletter-logout").addEventListener("click",function(){
-      localStorage.removeItem(TOKEN_KEY);
-      token="";
-      subscribers=[];
-      showLogin();
-      status("newsletter-login-status","Accesso chiuso.");
-    });
+    el("newsletter-logout").addEventListener("click",function(){logout(true);});
 
-    if(token&&configured()){
-      status("newsletter-login-status","Controllo sessione...");
-      validateSession().then(function(ok){
-        if(ok)showPanel();
-        else showLogin();
-      }).catch(function(){
-        showLogin();
-      });
-    }
+    if(token)showPanel();
   });
 })();

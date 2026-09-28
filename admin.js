@@ -432,12 +432,15 @@
     if(!newsletterSubscribers.length)return status("newsletter-status","Nessun iscritto da esportare.");
     var rows=newsletterExportRows();
     var columns=Object.keys(rows[0]);
-    var html='<!doctype html><html><head><meta charset="utf-8"></head><body><table><thead><tr>'+
-      columns.map(function(c){return '<th>'+escapeHtml(c)+'</th>';}).join("")+
-      '</tr></thead><tbody>'+
-      rows.map(function(row){return '<tr>'+columns.map(function(c){return '<td>'+escapeHtml(row[c])+'</td>';}).join("")+'</tr>';}).join("")+
-      '</tbody></table></body></html>';
-    downloadBlob(html,"application/vnd.ms-excel;charset=utf-8","iscritti-newsletter-ulakasha-"+dateFileStamp()+".xls");
+    function csvCell(value){
+      value=String(value==null?"":value).replace(/\r?\n/g," ");
+      return '"'+value.replace(/"/g,'""')+'"';
+    }
+    var csv="\ufeff"+columns.map(csvCell).join(";")+"\r\n"+
+      rows.map(function(row){
+        return columns.map(function(column){return csvCell(row[column]);}).join(";");
+      }).join("\r\n");
+    downloadBlob(csv,"text/csv;charset=utf-8","iscritti-newsletter-ulakasha-"+dateFileStamp()+".csv");
   }
 
   function pdfSafe(value){
