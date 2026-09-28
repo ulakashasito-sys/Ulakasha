@@ -687,6 +687,9 @@ function productForSale(prod){
   if(flag===true||flag==="true"||flag==="1"||flag==="si"||flag==="sì")return false;
   return true;
 }
+function productVisibleInShop(prod){
+  return productForSale(prod)&&productPriceVisible(prod)&&Number(prod&&prod.price)>0;
+}
 function productFlag(value){
   var text=String(value||"").toLowerCase();
   return value===true||value===1||text==="true"||text==="1"||text==="si"||text==="sì"||text==="yes";
@@ -755,7 +758,7 @@ function buildShopGrid(prods){
   var vl=isCreazioniPage()?(lang==="it"?"Scopri la creazione":"View creation"):(lang==="it"?"Scopri il capo":"View piece");
   var h="",lastRank=null,groupAll=currentFilter==="all";
   for(var i=0;i<prods.length;i++){
-    if(isShopPage()&&!productForSale(prods[i]))continue;
+    if(isShopPage()&&!productVisibleInShop(prods[i]))continue;
     var rank=productAllFamilyRank(prods[i]);
     var breakClass=groupAll&&lastRank!==null&&rank!==lastRank?"pcard-break":"";
     h+=cardHTML(prods[i],vl,breakClass);
@@ -1355,6 +1358,12 @@ function isCushion50(prod){
 function isCushionProduct(prod){return /cuscino|cushion|pillow/i.test(productSearchText(prod));}
 function productAllFamilyRank(prod){
   var cat=productShopCategory(prod),text=productSearchText(prod).toLowerCase();
+  if(currentFilter==="home"){
+    if(cat==="home-bottles")return 300;
+    if(cat==="home-cups")return 310;
+    if(cat==="home-table")return 320;
+    if(cat==="home-textile")return isCushion50(prod)?330:isCushionProduct(prod)?340:390;
+  }
   if(cat==="body-textile-accessory"){
     if(/mini\s*bandeau|minibandeau/.test(text))return 110;
     if(/bandeau/.test(text))return 100;
