@@ -279,8 +279,8 @@ function findProductById(id){
 }
 function cartProduct(item){return findProductById(item.id)||item;}
 function money(value){return "€ "+Number(value||0).toLocaleString("it-IT");}
-function openCart(){var c=el("cartDrawer"),o=el("ov");renderCart();if(c)c.classList.add("open");if(o)o.classList.add("show");}
-function closeCart(){var c=el("cartDrawer"),o=el("ov");if(c)c.classList.remove("open");if(o)o.classList.remove("show");}
+function openCart(){var c=el("cartDrawer"),o=el("ov");renderCart();document.body.classList.add("cart-open");if(c)c.classList.add("open");if(o)o.classList.add("show");}
+function closeCart(){var c=el("cartDrawer"),o=el("ov");document.body.classList.remove("cart-open");if(c)c.classList.remove("open");if(o)o.classList.remove("show");}
 function renderCart(){
   var t=T[lang];
   var cnt=0;for(var i=0;i<cart.length;i++)cnt+=Number(cart[i].qty||1);
@@ -1650,7 +1650,6 @@ function buildOrderText(){
   txt+="\nCapi selezionati:\n";
   for(var k=0;k<lines.length;k++) txt+="• "+lines[k]+"\n";
   txt+="\nTotale: "+money(total);
-  txt+="\n\nConcept Store · Via Festa del Perdono 10, Milano · 21–26 aprile 2026";
   if(note) txt+="\n\nNote: "+note;
   return txt;
 }
@@ -1934,7 +1933,6 @@ function buildResText(){
   if(capo) txt+=(lang==='en'?'Piece: ':'Capo: ')+capo+'\n';
   if(size) txt+=(lang==='en'?'Size: ':'Taglia: ')+size+'\n';
   if(note) txt+=(lang==='en'?'Notes: ':'Note: ')+note+'\n';
-  txt+='\nConcept Store · Via Festa del Perdono 10, Milano · 21–26 aprile 2026';
   return txt;
 }
 function validateRes(){
