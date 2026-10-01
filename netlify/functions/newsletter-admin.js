@@ -93,13 +93,7 @@ async function signInWithSupabase(username, password) {
   if (!response.ok) return false;
 
   const data = await response.json().catch(() => null);
-  const allowed = clean(process.env.NEWSLETTER_ADMIN_ALLOWED_EMAILS)
-    .split(",")
-    .map((item) => item.trim().toLowerCase())
-    .filter(Boolean);
   const email = clean(data && data.user && data.user.email).toLowerCase();
-
-  if (allowed.length && !allowed.includes(email)) return false;
   return !!email;
 }
 
