@@ -2,6 +2,7 @@ const crypto = require("crypto");
 
 const NEWSLETTER_TABLE = process.env.SUPABASE_NEWSLETTER_TABLE || "newsletter_subscribers";
 const SESSION_HOURS = 12;
+const PUBLIC_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhqbGNib2VoeGN1Ymdld3loY21vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNjA0NTMsImV4cCI6MjA5NjgzNjQ1M30.Egf-nrbM3h9-yvn1dHsGUg0RXFK55O3C8gSuFmc-A0g";
 
 function clean(value) {
   return String(value || "").trim();
@@ -72,7 +73,7 @@ function configured() {
 
 async function signInWithSupabase(username, password) {
   const supabaseUrl = clean(process.env.SUPABASE_URL).replace(/\/$/, "");
-  const anonKey = clean(process.env.SUPABASE_ANON_KEY);
+  const anonKey = clean(process.env.SUPABASE_ANON_KEY) || PUBLIC_SUPABASE_ANON_KEY;
 
   if (!supabaseUrl || !anonKey || !username || !password) return false;
 
